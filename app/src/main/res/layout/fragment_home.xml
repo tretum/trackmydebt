@@ -15,7 +15,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_debt_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            tools:listitem="@layout/debt_list_item"
+            tools:itemCount="20" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_item"
