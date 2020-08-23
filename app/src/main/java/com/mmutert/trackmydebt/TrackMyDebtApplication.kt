@@ -9,7 +9,8 @@ class TrackMyDebtApplication : Application() {
         super.onCreate()
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val prefNightModeKey = getString(R.string.pref_night_mode_key)
-        val nightMode = sharedPreferences.getString(prefNightModeKey, getString(R.string.theme_value_default))
+        val nightMode =
+            sharedPreferences.getString(prefNightModeKey, getString(R.string.theme_value_default))
         ThemeHelper.applyTheme(nightMode!!, this)
     }
 }
