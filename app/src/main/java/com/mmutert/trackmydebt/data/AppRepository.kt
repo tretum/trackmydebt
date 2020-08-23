@@ -8,19 +8,19 @@ class AppRepository(private val dao: AppDao) {
     val persons : LiveData<List<Person>> = dao.persons
     val transactions : LiveData<List<Transaction>> = dao.transactions
 
-    fun addTransaction(t: Transaction) {
-        TODO()
+    suspend fun addTransaction(t: Transaction) {
+        dao.insertTransaction(t)
     }
 
-    fun removeTransaction(t: Transaction) {
-        TODO()
+    suspend fun removeTransaction(t: Transaction) {
+        dao.deleteTransaction(t)
     }
 
-    fun removePerson(p : Person) {
+    suspend fun removePerson(p : Person) {
         TODO("Remove person and all transactions for that person?")
     }
 
-    fun addPerson(p : Person) {
-        TODO()
+    suspend fun addPerson(p : Person) {
+        dao.insertPerson(p)
     }
 }

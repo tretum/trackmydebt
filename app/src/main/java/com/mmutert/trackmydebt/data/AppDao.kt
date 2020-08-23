@@ -24,11 +24,14 @@ interface AppDao {
     val personAndTransactions: LiveData<List<PersonAndTransactions>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPerson(p: Person)
+    suspend fun insertPerson(p: Person)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTransaction(t: Transaction)
+    suspend fun insertTransaction(t: Transaction)
 
     @Delete
-    fun deletePerson(p: Person)
+    suspend fun deletePerson(p: Person)
+
+    @Delete
+    suspend fun deleteTransaction(t: Transaction)
 }
