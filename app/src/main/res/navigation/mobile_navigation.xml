@@ -9,11 +9,25 @@
         android:id="@+id/navigation_home"
         android:name="com.mmutert.trackmydebt.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/fragment_person_detail"
+            app:destination="@id/personDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_recent_activity"
         android:name="com.mmutert.trackmydebt.ui.dashboard.RecentActivityFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_recent_activity" />
+
+    <fragment
+        android:id="@+id/personDetailFragment"
+        android:name="com.mmutert.trackmydebt.ui.persondetail.PersonDetailFragment"
+        android:label="PersonDetailFragment">
+    </fragment>
 </navigation>

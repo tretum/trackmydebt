@@ -9,20 +9,24 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.databinding.DebtListItemBinding
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.model.PersonModel
-import com.mmutert.trackmydebt.ui.addperson.AddPersonDialogFragment
+import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
 import com.mmutert.trackmydebt.ui.dialogs.TransactionDialogFragment
 
 class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
     private lateinit var mViewModel: HomeViewModel
+    lateinit var mSharedViewModel: SharedViewModel
+        private set
     private lateinit var mBinding: FragmentHomeBinding
 
     private lateinit var mAdapter: DebtListAdapter
@@ -33,6 +37,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         savedInstanceState: Bundle?
     ): View? {
         mViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        mSharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         mBinding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_home,
@@ -42,7 +47,13 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
         mBinding.rvDebtList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        mAdapter = DebtListAdapter(requireContext())
+        mAdapter = DebtListAdapter(requireContext(), object: DebtListAdapter.ListItemClickListener {
+            override fun listItemClicked(p: Person) {
+                mSharedViewModel.selectPerson(p)
+                val fragmentPersonDetail = HomeFragmentDirections.fragmentPersonDetail()
+                Navigation.findNavController(mBinding.root).navigate(fragmentPersonDetail)
+            }
+        })
         mAdapter.setList(ArrayList())
         mBinding.rvDebtList.adapter = mAdapter
         mBinding.rvDebtList.addItemDecoration(
@@ -182,7 +193,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         })
     }
 
-    class DebtListAdapter(val context: Context) :
+    class DebtListAdapter(val context: Context, val listener: ListItemClickListener) :
         RecyclerView.Adapter<DebtListAdapter.DebtListViewHolder>() {
 
         // private val mDiffer = AsyncListDiffer(this, DIFF_CALLBACK)
@@ -218,6 +229,10 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                     holder.binding.listItemForeground.setBackgroundColor(context.resources.getColor(R.color.debt_item_card_background_negative))
                 }
             }
+
+            holder.binding.root.setOnClickListener {
+                listener.listItemClicked(Person(id, name))
+            }
         }
 
         fun getElementAtPosition(position: Int): PersonModel {
@@ -230,6 +245,10 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
         class DebtListViewHolder(val binding: DebtListItemBinding) :
             RecyclerView.ViewHolder(binding.root)
+
+        interface ListItemClickListener {
+            fun listItemClicked(p: Person)
+        }
 
         // companion object {
         //     /**

@@ -9,6 +9,10 @@ class AppRepository(private val dao: AppDao) {
     val persons : LiveData<List<Person>> = dao.persons
     val transactions : LiveData<List<Transaction>> = dao.transactions
 
+    fun getTransactions(p: Person): LiveData<List<Transaction>> {
+        return dao.transactionsForPerson(p.id)
+    }
+
     suspend fun addTransaction(t: Transaction) {
         dao.insertTransaction(t)
     }
