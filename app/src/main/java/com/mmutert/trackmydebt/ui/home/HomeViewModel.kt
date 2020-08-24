@@ -9,6 +9,7 @@ import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.model.PersonModel
+import com.mmutert.trackmydebt.util.TimeHelper
 import kotlinx.coroutines.launch
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
@@ -45,6 +46,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             repository.addTransaction(transaction)
         }
+    }
+
+    fun giveMoney(partner: PersonModel, amount: Long, reason: String) {
+        addTransaction(Transaction(0, partner.id, false, -amount, TimeHelper.currentDateTimeLocalized, reason))
+    }
+
+    fun receiveMoney(partner: PersonModel, amount: Long, reason: String) {
+        addTransaction(Transaction(0, partner.id, true, amount, TimeHelper.currentDateTimeLocalized, reason))
     }
 
     val persons: LiveData<List<PersonModel>> = repository.personModels

@@ -14,17 +14,15 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
-import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.databinding.DebtListItemBinding
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.model.PersonModel
 import com.mmutert.trackmydebt.ui.addperson.AddPersonDialogFragment
 import com.mmutert.trackmydebt.ui.dialogs.TransactionDialogFragment
-import com.mmutert.trackmydebt.util.TimeHelper
 
 class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var mViewModel: HomeViewModel
     private lateinit var mBinding: FragmentHomeBinding
 
     private lateinit var mAdapter: DebtListAdapter
@@ -34,7 +32,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        mViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         mBinding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_home,
@@ -58,7 +56,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             AddPersonDialogFragment(this).show(parentFragmentManager, "AddPerson")
         }
 
-        homeViewModel.persons.observe(viewLifecycleOwner, {
+        mViewModel.persons.observe(viewLifecycleOwner, {
             mAdapter.setList(it)
         })
 
@@ -89,44 +87,22 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // Delete the item
                 val pos = viewHolder.adapterPosition
-                val item = mAdapter.getElementAtPosition(pos)
+                val partner = mAdapter.getElementAtPosition(pos)
 
                 if (direction == ItemTouchHelper.RIGHT) {
-                    // TODO Start action lend money
                     TransactionDialogFragment(
                         false,
                         object : TransactionDialogFragment.TransactionConfirmedListener {
                             override fun transactionConfirmed(amount: Long, receiving: Boolean) {
-                                // TODO Put in viewModel
-                                homeViewModel.addTransaction(
-                                    Transaction(
-                                        0,
-                                        item.id,
-                                        false,
-                                        -amount,
-                                        TimeHelper.currentDateTimeLocalized,
-                                        ""
-                                    )
-                                )
+                                mViewModel.giveMoney(partner, amount, "")
                             }
                         }).show(parentFragmentManager, "GiveMoney")
                 } else if (direction == ItemTouchHelper.LEFT) {
-                    // TODO Start action receive money
                     TransactionDialogFragment(
                         true,
                         object : TransactionDialogFragment.TransactionConfirmedListener {
                             override fun transactionConfirmed(amount: Long, receiving: Boolean) {
-                                // TODO Put in viewModel
-                                homeViewModel.addTransaction(
-                                    Transaction(
-                                        0,
-                                        item.id,
-                                        true,
-                                        amount,
-                                        TimeHelper.currentDateTimeLocalized,
-                                        ""
-                                    )
-                                )
+                                mViewModel.receiveMoney(partner, amount, "")
                             }
                         }).show(parentFragmentManager, "ReceiveMoney")
                 }
@@ -278,6 +254,6 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
     }
 
     override fun personAdded(name: String) {
-        homeViewModel.addPerson(name)
+        mViewModel.addPerson(name)
     }
 }
