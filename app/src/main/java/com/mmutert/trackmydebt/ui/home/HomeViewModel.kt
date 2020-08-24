@@ -2,10 +2,12 @@ package com.mmutert.trackmydebt.ui.home
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Transaction
+import com.mmutert.trackmydebt.model.PersonModel
 import kotlinx.coroutines.launch
 import org.joda.time.DateTimeZone
 import org.joda.time.LocalDateTime
@@ -17,7 +19,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         AppRepository(AppDatabase.getDatabase(application).dao())
 
     fun addDemoTransaction() {
-        val amount = Random.nextLong()
+        val amount = Random.nextLong(-2000, 2000)
         viewModelScope.launch {
             repository.addTransaction(
                 Transaction(
@@ -31,4 +33,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
     }
+
+    val persons : LiveData<List<PersonModel>> = repository.personModels
 }

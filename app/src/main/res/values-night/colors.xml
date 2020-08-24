@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="debt_item_card_background_positive">#A5D6A7</color>
+    <color name="debt_item_card_background_negative">#EF9A9A</color>
+</resources>

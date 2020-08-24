@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.mmutert.trackmydebt.model.PersonModel
 
 @Dao
 interface AppDao {
@@ -18,6 +19,9 @@ interface AppDao {
 
     @Query("Select * from transactions where partner_id == :personId")
     fun transactionsForPerson(personId: Long) : LiveData<List<Transaction>>
+
+    @Query("Select p.id, p.first_name as firstName, p.second_name as secondName, SUM(t.amount) as sum from persons p LEFT OUTER JOIN transactions t on p.id = t.partner_id GROUP BY p.id")
+    fun getPersonModels() : LiveData<List<PersonModel>>
 
     @get:androidx.room.Transaction
     @get:Query("Select * from persons")

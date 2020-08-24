@@ -1,5 +1,6 @@
 package com.mmutert.trackmydebt.ui.home
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,12 +8,13 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
-import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.databinding.DebtListItemBinding
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
+import com.mmutert.trackmydebt.model.PersonModel
 
 class HomeFragment : Fragment() {
 
@@ -34,24 +36,35 @@ class HomeFragment : Fragment() {
 
         mBinding.rvDebtList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        val debtListAdapter = DebtListAdapter()
+        val debtListAdapter = DebtListAdapter(requireContext())
         debtListAdapter.setList(ArrayList())
         mBinding.rvDebtList.adapter = debtListAdapter
+        mBinding.rvDebtList.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
 
         mBinding.fabAddItem.setOnClickListener {
             // TODO Remove temporary action
             homeViewModel.addDemoTransaction()
         }
 
+        homeViewModel.persons.observe(viewLifecycleOwner, {
+            debtListAdapter.setList(it)
+        })
+
         return mBinding.root
     }
 
-    class DebtListAdapter : RecyclerView.Adapter<DebtListAdapter.DebtListViewHolder>() {
+    class DebtListAdapter(val context: Context) :
+        RecyclerView.Adapter<DebtListAdapter.DebtListViewHolder>() {
 
         // private val mDiffer = AsyncListDiffer(this, DIFF_CALLBACK)
-        private lateinit var list: List<Person>
+        private lateinit var list: List<PersonModel>
 
-        fun setList(list: List<Person>) {
+        fun setList(list: List<PersonModel>) {
             this.list = list
             notifyDataSetChanged()
         }
@@ -59,18 +72,36 @@ class HomeFragment : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebtListViewHolder {
             val inflater = LayoutInflater.from(parent.context)
 
-            return DataBindingUtil.inflate(inflater, R.layout.debt_list_item, parent, false)
+            val binding: DebtListItemBinding =
+                DataBindingUtil.inflate(inflater, R.layout.debt_list_item, parent, false)
+
+            return DebtListViewHolder(binding)
         }
 
         override fun onBindViewHolder(holder: DebtListViewHolder, position: Int) {
-            // TODO
+            val (id, firstName, secondName, sum) = list[position]
+
+            holder.binding.tvAmount.text = "$sum"
+            holder.binding.tvName.text = "$firstName $secondName"
+            when {
+                sum == 0L -> {
+                    holder.binding.debtItemLayout.setBackgroundColor(context.resources.getColor(R.color.white))
+                }
+                sum > 0L -> {
+                    holder.binding.debtItemLayout.setBackgroundColor(context.resources.getColor(R.color.debt_item_card_background_positive))
+                }
+                sum < 0L -> {
+                    holder.binding.debtItemLayout.setBackgroundColor(context.resources.getColor(R.color.debt_item_card_background_negative))
+                }
+            }
         }
 
         override fun getItemCount(): Int {
             return list.size
         }
 
-        class DebtListViewHolder(private val binding : DebtListItemBinding) : RecyclerView.ViewHolder(binding.root)
+        class DebtListViewHolder(val binding: DebtListItemBinding) :
+            RecyclerView.ViewHolder(binding.root)
 
         // companion object {
         //     /**

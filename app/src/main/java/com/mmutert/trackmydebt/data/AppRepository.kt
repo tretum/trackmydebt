@@ -1,6 +1,7 @@
 package com.mmutert.trackmydebt.data
 
 import androidx.lifecycle.LiveData
+import com.mmutert.trackmydebt.model.PersonModel
 
 class AppRepository(private val dao: AppDao) {
 
@@ -23,4 +24,6 @@ class AppRepository(private val dao: AppDao) {
     suspend fun addPerson(p : Person) {
         dao.insertPerson(p)
     }
+
+    val personModels : LiveData<List<PersonModel>> = dao.getPersonModels()
 }
