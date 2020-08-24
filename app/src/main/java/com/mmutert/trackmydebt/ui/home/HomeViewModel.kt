@@ -41,5 +41,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun addTransaction(transaction: Transaction) {
+        viewModelScope.launch {
+            repository.addTransaction(transaction)
+        }
+    }
+
     val persons: LiveData<List<PersonModel>> = repository.personModels
 }

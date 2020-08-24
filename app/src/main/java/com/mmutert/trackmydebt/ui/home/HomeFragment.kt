@@ -1,6 +1,7 @@
 package com.mmutert.trackmydebt.ui.home
 
 import android.content.Context
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,18 +10,24 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.databinding.DebtListItemBinding
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.model.PersonModel
 import com.mmutert.trackmydebt.ui.addperson.AddPersonDialogFragment
+import com.mmutert.trackmydebt.ui.dialogs.TransactionDialogFragment
+import com.mmutert.trackmydebt.util.TimeHelper
 
 class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var mBinding: FragmentHomeBinding
+
+    private lateinit var mAdapter: DebtListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,9 +44,9 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
         mBinding.rvDebtList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        val debtListAdapter = DebtListAdapter(requireContext())
-        debtListAdapter.setList(ArrayList())
-        mBinding.rvDebtList.adapter = debtListAdapter
+        mAdapter = DebtListAdapter(requireContext())
+        mAdapter.setList(ArrayList())
+        mBinding.rvDebtList.adapter = mAdapter
         mBinding.rvDebtList.addItemDecoration(
             DividerItemDecoration(
                 requireContext(),
@@ -48,18 +55,155 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         )
 
         mBinding.fabAddItem.setOnClickListener {
-            // TODO Remove temporary action
-
             AddPersonDialogFragment(this).show(parentFragmentManager, "AddPerson")
-
-            // homeViewModel.addDemoTransaction()
         }
 
         homeViewModel.persons.observe(viewLifecycleOwner, {
-            debtListAdapter.setList(it)
+            mAdapter.setList(it)
         })
 
+        val createSwipeHelper = createSwipeHelper()
+        createSwipeHelper.attachToRecyclerView(mBinding.rvDebtList)
+
         return mBinding.root
+    }
+
+    /**
+     * Creates the ItemTouchHelper that archives items in the item list on swipe to the right.
+     *
+     * @return The item touch helper
+     */
+    private fun createSwipeHelper(): ItemTouchHelper {
+        return ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                // Delete the item
+                val pos = viewHolder.adapterPosition
+                val item = mAdapter.getElementAtPosition(pos)
+
+                if (direction == ItemTouchHelper.RIGHT) {
+                    // TODO Start action lend money
+                    TransactionDialogFragment(
+                        false,
+                        object : TransactionDialogFragment.TransactionConfirmedListener {
+                            override fun transactionConfirmed(amount: Long, receiving: Boolean) {
+                                // TODO Put in viewModel
+                                homeViewModel.addTransaction(
+                                    Transaction(
+                                        0,
+                                        item.id,
+                                        false,
+                                        -amount,
+                                        TimeHelper.currentDateTimeLocalized,
+                                        ""
+                                    )
+                                )
+                            }
+                        }).show(parentFragmentManager, "GiveMoney")
+                } else if (direction == ItemTouchHelper.LEFT) {
+                    // TODO Start action receive money
+                    TransactionDialogFragment(
+                        true,
+                        object : TransactionDialogFragment.TransactionConfirmedListener {
+                            override fun transactionConfirmed(amount: Long, receiving: Boolean) {
+                                // TODO Put in viewModel
+                                homeViewModel.addTransaction(
+                                    Transaction(
+                                        0,
+                                        item.id,
+                                        true,
+                                        amount,
+                                        TimeHelper.currentDateTimeLocalized,
+                                        ""
+                                    )
+                                )
+                            }
+                        }).show(parentFragmentManager, "ReceiveMoney")
+                }
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+
+                if (viewHolder != null) {
+                    val binding = (viewHolder as DebtListAdapter.DebtListViewHolder).binding
+                    val foregroundView: View = binding.listItemForeground
+                    getDefaultUIUtil().onSelected(foregroundView)
+                }
+            }
+
+            override fun onChildDrawOver(
+                c: Canvas, recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float,
+                actionState: Int, isCurrentlyActive: Boolean
+            ) {
+
+                val binding = (viewHolder as DebtListAdapter.DebtListViewHolder).binding
+                val giveMoneyBackground: View = binding.listItemGiveMoneyBackground
+                val receiveMoneyBackground: View = binding.listItemReceiveMoneyBackground
+                when {
+                    dX < 0 -> {
+                        giveMoneyBackground.visibility = View.INVISIBLE
+                        receiveMoneyBackground.visibility = View.VISIBLE
+                    }
+                    dX > 0 -> {
+                        giveMoneyBackground.visibility = View.VISIBLE
+                        receiveMoneyBackground.visibility = View.INVISIBLE
+                    }
+                    else -> {
+                        giveMoneyBackground.visibility = View.INVISIBLE
+                        receiveMoneyBackground.visibility = View.INVISIBLE
+                    }
+                }
+                val foregroundView: View = binding.listItemForeground
+                getDefaultUIUtil().onDrawOver(
+                    c,
+                    recyclerView,
+                    foregroundView,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+            }
+
+            override fun clearView(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ) {
+                val binding = (viewHolder as DebtListAdapter.DebtListViewHolder).binding
+                val foregroundView: View = binding.listItemForeground
+                getDefaultUIUtil().clearView(foregroundView)
+            }
+
+            override fun onChildDraw(
+                c: Canvas, recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float,
+                actionState: Int, isCurrentlyActive: Boolean
+            ) {
+                val binding = (viewHolder as DebtListAdapter.DebtListViewHolder).binding
+                val foregroundView: View = binding.listItemForeground
+                getDefaultUIUtil().onDraw(
+                    c,
+                    recyclerView,
+                    foregroundView,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+            }
+        })
     }
 
     class DebtListAdapter(val context: Context) :
@@ -89,15 +233,19 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             holder.binding.tvName.text = name
             when {
                 sum == 0L -> {
-                    holder.binding.debtItemLayout.setBackgroundColor(context.resources.getColor(R.color.white))
+                    holder.binding.listItemForeground.setBackgroundColor(context.resources.getColor(R.color.white))
                 }
                 sum > 0L -> {
-                    holder.binding.debtItemLayout.setBackgroundColor(context.resources.getColor(R.color.debt_item_card_background_positive))
+                    holder.binding.listItemForeground.setBackgroundColor(context.resources.getColor(R.color.debt_item_card_background_positive))
                 }
                 sum < 0L -> {
-                    holder.binding.debtItemLayout.setBackgroundColor(context.resources.getColor(R.color.debt_item_card_background_negative))
+                    holder.binding.listItemForeground.setBackgroundColor(context.resources.getColor(R.color.debt_item_card_background_negative))
                 }
             }
+        }
+
+        fun getElementAtPosition(position: Int): PersonModel {
+            return list[position]
         }
 
         override fun getItemCount(): Int {

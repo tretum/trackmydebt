@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="debt_item_card_background_positive">#A5D6A7</color>
     <color name="debt_item_card_background_negative">#EF9A9A</color>
+
+    <color name="list_item_delete_background">#E9C34242</color>
+    <color name="list_item_take_background">#C5AA25</color>
+    <color name="list_item_background">#FFFFFF</color>
 </resources>

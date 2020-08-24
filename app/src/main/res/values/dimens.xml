@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="text_input_pad_horizontal">8dp</dimen>
+
+    <dimen name="list_item_swipe_icon_margin_horizontal">10dp</dimen>
+    <dimen name="list_item_card_vertical_margin">4dp</dimen>
+    <dimen name="list_item_card_horizontal_margin">4dp</dimen>
 </resources>
