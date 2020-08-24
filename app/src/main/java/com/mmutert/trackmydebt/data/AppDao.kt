@@ -20,7 +20,7 @@ interface AppDao {
     @Query("Select * from transactions where partner_id == :personId")
     fun transactionsForPerson(personId: Long) : LiveData<List<Transaction>>
 
-    @Query("Select p.id, p.first_name as firstName, p.second_name as secondName, SUM(t.amount) as sum from persons p LEFT OUTER JOIN transactions t on p.id = t.partner_id GROUP BY p.id")
+    @Query("Select p.id, p.name as name, SUM(t.amount) as sum from persons p LEFT OUTER JOIN transactions t on p.id = t.partner_id GROUP BY p.id")
     fun getPersonModels() : LiveData<List<PersonModel>>
 
     @get:androidx.room.Transaction

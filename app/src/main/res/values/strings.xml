@@ -9,4 +9,6 @@
     <string name="theme_value_light" translatable="false">light</string>
     <string name="theme_value_dark" translatable="false">dark</string>
     <string name="theme_value_default" translatable="false">default</string>
+    <string name="dialog_add_person_title">Add Person</string>
+    <string name="dialog_add_person_enter_name_hint">Enter name</string>
 </resources>

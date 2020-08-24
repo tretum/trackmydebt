@@ -15,8 +15,9 @@ import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.databinding.DebtListItemBinding
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.model.PersonModel
+import com.mmutert.trackmydebt.ui.addperson.AddPersonDialogFragment
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var mBinding: FragmentHomeBinding
@@ -48,7 +49,10 @@ class HomeFragment : Fragment() {
 
         mBinding.fabAddItem.setOnClickListener {
             // TODO Remove temporary action
-            homeViewModel.addDemoTransaction()
+
+            AddPersonDialogFragment(this).show(parentFragmentManager, "AddPerson")
+
+            // homeViewModel.addDemoTransaction()
         }
 
         homeViewModel.persons.observe(viewLifecycleOwner, {
@@ -79,10 +83,10 @@ class HomeFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: DebtListViewHolder, position: Int) {
-            val (id, firstName, secondName, sum) = list[position]
+            val (id, name, sum) = list[position]
 
             holder.binding.tvAmount.text = "$sum"
-            holder.binding.tvName.text = "$firstName $secondName"
+            holder.binding.tvName.text = name
             when {
                 sum == 0L -> {
                     holder.binding.debtItemLayout.setBackgroundColor(context.resources.getColor(R.color.white))
@@ -123,5 +127,9 @@ class HomeFragment : Fragment() {
         //             }
         //         }
         // }
+    }
+
+    override fun personAdded(name: String) {
+        homeViewModel.addPerson(name)
     }
 }

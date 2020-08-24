@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
+import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.model.PersonModel
 import kotlinx.coroutines.launch
@@ -34,5 +35,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    val persons : LiveData<List<PersonModel>> = repository.personModels
+    fun addPerson(name: String) {
+        viewModelScope.launch {
+            repository.addPerson(Person(0, name))
+        }
+    }
+
+    val persons: LiveData<List<PersonModel>> = repository.personModels
 }
