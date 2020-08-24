@@ -1,4 +1,4 @@
-package com.mmutert.trackmydebt.ui.addperson
+package com.mmutert.trackmydebt.ui.dialogs
 
 import android.app.Dialog
 import android.content.DialogInterface
