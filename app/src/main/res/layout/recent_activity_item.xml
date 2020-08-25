@@ -7,36 +7,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        tools:text="2020-08-20"
+        tools:text="20:30"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_reason"
         android:textSize="16sp"
         android:id="@+id/tv_transaction_date" />
 
     <TextView
-        tools:text="John Doe"
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@id/tv_transaction_date"
-        app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/tv_name" />
+        app:layout_constraintTop_toTopOf="@+id/tv_transaction_date"
+        app:layout_constraintBottom_toBottomOf="@id/tv_transaction_date"
+        app:layout_constraintEnd_toStartOf="@+id/tv_amount"
+        app:layout_constraintHorizontal_bias="0.0"
+        tools:text="John Doe"/>
 
     <TextView
-        tools:text="10,00€"
+        android:id="@+id/tv_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/tv_amount" />
+        tools:text="10,00€" />
 
     <TextView
-        tools:text="Shopping"
+        android:id="@+id/tv_reason"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -45,6 +50,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_transaction_date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tv_amount"
-        android:id="@+id/tv_reason"
-        app:layout_constraintHorizontal_bias="0.0" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        tools:text="Shopping" />
 </androidx.constraintlayout.widget.ConstraintLayout>

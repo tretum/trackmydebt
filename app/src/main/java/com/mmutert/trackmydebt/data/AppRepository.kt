@@ -6,6 +6,7 @@ import com.mmutert.trackmydebt.model.PersonModel
 class AppRepository(private val dao: AppDao) {
 
     val personAndTransactions: LiveData<List<PersonAndTransactions>> = dao.personAndTransactions
+    val transactionAndPerson: LiveData<List<TransactionAndPerson>> = dao.transactionAndPerson
     val persons : LiveData<List<Person>> = dao.persons
     val transactions : LiveData<List<Transaction>> = dao.transactions
 

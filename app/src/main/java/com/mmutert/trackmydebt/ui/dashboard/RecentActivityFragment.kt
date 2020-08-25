@@ -11,10 +11,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.Transaction
+import com.mmutert.trackmydebt.data.TransactionAndPerson
+import com.mmutert.trackmydebt.databinding.DateItemBinding
 import com.mmutert.trackmydebt.databinding.FragmentRecentActivityBinding
 import com.mmutert.trackmydebt.databinding.RecentActivityItemBinding
 import com.mmutert.trackmydebt.util.FormatHelper
+import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Locale
@@ -24,7 +28,7 @@ class RecentActivityFragment : Fragment() {
     private lateinit var mViewModel: RecentActivityViewModel
     private lateinit var mBinding: FragmentRecentActivityBinding
 
-    private val mAdapter = RecentActivityListAdapter()
+    private lateinit var mAdapter: RecentActivityListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +45,7 @@ class RecentActivityFragment : Fragment() {
             false
         )
 
+        mAdapter =  RecentActivityListAdapter(mViewModel)
         mBinding.rvRecentActivityList.adapter = mAdapter
         mBinding.rvRecentActivityList.layoutManager = LinearLayoutManager(
             requireContext(),
@@ -54,20 +59,45 @@ class RecentActivityFragment : Fragment() {
             )
         )
 
-        mViewModel.transactions.observe(viewLifecycleOwner, { mAdapter.setTransactions(it) })
+        mViewModel.transactionAndPerson.observe(viewLifecycleOwner, { mAdapter.setTransactions(it) })
 
         return mBinding.root
     }
 
-    class RecentActivityListAdapter :
+    class RecentActivityListAdapter(val viewModel : RecentActivityViewModel) :
         RecyclerView.Adapter<RecentActivityListAdapter.RecentActivityListViewHolder>() {
 
-        var transactions: List<Transaction> = ArrayList()
+        private val DATE: Int = 1
+        private val TRANSACTION = 2
+
+        sealed class ListEntry {
+            class TransactionEntry(val transaction: TransactionAndPerson) : ListEntry()
+            class DateEntry(val date: LocalDate) : ListEntry()
+        }
+
+        var entries: List<ListEntry> = ArrayList()
             private set
 
-        fun setTransactions(transactions: List<Transaction>) {
-            this.transactions = transactions
+        fun setTransactions(transactions: List<TransactionAndPerson>) {
+            val dates: List<LocalDate> = transactions.map { it.transaction.date.toLocalDate() }.distinctBy {
+                it.toString()
+            }
+            val result: ArrayList<ListEntry> = ArrayList()
+            dates.forEach { date ->
+                result.add(ListEntry.DateEntry(date))
+                transactions.filter { it.transaction.date.toLocalDate().isEqual(date) }.forEach { t ->
+                    result.add(ListEntry.TransactionEntry(t))
+                }
+            }
+            this.entries = result
             notifyDataSetChanged()
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return when (entries[position]) {
+                is ListEntry.TransactionEntry -> TRANSACTION
+                is ListEntry.DateEntry -> DATE
+            }
         }
 
         override fun onCreateViewHolder(
@@ -75,31 +105,70 @@ class RecentActivityFragment : Fragment() {
             viewType: Int
         ): RecentActivityListViewHolder {
             val inflater = LayoutInflater.from(parent.context)
-            val binding = RecentActivityItemBinding.inflate(inflater, parent, false)
-            return RecentActivityListViewHolder(binding)
+
+            when (viewType) {
+                DATE -> {
+                    val inflate: DateItemBinding =
+                        DataBindingUtil.inflate(inflater, R.layout.date_item, parent, false)
+                    return RecentActivityListViewHolder.DateViewHolder(inflate)
+                }
+                TRANSACTION -> {
+                    val binding = RecentActivityItemBinding.inflate(inflater, parent, false)
+                    return RecentActivityListViewHolder.TransactionViewHolder(binding)
+                }
+                else -> return RecentActivityListViewHolder.DateViewHolder(
+                    DataBindingUtil.inflate(
+                        inflater,
+                        R.layout.date_item,
+                        parent,
+                        false
+                    )
+                )
+            }
         }
 
         override fun onBindViewHolder(holder: RecentActivityListViewHolder, position: Int) {
-            val (id, partnerId, received, amount, date, reason) = transactions[position]
+            when (holder) {
+                is RecentActivityListViewHolder.TransactionViewHolder -> {
+                    val listEntry = (entries[position] as ListEntry.TransactionEntry).transaction
+                    val (id, partnerId, received, amount, date, reason) = listEntry.transaction
 
-            val dateFormatter: DateTimeFormatter =
-                DateTimeFormat.longDate().withLocale(Locale.getDefault())
+                    val dateFormatter: DateTimeFormatter =
+                        DateTimeFormat.shortTime().withLocale(Locale.getDefault())
+                    holder.mBinding.tvTransactionDate.text = dateFormatter.print(date)
+                    holder.mBinding.tvAmount.text = FormatHelper.printAsCurrency(amount)
+                    if (reason.isBlank()) {
+                        holder.mBinding.tvReason.visibility = View.GONE
+                    } else {
+                        holder.mBinding.tvReason.visibility = View.VISIBLE
+                        holder.mBinding.tvReason.text = reason
+                    }
+                    // TODO Replace with actual name
+                    val (_, name) = listEntry.person
+                    holder.mBinding.tvName.text = name
 
-            holder.mBinding.tvAmount.text = FormatHelper.printAsCurrency(amount)
-            holder.mBinding.tvReason.text = reason
-            holder.mBinding.tvTransactionDate.text = dateFormatter.print(date)
-            // TODO Replace with actual name
-            holder.mBinding.tvName.text = "$partnerId"
+                    // TODO Change color if received or sent?
+                }
+                is RecentActivityListViewHolder.DateViewHolder -> {
+                    val dateFormatter: DateTimeFormatter =
+                        DateTimeFormat.longDate().withLocale(Locale.getDefault())
 
-            // TODO Change color if received or sent?
+                    holder.binding.tvTransactionDate.text =
+                        dateFormatter.print((entries[position] as ListEntry.DateEntry).date)
+                }
+            }
         }
 
         override fun getItemCount(): Int {
-            return transactions.size
+            return entries.size
         }
 
-        class RecentActivityListViewHolder(
-            val mBinding: RecentActivityItemBinding
-        ) : RecyclerView.ViewHolder(mBinding.root)
+        sealed class RecentActivityListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            class TransactionViewHolder(val mBinding: RecentActivityItemBinding) :
+                RecentActivityListViewHolder(mBinding.root)
+
+            class DateViewHolder(val binding: DateItemBinding) :
+                RecentActivityListViewHolder(binding.root)
+        }
     }
 }

@@ -27,6 +27,10 @@ interface AppDao {
     @get:Query("Select * from persons")
     val personAndTransactions: LiveData<List<PersonAndTransactions>>
 
+    @get:androidx.room.Transaction
+    @get:Query("Select * from transactions")
+    val transactionAndPerson: LiveData<List<TransactionAndPerson>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPerson(p: Person)
 
@@ -38,4 +42,7 @@ interface AppDao {
 
     @Delete
     suspend fun deleteTransaction(t: Transaction)
+
+    @Query("Select * from persons p where p.id = :id")
+    fun getPerson(id: Long): Person
 }
