@@ -41,7 +41,7 @@ class TransactionDialogFragment(
                     }
                 } else {
                     try {
-                        amountInput.toLong()
+                        amountInput.toLong() * 100
                     } catch (e: NumberFormatException) {
                         0
                     }

@@ -14,10 +14,10 @@ interface AppDao {
     @get:Query("Select * from persons")
     val persons : LiveData<List<Person>>
 
-    @get:Query("Select * from transactions")
+    @get:Query("Select * from transactions ORDER BY datetime(date) DESC")
     val transactions : LiveData<List<Transaction>>
 
-    @Query("Select * from transactions where partner_id == :personId")
+    @Query("Select * from transactions where partner_id == :personId ORDER BY datetime(date) DESC")
     fun transactionsForPerson(personId: Long) : LiveData<List<Transaction>>
 
     @Query("Select p.id, p.name as name, -SUM(t.amount) as sum from persons p LEFT OUTER JOIN transactions t on p.id = t.partner_id GROUP BY p.id")
