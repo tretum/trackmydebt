@@ -16,7 +16,7 @@ class TransactionDialogFragment(
 ) : DialogFragment() {
 
     interface TransactionConfirmedListener {
-        fun transactionConfirmed(amount: Long, receiving: Boolean)
+        fun transactionConfirmed(amount: Long, receiving: Boolean, reason: String)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -46,7 +46,8 @@ class TransactionDialogFragment(
                         0
                     }
                 }
-                listener.transactionConfirmed(amount, receiving)
+                val reason : String = binding.etReasonInput.text.toString()
+                listener.transactionConfirmed(amount, receiving, reason)
             }
             .setNegativeButton(android.R.string.cancel) { dialog, which -> }
             .create()

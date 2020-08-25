@@ -105,16 +105,24 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                     TransactionDialogFragment(
                         false,
                         object : TransactionDialogFragment.TransactionConfirmedListener {
-                            override fun transactionConfirmed(amount: Long, receiving: Boolean) {
-                                mViewModel.giveMoney(partner, amount, "")
+                            override fun transactionConfirmed(
+                                amount: Long,
+                                receiving: Boolean,
+                                reason: String
+                            ) {
+                                mViewModel.giveMoney(partner, amount, reason)
                             }
                         }).show(parentFragmentManager, "GiveMoney")
                 } else if (direction == ItemTouchHelper.LEFT) {
                     TransactionDialogFragment(
                         true,
                         object : TransactionDialogFragment.TransactionConfirmedListener {
-                            override fun transactionConfirmed(amount: Long, receiving: Boolean) {
-                                mViewModel.receiveMoney(partner, amount, "")
+                            override fun transactionConfirmed(
+                                amount: Long,
+                                receiving: Boolean,
+                                reason: String
+                            ) {
+                                mViewModel.receiveMoney(partner, amount, reason)
                             }
                         }).show(parentFragmentManager, "ReceiveMoney")
                 }

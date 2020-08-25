@@ -23,6 +23,7 @@
                 android:id="@+id/dialog_add_person_title" />
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_amount_input"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="16dp"
@@ -43,6 +44,31 @@
                     android:paddingRight="@dimen/text_input_pad_horizontal"
                     android:paddingTop="12dp"
                     android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:layout_marginHorizontal="16dp"
+                app:hintAnimationEnabled="false"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/til_amount_input"
+                app:hintEnabled="false">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="2"
+                    android:id="@+id/et_reason_input"
+                    android:hint="Enter reason (optional)"
+                    android:inputType="textMultiLine"
+                    android:paddingStart="@dimen/text_input_pad_horizontal"
+                    android:paddingLeft="@dimen/text_input_pad_horizontal"
+                    android:paddingRight="@dimen/text_input_pad_horizontal"
+                    android:paddingTop="12dp"
+                    />
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
