@@ -15,7 +15,7 @@ class PersonDetailViewModel(application: Application) : AndroidViewModel(applica
     private val repository: AppRepository =
         AppRepository(AppDatabase.getDatabase(application).dao())
 
-    private val selection: MutableLiveData<Person> = MutableLiveData()
+    val selection: MutableLiveData<Person> = MutableLiveData()
 
     fun selectPerson(p: Person) {
         selection.value = p
@@ -23,4 +23,13 @@ class PersonDetailViewModel(application: Application) : AndroidViewModel(applica
 
     val transactions: LiveData<List<Transaction>> =
         Transformations.switchMap(selection) { person -> repository.getTransactions(person) }
+
+    val sum : LiveData<Long> = Transformations.map(transactions) {
+        // -1 * it.sumOf { transaction -> transaction.amount }
+        var sum = 0L
+        it.forEach {
+            sum += it.amount
+        }
+        sum
+    }
 }

@@ -36,9 +36,14 @@ class PersonDetailFragment : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_person_detail, container, false)
 
         mViewModel = ViewModelProvider(this).get(PersonDetailViewModel::class.java)
+
         val sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.selectedPerson.observe(viewLifecycleOwner) {
             person -> mViewModel.selectPerson(person)
+        }
+        mBinding.viewModel = mViewModel
+        mViewModel.sum.observe(viewLifecycleOwner){
+            mBinding.formattedSum = "${-it}"
         }
 
 
