@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.databinding.PersonDetailItemBinding
+import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Locale
@@ -31,7 +32,8 @@ class PersonDetailAdapter : RecyclerView.Adapter<PersonDetailAdapter.ViewHolder>
         val dateFormatter: DateTimeFormatter =
             DateTimeFormat.longDate().withLocale(Locale.getDefault())
 
-        holder.binding.tvAmount.text = "$amount"
+        val printAsCurrency = FormatHelper.printAsCurrency(amount)
+        holder.binding.tvAmount.text = printAsCurrency
         holder.binding.tvTransactionDate.text = dateFormatter.print(date)
         holder.binding.tvReason.text = reason
     }

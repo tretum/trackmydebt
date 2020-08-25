@@ -13,6 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.databinding.FragmentPersonDetailBinding
 import com.mmutert.trackmydebt.ui.home.SharedViewModel
+import com.mmutert.trackmydebt.util.FormatHelper
+import java.text.NumberFormat
+import java.util.Currency
+import java.util.Locale
 
 class PersonDetailFragment : Fragment() {
 
@@ -42,8 +46,10 @@ class PersonDetailFragment : Fragment() {
             person -> mViewModel.selectPerson(person)
         }
         mBinding.viewModel = mViewModel
+
         mViewModel.sum.observe(viewLifecycleOwner){
-            mBinding.formattedSum = "${-it}"
+            val formattedSum = FormatHelper.printAsCurrency(-it)
+            mBinding.formattedSum = formattedSum
         }
 
 

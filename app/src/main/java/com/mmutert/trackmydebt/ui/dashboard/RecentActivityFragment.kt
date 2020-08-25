@@ -14,6 +14,7 @@ import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.databinding.FragmentRecentActivityBinding
 import com.mmutert.trackmydebt.databinding.RecentActivityItemBinding
+import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Locale
@@ -84,7 +85,7 @@ class RecentActivityFragment : Fragment() {
             val dateFormatter: DateTimeFormatter =
                 DateTimeFormat.longDate().withLocale(Locale.getDefault())
 
-            holder.mBinding.tvAmount.text = "$amount"
+            holder.mBinding.tvAmount.text = FormatHelper.printAsCurrency(amount)
             holder.mBinding.tvReason.text = reason
             holder.mBinding.tvTransactionDate.text = dateFormatter.print(date)
             // TODO Replace with actual name

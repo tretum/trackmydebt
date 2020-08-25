@@ -21,6 +21,7 @@ import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.model.PersonModel
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
 import com.mmutert.trackmydebt.ui.dialogs.TransactionDialogFragment
+import com.mmutert.trackmydebt.util.FormatHelper
 
 class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
@@ -216,7 +217,8 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         override fun onBindViewHolder(holder: DebtListViewHolder, position: Int) {
             val (id, name, sum) = list[position]
 
-            holder.binding.tvAmount.text = "$sum"
+            val printAsCurrency = FormatHelper.printAsCurrency(sum)
+            holder.binding.tvAmount.text = printAsCurrency
             holder.binding.tvName.text = name
             when {
                 sum == 0L -> {
