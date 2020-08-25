@@ -28,7 +28,7 @@ interface AppDao {
     val personAndTransactions: LiveData<List<PersonAndTransactions>>
 
     @get:androidx.room.Transaction
-    @get:Query("Select * from transactions")
+    @get:Query("Select * from transactions ORDER BY datetime(date) DESC")
     val transactionAndPerson: LiveData<List<TransactionAndPerson>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
