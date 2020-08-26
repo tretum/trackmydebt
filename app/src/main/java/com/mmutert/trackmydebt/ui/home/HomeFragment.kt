@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Person
-import com.mmutert.trackmydebt.databinding.DebtListItemBinding
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
+import com.mmutert.trackmydebt.databinding.ItemDebtListBinding
 import com.mmutert.trackmydebt.model.PersonModel
 import com.mmutert.trackmydebt.ui.BottomSpaceDecoration
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
@@ -244,8 +244,8 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebtListViewHolder {
             val inflater = LayoutInflater.from(parent.context)
 
-            val binding: DebtListItemBinding =
-                DataBindingUtil.inflate(inflater, R.layout.debt_list_item, parent, false)
+            val binding: ItemDebtListBinding =
+                DataBindingUtil.inflate(inflater, R.layout.item_debt_list, parent, false)
 
             return DebtListViewHolder(binding)
         }
@@ -281,7 +281,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             return list.size
         }
 
-        class DebtListViewHolder(val binding: DebtListItemBinding) :
+        class DebtListViewHolder(val binding: ItemDebtListBinding) :
             RecyclerView.ViewHolder(binding.root)
 
         interface ListItemClickListener {

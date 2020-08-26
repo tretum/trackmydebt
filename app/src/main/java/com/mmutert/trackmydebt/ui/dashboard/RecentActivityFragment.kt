@@ -11,12 +11,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
-import com.mmutert.trackmydebt.data.Person
-import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.data.TransactionAndPerson
-import com.mmutert.trackmydebt.databinding.DateItemBinding
 import com.mmutert.trackmydebt.databinding.FragmentRecentActivityBinding
-import com.mmutert.trackmydebt.databinding.RecentActivityItemBinding
+import com.mmutert.trackmydebt.databinding.ItemDateBinding
+import com.mmutert.trackmydebt.databinding.ItemRecentActivityBinding
 import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
@@ -108,18 +106,18 @@ class RecentActivityFragment : Fragment() {
 
             when (viewType) {
                 DATE -> {
-                    val inflate: DateItemBinding =
-                        DataBindingUtil.inflate(inflater, R.layout.date_item, parent, false)
+                    val inflate: ItemDateBinding =
+                        DataBindingUtil.inflate(inflater, R.layout.item_date, parent, false)
                     return RecentActivityListViewHolder.DateViewHolder(inflate)
                 }
                 TRANSACTION -> {
-                    val binding = RecentActivityItemBinding.inflate(inflater, parent, false)
+                    val binding = ItemRecentActivityBinding.inflate(inflater, parent, false)
                     return RecentActivityListViewHolder.TransactionViewHolder(binding)
                 }
                 else -> return RecentActivityListViewHolder.DateViewHolder(
                     DataBindingUtil.inflate(
                         inflater,
-                        R.layout.date_item,
+                        R.layout.item_date,
                         parent,
                         false
                     )
@@ -164,10 +162,10 @@ class RecentActivityFragment : Fragment() {
         }
 
         sealed class RecentActivityListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            class TransactionViewHolder(val mBinding: RecentActivityItemBinding) :
+            class TransactionViewHolder(val mBinding: ItemRecentActivityBinding) :
                 RecentActivityListViewHolder(mBinding.root)
 
-            class DateViewHolder(val binding: DateItemBinding) :
+            class DateViewHolder(val binding: ItemDateBinding) :
                 RecentActivityListViewHolder(binding.root)
         }
     }

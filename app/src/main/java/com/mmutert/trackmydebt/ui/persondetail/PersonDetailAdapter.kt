@@ -7,8 +7,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Transaction
-import com.mmutert.trackmydebt.databinding.DateItemBinding
-import com.mmutert.trackmydebt.databinding.PersonDetailItemBinding
+import com.mmutert.trackmydebt.databinding.ItemDateBinding
+import com.mmutert.trackmydebt.databinding.ItemPersonDetailBinding
 import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
@@ -47,13 +47,13 @@ class PersonDetailAdapter : RecyclerView.Adapter<PersonDetailAdapter.PersonDetai
 
         return when (viewType) {
             DATE -> {
-                val binding : DateItemBinding = DataBindingUtil.inflate(inflater, R.layout.date_item, parent, false)
+                val binding : ItemDateBinding = DataBindingUtil.inflate(inflater, R.layout.item_date, parent, false)
                 PersonDetailViewHolder.DateViewHolder(binding)
             }
             else -> {
-                val binding: PersonDetailItemBinding = DataBindingUtil.inflate(
+                val binding: ItemPersonDetailBinding = DataBindingUtil.inflate(
                     inflater,
-                    R.layout.person_detail_item,
+                    R.layout.item_person_detail,
                     parent,
                     false
                 )
@@ -90,10 +90,10 @@ class PersonDetailAdapter : RecyclerView.Adapter<PersonDetailAdapter.PersonDetai
     }
 
     sealed class PersonDetailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        class TransactionViewHolder(val mBinding: PersonDetailItemBinding) :
+        class TransactionViewHolder(val mBinding: ItemPersonDetailBinding) :
             PersonDetailViewHolder(mBinding.root)
 
-        class DateViewHolder(val mBinding: DateItemBinding) :
+        class DateViewHolder(val mBinding: ItemDateBinding) :
             PersonDetailViewHolder(mBinding.root)
     }
 }

@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     app:layoutManager="LinearLayoutManager"
                     tools:context=".ui.persondetail.PersonDetailFragment"
-                    tools:listitem="@layout/person_detail_item" />
+                    tools:listitem="@layout/item_person_detail" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
