@@ -4,6 +4,17 @@
     <string name="title_dashboard">Recent Activity</string>
     <string name="title_notifications">Notifications</string>
 
+    <!-- About fragment -->
+    <string name="fragment_about_licenses_header_title">Third-Party Libraries and Licenses</string>
+    <string name="fragment_about_links_header_title">Links</string>
+    <string name="fragment_about_send_feedback_button_label">Send feedback</string>
+    <string name="fragment_about_view_source_button_label">View source code on Github</string>
+    <string name="fragment_about_bug_report_button_label">Report a bug or request a feature</string>
+    <string name="fragment_about_joda_time_button_label" translatable="false">Joda-Time</string>
+    <string name="fragment_about_version_text">Version %s</string>
+    <string name="support_email" translatable="false">contact@michaelmutert.com</string>
+    <string name="support_email_subject" translatable="false">Track My Debt Feedback</string>
+    <string name="github_repository_url" translatable="false">https://github.com/tretum/trackmydebt</string>
 
     <string name="pref_night_mode_key">pref_night_mode_key</string>
     <string name="theme_value_light" translatable="false">light</string>
@@ -11,4 +22,7 @@
     <string name="theme_value_default" translatable="false">default</string>
     <string name="dialog_add_person_title">Add Person</string>
     <string name="dialog_add_person_enter_name_hint">Enter name</string>
+    <string name="menu_item_about_title">About</string>
+    <string name="developer_name" translatable="false">Michael Mutert</string>
+    <string name="joda_time_url">https://www.joda.org/joda-time/</string>
 </resources>

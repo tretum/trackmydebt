@@ -7,4 +7,7 @@
     <dimen name="list_item_swipe_icon_margin_horizontal">10dp</dimen>
     <dimen name="list_item_card_vertical_margin">4dp</dimen>
     <dimen name="list_item_card_horizontal_margin">4dp</dimen>
+
+    <dimen name="about_section_header_text_size">16sp</dimen>
+    <dimen name="about_entry_text_size">18sp</dimen>
 </resources>

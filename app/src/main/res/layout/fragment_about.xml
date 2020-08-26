@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/iv_about_app_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:padding="8dp"
+                    android:textAlignment="center"
+                    android:textSize="24sp" />
+
+                <TextView
+                    android:id="@+id/tv_developer_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/developer_name"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/tv_about_version"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    tools:text="Version"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider6"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="8dp"
+                android:visibility="visible"
+                android:background="?android:attr/listDivider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_about_links_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_about_links_header_title"
+                    android:layout_marginBottom="6dp"
+                    android:textSize="@dimen/about_section_header_text_size" />
+
+                <TextView
+                    android:id="@+id/tv_about_github"
+                    android:drawableStart="@drawable/ic_brand_github_24px"
+                    android:text="@string/fragment_about_view_source_button_label"
+                    style="@style/fragment_about_list_entry" />
+
+                <TextView
+                    android:id="@+id/tv_about_feedback"
+                    android:drawableStart="@drawable/ic_baseline_mail_outline_24"
+                    android:text="@string/fragment_about_send_feedback_button_label"
+                    style="@style/fragment_about_list_entry" />
+
+                <TextView
+                    android:id="@+id/tv_about_report_bug"
+                    android:drawableStart="@drawable/ic_bug_24px"
+                    android:text="@string/fragment_about_bug_report_button_label"
+                    style="@style/fragment_about_list_entry" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider7"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginVertical="8dp"
+                android:background="?android:attr/listDivider" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_about_licenses_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/about_section_header_text_size"
+                    android:text="@string/fragment_about_licenses_header_title" />
+
+                <TextView
+                    android:id="@+id/tv_about_joda_time"
+                    style="@style/fragment_about_list_entry"
+                    android:text="@string/fragment_about_joda_time_button_label" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</layout>
