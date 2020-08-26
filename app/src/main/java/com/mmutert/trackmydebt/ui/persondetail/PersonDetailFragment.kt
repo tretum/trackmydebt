@@ -55,7 +55,7 @@ class PersonDetailFragment : Fragment() {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
             }
-            adapter = PersonDetailAdapter()
+            adapter = PersonDetailAdapter(requireContext())
 
             mViewModel.transactions.observe(
                 viewLifecycleOwner,

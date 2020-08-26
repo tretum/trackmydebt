@@ -1,5 +1,6 @@
 package com.mmutert.trackmydebt.ui.persondetail
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PersonDetailAdapter : RecyclerView.Adapter<PersonDetailAdapter.PersonDetailViewHolder>() {
+class PersonDetailAdapter(val context: Context) : RecyclerView.Adapter<PersonDetailAdapter.PersonDetailViewHolder>() {
 
     var entries: List<ListEntry> = ArrayList()
 
@@ -68,7 +69,10 @@ class PersonDetailAdapter : RecyclerView.Adapter<PersonDetailAdapter.PersonDetai
                 val binding = (holder as PersonDetailViewHolder.TransactionViewHolder).mBinding
                 val printAsCurrency = FormatHelper.printAsCurrency(entry.transaction.amount)
                 binding.tvAmount.text = printAsCurrency
-                binding.tvReason.text = entry.transaction.reason
+                binding.tvReason.text = when(entry.transaction.reason.isBlank()) {
+                    true -> context.getString(R.string.no_reason)
+                    false -> entry.transaction.reason
+                }
             }
             is ListEntry.DateEntry -> {
                 val binding = (holder as PersonDetailViewHolder.DateViewHolder).mBinding

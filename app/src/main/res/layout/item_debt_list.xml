@@ -5,75 +5,110 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/list_item_give_money_background"
             android:visibility="invisible"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/list_item_delete_background">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/list_item_delete_icon"
-                android:text="Give\nMoney"
-                android:layout_alignParentStart="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/list_item_swipe_icon_margin_horizontal"
-                android:layout_marginEnd="@dimen/list_item_swipe_icon_margin_horizontal"/>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/list_item_give_money_card"
+                app:cardBackgroundColor="@color/list_item_delete_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                style="@style/Card">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/list_item_delete_icon"
+                        android:text="Give\nMoney"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/list_item_swipe_icon_margin_horizontal"
+                        android:layout_marginEnd="@dimen/list_item_swipe_icon_margin_horizontal" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/list_item_receive_money_background"
             android:visibility="invisible"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/list_item_take_background">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/list_item_take_icon"
-                android:text="Receive\nMoney"
-                android:layout_alignParentEnd="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/list_item_swipe_icon_margin_horizontal"
-                android:layout_marginEnd="@dimen/list_item_swipe_icon_margin_horizontal" />
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/list_item_receive_money_card"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="@color/list_item_take_background"
+                style="@style/Card">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/list_item_take_icon"
+                        android:text="Receive\nMoney"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/list_item_swipe_icon_margin_horizontal"
+                        android:layout_marginEnd="@dimen/list_item_swipe_icon_margin_horizontal" />
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
         </RelativeLayout>
 
         <RelativeLayout
+            android:visibility="visible"
             android:id="@+id/list_item_foreground"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/list_item_foreground_card"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                style="@style/Card">
 
-                <TextView
-                    tools:text="John Doe"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tv_name"
-                    android:textSize="18sp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:padding="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    tools:text="5,63€"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/tv_amount"
-                    android:textSize="18sp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        tools:text="John Doe"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_name"
+                        android:textSize="18sp"
+                        android:layout_marginEnd="16dp"
+                        app:layout_constraintEnd_toStartOf="@id/tv_amount"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <TextView
+                        tools:text="5,63€"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_amount"
+                        android:textSize="18sp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
         </RelativeLayout>
     </FrameLayout>
 </layout>

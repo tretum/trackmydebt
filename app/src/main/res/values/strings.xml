@@ -25,4 +25,5 @@
     <string name="menu_item_about_title">About</string>
     <string name="developer_name" translatable="false">Michael Mutert</string>
     <string name="joda_time_url">https://www.joda.org/joda-time/</string>
+    <string name="no_reason">(No reason given)</string>
 </resources>

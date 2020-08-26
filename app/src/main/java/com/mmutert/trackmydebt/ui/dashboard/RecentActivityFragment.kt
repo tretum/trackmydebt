@@ -50,12 +50,6 @@ class RecentActivityFragment : Fragment() {
             LinearLayoutManager.VERTICAL,
             false
         )
-        mBinding.rvRecentActivityList.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
-        )
 
         mViewModel.transactionAndPerson.observe(viewLifecycleOwner, { mAdapter.setTransactions(it) })
 

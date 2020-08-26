@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.onNavDestinationSelected
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,21 +59,16 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         mBinding.rvDebtList.addItemDecoration(BottomSpaceDecoration(200))
         mBinding.rvDebtList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        mAdapter = DebtListAdapter(requireContext(), object: DebtListAdapter.ListItemClickListener {
-            override fun listItemClicked(p: Person) {
-                mSharedViewModel.selectPerson(p)
-                val fragmentPersonDetail = HomeFragmentDirections.fragmentPersonDetail()
-                Navigation.findNavController(mBinding.root).navigate(fragmentPersonDetail)
-            }
-        })
+        mAdapter =
+            DebtListAdapter(requireContext(), object : DebtListAdapter.ListItemClickListener {
+                override fun listItemClicked(p: Person) {
+                    mSharedViewModel.selectPerson(p)
+                    val fragmentPersonDetail = HomeFragmentDirections.fragmentPersonDetail()
+                    Navigation.findNavController(mBinding.root).navigate(fragmentPersonDetail)
+                }
+            })
         mAdapter.setList(ArrayList())
         mBinding.rvDebtList.adapter = mAdapter
-        mBinding.rvDebtList.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
-        )
 
         mBinding.fabAddItem.setOnClickListener {
             AddPersonDialogFragment(this).show(parentFragmentManager, "AddPerson")
@@ -105,7 +99,6 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
     }
 
-
     /**
      * Creates the ItemTouchHelper that archives items in the item list on swipe to the right.
      *
@@ -125,7 +118,6 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                // Delete the item
                 val pos = viewHolder.adapterPosition
                 val partner = mAdapter.getElementAtPosition(pos)
 
@@ -154,6 +146,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                             }
                         }).show(parentFragmentManager, "ReceiveMoney")
                 }
+                mAdapter.notifyItemChanged(pos)
             }
 
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
@@ -258,13 +251,25 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             holder.binding.tvName.text = name
             when {
                 sum == 0L -> {
-                    holder.binding.listItemForeground.setBackgroundColor(context.resources.getColor(R.color.white))
+                    holder.binding.listItemForegroundCard.setCardBackgroundColor(
+                        context.resources.getColor(
+                            R.color.white
+                        )
+                    )
                 }
                 sum > 0L -> {
-                    holder.binding.listItemForeground.setBackgroundColor(context.resources.getColor(R.color.debt_item_card_background_positive))
+                    holder.binding.listItemForegroundCard.setCardBackgroundColor(
+                        context.resources.getColor(
+                            R.color.debt_item_card_background_positive
+                        )
+                    )
                 }
                 sum < 0L -> {
-                    holder.binding.listItemForeground.setBackgroundColor(context.resources.getColor(R.color.debt_item_card_background_negative))
+                    holder.binding.listItemForegroundCard.setCardBackgroundColor(
+                        context.resources.getColor(
+                            R.color.debt_item_card_background_negative
+                        )
+                    )
                 }
             }
 
