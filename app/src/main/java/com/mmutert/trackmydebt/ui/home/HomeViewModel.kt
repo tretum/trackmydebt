@@ -20,22 +20,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: AppRepository =
         AppRepository(AppDatabase.getDatabase(application).dao())
 
-    fun addDemoTransaction() {
-        val amount = Random.nextLong(-2000, 2000)
-        viewModelScope.launch {
-            repository.addTransaction(
-                Transaction(
-                    0,
-                    1,
-                    true,
-                    amount,
-                    LocalDateTime.now(DateTimeZone.getDefault()),
-                    "Some Reason $amount"
-                )
-            )
-        }
-    }
-
     fun addPerson(name: String) {
         viewModelScope.launch {
             repository.addPerson(Person(0, name))

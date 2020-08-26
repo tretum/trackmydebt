@@ -9,6 +9,8 @@ class AppRepository(private val dao: AppDao) {
     val transactionAndPerson: LiveData<List<TransactionAndPerson>> = dao.transactionAndPerson
     val persons : LiveData<List<Person>> = dao.persons
     val transactions : LiveData<List<Transaction>> = dao.transactions
+    val personModels : LiveData<List<PersonModel>> = dao.getPersonModels()
+    val balance : LiveData<Long> = dao.balance
 
     fun getTransactions(p: Person): LiveData<List<Transaction>> {
         return dao.transactionsForPerson(p.id)
@@ -30,5 +32,5 @@ class AppRepository(private val dao: AppDao) {
         dao.insertPerson(p)
     }
 
-    val personModels : LiveData<List<PersonModel>> = dao.getPersonModels()
+
 }
