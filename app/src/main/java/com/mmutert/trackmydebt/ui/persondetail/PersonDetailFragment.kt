@@ -9,14 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.databinding.FragmentPersonDetailBinding
 import com.mmutert.trackmydebt.ui.home.SharedViewModel
 import com.mmutert.trackmydebt.util.FormatHelper
-import java.text.NumberFormat
-import java.util.Currency
-import java.util.Locale
 
 class PersonDetailFragment : Fragment() {
 
@@ -63,7 +59,7 @@ class PersonDetailFragment : Fragment() {
 
             mViewModel.transactions.observe(
                 viewLifecycleOwner,
-                { (this.adapter as PersonDetailAdapter).transactions = it })
+                { (this.adapter as PersonDetailAdapter).setTransactions(it) })
         }
         return mBinding.root
     }
