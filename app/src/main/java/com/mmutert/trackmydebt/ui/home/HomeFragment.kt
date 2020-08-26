@@ -24,6 +24,7 @@ import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.databinding.DebtListItemBinding
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.model.PersonModel
+import com.mmutert.trackmydebt.ui.BottomSpaceDecoration
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
 import com.mmutert.trackmydebt.ui.dialogs.TransactionDialogFragment
 import com.mmutert.trackmydebt.util.FormatHelper
@@ -56,6 +57,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             false
         )
 
+        mBinding.rvDebtList.addItemDecoration(BottomSpaceDecoration(200))
         mBinding.rvDebtList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         mAdapter = DebtListAdapter(requireContext(), object: DebtListAdapter.ListItemClickListener {
