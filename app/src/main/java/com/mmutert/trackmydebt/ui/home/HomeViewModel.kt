@@ -19,6 +19,8 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: AppRepository =
         AppRepository(AppDatabase.getDatabase(application).dao())
+    val balance: LiveData<Long> = repository.balance
+    val persons: LiveData<List<PersonModel>> = repository.personModels
 
     fun addPerson(name: String) {
         viewModelScope.launch {
@@ -40,5 +42,4 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         addTransaction(Transaction(0, partner.id, true, amount, TimeHelper.currentDateTimeLocalized, reason))
     }
 
-    val persons: LiveData<List<PersonModel>> = repository.personModels
 }

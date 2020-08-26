@@ -82,6 +82,10 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             mAdapter.setList(it)
         })
 
+        mViewModel.balance.observe(viewLifecycleOwner) {
+            mBinding.tvOverallBalanceValue.text = FormatHelper.printAsCurrency(it)
+        }
+
         val createSwipeHelper = createSwipeHelper()
         createSwipeHelper.attachToRecyclerView(mBinding.rvDebtList)
 

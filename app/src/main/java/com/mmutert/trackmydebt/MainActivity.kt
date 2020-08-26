@@ -1,6 +1,8 @@
 package com.mmutert.trackmydebt
 
 import android.os.Bundle
+import android.view.Gravity
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
@@ -8,6 +10,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.transition.Slide
+import androidx.transition.TransitionManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -34,6 +38,26 @@ class MainActivity : AppCompatActivity() {
 
         setupActionBarWithNavController(navController, mAppBarConfiguration)
         navView.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { controller, destination, bundle ->
+            val id = destination.id
+            if(id == R.id.personDetailFragment) {
+                val slide = Slide(Gravity.BOTTOM)
+                slide.duration = 300
+                slide.addTarget(navView)
+
+                TransitionManager.beginDelayedTransition(navView, slide)
+                navView.visibility = View.GONE
+            } else {
+                val slide = Slide(Gravity.BOTTOM)
+                slide.duration = 300
+                slide.addTarget(navView)
+
+                TransitionManager.beginDelayedTransition(navView, slide)
+                navView.visibility = View.VISIBLE
+            }
+        }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
