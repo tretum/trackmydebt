@@ -43,6 +43,6 @@ interface AppDao {
     @Delete
     suspend fun deleteTransaction(t: Transaction)
 
-    @get:Query("Select SUM(t.amount) FROM transactions t")
+    @get:Query("Select -SUM(t.amount) FROM transactions t")
     val balance: LiveData<Long>
 }
