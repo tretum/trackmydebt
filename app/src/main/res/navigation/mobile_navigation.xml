@@ -31,10 +31,13 @@
     <fragment
         android:id="@+id/personDetailFragment"
         android:name="com.mmutert.trackmydebt.ui.persondetail.PersonDetailFragment"
+        tools:layout="@layout/fragment_person_detail"
         android:label="PersonDetailFragment">
     </fragment>
+
     <fragment
         android:id="@+id/aboutFragment"
+        tools:layout="@layout/fragment_about"
         android:name="com.mmutert.trackmydebt.ui.about.AboutFragment"
         android:label="@string/menu_item_about_title" />
 </navigation>
