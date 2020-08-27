@@ -2,11 +2,15 @@ package com.mmutert.trackmydebt.ui.persondetail
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mmutert.trackmydebt.R
@@ -26,6 +30,8 @@ class PersonDetailFragment : Fragment() {
         arguments?.let {
             columnCount = it.getInt(ARG_COLUMN_COUNT)
         }
+
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -75,5 +81,23 @@ class PersonDetailFragment : Fragment() {
                     putInt(ARG_COLUMN_COUNT, columnCount)
                 }
             }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater.inflate(R.menu.menu_person_detail, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            R.id.action_remove_person -> {
+                mViewModel.removeSelectedPerson()
+                findNavController().navigateUp()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }

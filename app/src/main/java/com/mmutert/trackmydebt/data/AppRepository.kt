@@ -25,7 +25,7 @@ class AppRepository(private val dao: AppDao) {
     }
 
     suspend fun removePerson(p : Person) {
-        TODO("Remove person and all transactions for that person?")
+        dao.deletePerson(p)
     }
 
     suspend fun addPerson(p : Person) {

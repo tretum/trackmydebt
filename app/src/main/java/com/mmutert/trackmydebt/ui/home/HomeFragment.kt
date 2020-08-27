@@ -79,7 +79,9 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         })
 
         mViewModel.balance.observe(viewLifecycleOwner) {
-            mBinding.tvOverallBalanceValue.text = FormatHelper.printAsCurrency(it)
+            if(it !== null) {
+                mBinding.tvOverallBalanceValue.text = FormatHelper.printAsCurrency(it)
+            }
         }
 
         val createSwipeHelper = createSwipeHelper()
