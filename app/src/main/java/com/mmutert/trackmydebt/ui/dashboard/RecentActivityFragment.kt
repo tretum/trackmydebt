@@ -127,7 +127,7 @@ class RecentActivityFragment : Fragment() {
 
                     val dateFormatter: DateTimeFormatter =
                         DateTimeFormat.shortTime().withLocale(Locale.getDefault())
-                    holder.mBinding.tvTransactionDate.text = dateFormatter.print(date)
+                    holder.mBinding.tvTransactionTime.text = dateFormatter.print(date)
                     holder.mBinding.tvAmount.text = FormatHelper.printAsCurrency(amount)
                     if (reason.isBlank()) {
                         holder.mBinding.tvReason.visibility = View.GONE

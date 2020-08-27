@@ -73,6 +73,9 @@ class PersonDetailAdapter(val context: Context) : RecyclerView.Adapter<PersonDet
                     true -> context.getString(R.string.no_reason)
                     false -> entry.transaction.reason
                 }
+                val dateFormatter: DateTimeFormatter =
+                    DateTimeFormat.shortTime().withLocale(Locale.getDefault())
+                binding.tvTransactionTime.text = dateFormatter.print(entry.transaction.date)
             }
             is ListEntry.DateEntry -> {
                 val binding = (holder as PersonDetailViewHolder.DateViewHolder).mBinding

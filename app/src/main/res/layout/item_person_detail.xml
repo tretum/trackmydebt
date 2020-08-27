@@ -14,6 +14,17 @@
             android:padding="16dp">
 
             <TextView
+                tools:text="12:40 PM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="16sp"
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:id="@+id/tv_transaction_time"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
                 tools:text="10,00€"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -27,13 +38,14 @@
                 tools:text="Shopping"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:textSize="16sp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/tv_amount"
-                app:layout_constraintStart_toStartOf="parent"
-                android:id="@+id/tv_reason" />
+                android:id="@+id/tv_reason"
+                app:layout_constraintStart_toEndOf="@+id/tv_transaction_time" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
