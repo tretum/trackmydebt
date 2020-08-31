@@ -1,5 +1,6 @@
 package com.mmutert.trackmydebt.ui.persondetail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -11,12 +12,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.databinding.FragmentPersonDetailBinding
 import com.mmutert.trackmydebt.ui.home.SharedViewModel
 import com.mmutert.trackmydebt.util.FormatHelper
+import com.mmutert.trackmydebt.util.IntentHelper
 
 class PersonDetailFragment : Fragment() {
 
@@ -44,19 +47,64 @@ class PersonDetailFragment : Fragment() {
         mViewModel = ViewModelProvider(this).get(PersonDetailViewModel::class.java)
 
         val sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.selectedPerson.observe(viewLifecycleOwner) {
-            person -> mViewModel.selectPerson(person)
+        sharedViewModel.selectedPerson.observe(viewLifecycleOwner) { person ->
+            mViewModel.selectPerson(person)
         }
         mBinding.viewModel = mViewModel
 
-        mViewModel.sum.observe(viewLifecycleOwner){
+        mViewModel.sum.observe(viewLifecycleOwner) {
             val formattedSum = FormatHelper.printAsCurrency(-it)
             mBinding.formattedSum = formattedSum
+
+            when {
+                it < 0L -> {
+                    mBinding.btPaypal.apply {
+                        visibility = View.VISIBLE
+                        text = context.getString(R.string.button_paypal_request_label)
+                        setOnClickListener {
+                            // Share your paypal.me link or just a message which includes the amount
+
+                            val message = "You owe me $formattedSum."
+                            val username = PreferenceManager.getDefaultSharedPreferences(context)
+                                .getString("pref_paypal_username", "")
+
+                            val shareIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+
+                                if (username != null && username.isNotBlank()) {
+                                    message.plus("https ://paypal.me/${mViewModel.person.paypalUserName}/$formattedSum")
+                                }
+                                putExtra(
+                                    Intent.EXTRA_TEXT,
+                                    message
+                                )
+                                type = "text/plain"
+                            }
+                            startActivity(Intent.createChooser(shareIntent, "Share with..."))
+
+                        }
+                    }
+                }
+                it > 0L -> {
+                    mBinding.btPaypal.apply {
+                        visibility = View.VISIBLE
+                        text = context.getString(R.string.button_paypal_send_label)
+                        setOnClickListener {
+                            // Paying = Opening the browser to the paypal.me site
+                            val intent =
+                                IntentHelper.createBrowserIntent("https://paypal.me/${mViewModel.person.paypalUserName}/$formattedSum")
+                            requireActivity().startActivity(intent)
+                        }
+                    }
+                }
+                else -> {
+                    mBinding.btPaypal.visibility = View.GONE
+                }
+            }
         }
 
-
         // Set the adapter
-        with(mBinding.list) {
+        mBinding.list.apply {
             layoutManager = when {
                 columnCount <= 1 -> LinearLayoutManager(context)
                 else -> GridLayoutManager(context, columnCount)
@@ -90,7 +138,7 @@ class PersonDetailFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.action_remove_person -> {
                 mViewModel.removeSelectedPerson()
                 findNavController().navigateUp()

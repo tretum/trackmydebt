@@ -320,7 +320,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         // }
     }
 
-    override fun personAdded(name: String) {
-        mViewModel.addPerson(name)
+    override fun personAdded(name: String, paypalUsername: String?) {
+        mViewModel.addPerson(name, paypalUsername)
     }
 }

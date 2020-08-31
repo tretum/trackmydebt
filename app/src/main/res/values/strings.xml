@@ -28,4 +28,7 @@
     <string name="no_reason">(No reason given)</string>
     <string name="received_transaction">Received</string>
     <string name="sent_transaction">Given</string>
+    <string name="dialog_add_person_paypal_username_hint">Paypal.me Username (Optional)</string>
+    <string name="button_paypal_request_label">Request</string>
+    <string name="button_paypal_send_label">Pay</string>
 </resources>

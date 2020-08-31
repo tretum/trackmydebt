@@ -10,5 +10,5 @@ data class Person(
 
     val name: String,
 
-    val paypalUserName : String,
+    val paypalUserName : String?,
 )

@@ -19,10 +19,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val balance: LiveData<Long> = repository.balance
     val persons: LiveData<List<PersonAndTransactions>> = repository.personAndTransactions
 
-    fun addPerson(name: String) {
+    fun addPerson(name: String, paypalUsername: String?) {
         viewModelScope.launch {
-            // TODO Add paypal link
-            repository.addPerson(Person(0, name, ""))
+            repository.addPerson(Person(0, name, paypalUsername))
         }
     }
 
