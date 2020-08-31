@@ -12,7 +12,7 @@ import com.mmutert.trackmydebt.databinding.DialogAddPersonBinding
 class AddPersonDialogFragment(private val listener: PersonAddedListener) : DialogFragment() {
 
     interface PersonAddedListener {
-        fun personAdded(name: String, paypalUsername: String?);
+        fun personAdded(name: String, paypalUsername: String?)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

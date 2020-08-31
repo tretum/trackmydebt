@@ -64,16 +64,26 @@ class PersonDetailFragment : Fragment() {
                         setOnClickListener {
                             // Share your paypal.me link or just a message which includes the amount
 
-                            val message = "You owe me $formattedSum."
                             val username = PreferenceManager.getDefaultSharedPreferences(context)
-                                .getString("pref_paypal_username", "")
+                                .getString(context.getString(R.string.pref_paypal_username_key), "")
 
                             val shareIntent: Intent = Intent().apply {
                                 action = Intent.ACTION_SEND
 
-                                if (username != null && username.isNotBlank()) {
-                                    message.plus("https ://paypal.me/${mViewModel.person.paypalUserName}/$formattedSum")
-                                }
+                                val message =
+                                    """
+                                    You owe me $formattedSum. 
+                                    ${
+                                        if (username != null && username.isNotBlank()) {
+                                            """
+                                    Please send me the money using the following link:
+                                    https://paypal.me/$username/$formattedSum
+                                    """
+                                        } else {
+                                            ""
+                                        }
+                                    }
+                                    """.trimIndent()
                                 putExtra(
                                     Intent.EXTRA_TEXT,
                                     message
