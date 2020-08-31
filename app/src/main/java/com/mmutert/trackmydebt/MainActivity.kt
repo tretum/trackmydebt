@@ -1,22 +1,16 @@
 package com.mmutert.trackmydebt
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import androidx.transition.Slide
-import androidx.transition.TransitionManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.mmutert.trackmydebt.ui.persondetail.PersonDetailFragment
 
 class MainActivity : AppCompatActivity() {
 

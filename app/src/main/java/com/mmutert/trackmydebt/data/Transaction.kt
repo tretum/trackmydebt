@@ -1,11 +1,9 @@
 package com.mmutert.trackmydebt.data
 
 import androidx.room.ColumnInfo
-import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import org.joda.time.LocalDateTime
 
@@ -35,5 +33,4 @@ data class Transaction(
     val date: LocalDateTime,
 
     val reason: String
-) {
-}
+)
