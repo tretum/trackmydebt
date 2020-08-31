@@ -78,6 +78,7 @@
                 android:id="@+id/list_item_foreground_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:strokeWidth="2dp"
                 android:background="?android:attr/selectableItemBackground"
                 style="@style/Card">
 

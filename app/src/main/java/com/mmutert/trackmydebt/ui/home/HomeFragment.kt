@@ -79,7 +79,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         })
 
         mViewModel.balance.observe(viewLifecycleOwner) {
-            if(it !== null) {
+            if (it !== null) {
                 mBinding.tvOverallBalanceValue.text = FormatHelper.printAsCurrency(it)
             }
         }
@@ -259,25 +259,22 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             holder.binding.tvName.text = name
             when {
                 sum == 0L -> {
-                    holder.binding.listItemForegroundCard.setCardBackgroundColor(
+                    holder.binding.listItemForegroundCard.strokeColor =
                         context.resources.getColor(
                             R.color.white
                         )
-                    )
                 }
                 sum > 0L -> {
-                    holder.binding.listItemForegroundCard.setCardBackgroundColor(
+                    holder.binding.listItemForegroundCard.strokeColor =
                         context.resources.getColor(
-                            R.color.debt_item_card_background_positive
+                            R.color.positive_100
                         )
-                    )
                 }
                 sum < 0L -> {
-                    holder.binding.listItemForegroundCard.setCardBackgroundColor(
+                    holder.binding.listItemForegroundCard.strokeColor =
                         context.resources.getColor(
-                            R.color.debt_item_card_background_negative
+                            R.color.negative_100
                         )
-                    )
                 }
             }
 
