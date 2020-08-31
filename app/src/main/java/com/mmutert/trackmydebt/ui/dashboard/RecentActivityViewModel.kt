@@ -3,13 +3,11 @@ package com.mmutert.trackmydebt.ui.dashboard
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
 import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.data.TransactionAndPerson
-import kotlinx.coroutines.launch
 
 class RecentActivityViewModel(application: Application) : AndroidViewModel(application) {
 

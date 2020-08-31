@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        android:key="@string/pref_night_mode_key"
+        app:title="@string/pref_night_mode_title"
+        app:defaultValue="@string/theme_value_default"
+        app:dialogTitle="@string/pref_night_mode_title"
+        app:entries="@array/theme_entries"
+        app:entryValues="@array/theme_values"
+        app:useSimpleSummaryProvider="true"/>
+
+    <EditTextPreference
+        android:key="@string/pref_paypal_username_key"
+        android:title="Set your Paypal.me username"
+        android:icon="@drawable/ic_brand_paypal_24_black"
+        android:dialogIcon="@drawable/ic_brand_paypal_24_black" />
+</PreferenceScreen>

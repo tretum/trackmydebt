@@ -20,9 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Person
+import com.mmutert.trackmydebt.data.PersonAndTransactions
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.databinding.ItemDebtListBinding
-import com.mmutert.trackmydebt.model.PersonModel
 import com.mmutert.trackmydebt.ui.BottomSpaceDecoration
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
 import com.mmutert.trackmydebt.ui.dialogs.TransactionDialogFragment
@@ -79,7 +79,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         })
 
         mViewModel.balance.observe(viewLifecycleOwner) {
-            if(it !== null) {
+            if (it !== null) {
                 mBinding.tvOverallBalanceValue.text = FormatHelper.printAsCurrency(it)
             }
         }
@@ -229,9 +229,9 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         RecyclerView.Adapter<DebtListAdapter.DebtListViewHolder>() {
 
         // private val mDiffer = AsyncListDiffer(this, DIFF_CALLBACK)
-        private lateinit var list: List<PersonModel>
+        private lateinit var list: List<PersonAndTransactions>
 
-        fun setList(list: List<PersonModel>) {
+        fun setList(list: List<PersonAndTransactions>) {
             this.list = list
             notifyDataSetChanged()
         }
@@ -246,42 +246,45 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         }
 
         override fun onBindViewHolder(holder: DebtListViewHolder, position: Int) {
-            val (id, name, sum) = list[position]
+            val (person, transactions) = list[position]
+            val (id, name, paypalUsername) = person
+
+            var sum = 0L
+            transactions.forEach {
+                sum += -it.amount
+            }
 
             val printAsCurrency = FormatHelper.printAsCurrency(sum)
             holder.binding.tvAmount.text = printAsCurrency
             holder.binding.tvName.text = name
             when {
                 sum == 0L -> {
-                    holder.binding.listItemForegroundCard.setCardBackgroundColor(
+                    holder.binding.listItemForegroundCard.strokeColor =
                         context.resources.getColor(
                             R.color.white
                         )
-                    )
                 }
                 sum > 0L -> {
-                    holder.binding.listItemForegroundCard.setCardBackgroundColor(
+                    holder.binding.listItemForegroundCard.strokeColor =
                         context.resources.getColor(
-                            R.color.debt_item_card_background_positive
+                            R.color.positive_100
                         )
-                    )
                 }
                 sum < 0L -> {
-                    holder.binding.listItemForegroundCard.setCardBackgroundColor(
+                    holder.binding.listItemForegroundCard.strokeColor =
                         context.resources.getColor(
-                            R.color.debt_item_card_background_negative
+                            R.color.negative_100
                         )
-                    )
                 }
             }
 
             holder.binding.root.setOnClickListener {
-                listener.listItemClicked(Person(id, name))
+                listener.listItemClicked(person)
             }
         }
 
-        fun getElementAtPosition(position: Int): PersonModel {
-            return list[position]
+        fun getElementAtPosition(position: Int): Person {
+            return list[position].person
         }
 
         override fun getItemCount(): Int {
@@ -317,7 +320,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         // }
     }
 
-    override fun personAdded(name: String) {
-        mViewModel.addPerson(name)
+    override fun personAdded(name: String, paypalUsername: String?) {
+        mViewModel.addPerson(name, paypalUsername)
     }
 }

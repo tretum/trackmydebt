@@ -19,14 +19,33 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/aboutFragment"
-            app:destination="@id/aboutFragment" />
+            app:destination="@id/aboutFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_navigation_home_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_recent_activity"
         android:name="com.mmutert.trackmydebt.ui.dashboard.RecentActivityFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_recent_activity" />
+        tools:layout="@layout/fragment_recent_activity" >
+        <action
+            android:id="@+id/action_navigation_recent_activity_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/personDetailFragment"
@@ -40,4 +59,9 @@
         tools:layout="@layout/fragment_about"
         android:name="com.mmutert.trackmydebt.ui.about.AboutFragment"
         android:label="@string/menu_item_about_title" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.mmutert.trackmydebt.ui.settings.SettingsFragment"
+        android:label="Settings" />
 </navigation>

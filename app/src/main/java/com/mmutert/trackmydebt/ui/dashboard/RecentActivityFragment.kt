@@ -1,5 +1,6 @@
 package com.mmutert.trackmydebt.ui.dashboard
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
@@ -43,7 +43,7 @@ class RecentActivityFragment : Fragment() {
             false
         )
 
-        mAdapter =  RecentActivityListAdapter(mViewModel)
+        mAdapter =  RecentActivityListAdapter(mViewModel, requireContext())
         mBinding.rvRecentActivityList.adapter = mAdapter
         mBinding.rvRecentActivityList.layoutManager = LinearLayoutManager(
             requireContext(),
@@ -56,7 +56,7 @@ class RecentActivityFragment : Fragment() {
         return mBinding.root
     }
 
-    class RecentActivityListAdapter(val viewModel : RecentActivityViewModel) :
+    class RecentActivityListAdapter(val viewModel : RecentActivityViewModel, val context: Context) :
         RecyclerView.Adapter<RecentActivityListAdapter.RecentActivityListViewHolder>() {
 
         private val DATE: Int = 1
@@ -127,15 +127,31 @@ class RecentActivityFragment : Fragment() {
 
                     val dateFormatter: DateTimeFormatter =
                         DateTimeFormat.shortTime().withLocale(Locale.getDefault())
-                    holder.mBinding.tvTransactionTime.text = dateFormatter.print(date)
-                    holder.mBinding.tvAmount.text = FormatHelper.printAsCurrency(amount)
-                    if (reason.isBlank()) {
-                        holder.mBinding.tvReason.visibility = View.GONE
-                    } else {
-                        holder.mBinding.tvReason.visibility = View.VISIBLE
-                        holder.mBinding.tvReason.text = reason
+                    holder.mBinding.timeInclude.tvTransactionTime.text = dateFormatter.print(date)
+                    holder.mBinding.amountInclude.tvAmount.text = FormatHelper.printAsCurrency(amount)
+                    when {
+                        reason.isBlank() -> {
+                            holder.mBinding.reasonInclude.tvTransactionReason.visibility = View.GONE
+                        }
+                        else -> {
+                            holder.mBinding.reasonInclude.tvTransactionReason.visibility = View.VISIBLE
+                            holder.mBinding.reasonInclude.tvTransactionReason.text = reason
+                        }
                     }
-                    // TODO Replace with actual name
+
+                    when (received) {
+                        true -> {
+                            holder.mBinding.recentActivityCard.strokeColor = context.resources.getColor(
+                                R.color.positive_100
+                            )
+                        }
+                        else -> {
+                            holder.mBinding.recentActivityCard.strokeColor = context.resources.getColor(
+                                R.color.negative_100
+                            )
+                        }
+                    }
+
                     val (_, name) = listEntry.person
                     holder.mBinding.tvName.text = name
 

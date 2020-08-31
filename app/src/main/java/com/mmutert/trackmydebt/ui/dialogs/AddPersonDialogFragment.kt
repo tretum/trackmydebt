@@ -12,7 +12,7 @@ import com.mmutert.trackmydebt.databinding.DialogAddPersonBinding
 class AddPersonDialogFragment(private val listener: PersonAddedListener) : DialogFragment() {
 
     interface PersonAddedListener {
-        fun personAdded(name: String);
+        fun personAdded(name: String, paypalUsername: String?)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -22,7 +22,10 @@ class AddPersonDialogFragment(private val listener: PersonAddedListener) : Dialo
         return MaterialAlertDialogBuilder(requireContext())
             .setView(binding.root)
             .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
-                listener.personAdded(binding.etNameInput.text.toString())
+                listener.personAdded(
+                    binding.etNameInput.text.toString(),
+                    binding.etPaypalUsernameInput.text.toString()
+                )
             }
             .setNegativeButton(android.R.string.cancel) { _: DialogInterface?, _: Int -> }
             .create()

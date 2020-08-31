@@ -16,7 +16,8 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PersonDetailAdapter(val context: Context) : RecyclerView.Adapter<PersonDetailAdapter.PersonDetailViewHolder>() {
+class PersonDetailAdapter(val context: Context) :
+    RecyclerView.Adapter<PersonDetailAdapter.PersonDetailViewHolder>() {
 
     var entries: List<ListEntry> = ArrayList()
 
@@ -48,7 +49,8 @@ class PersonDetailAdapter(val context: Context) : RecyclerView.Adapter<PersonDet
 
         return when (viewType) {
             DATE -> {
-                val binding : ItemDateBinding = DataBindingUtil.inflate(inflater, R.layout.item_date, parent, false)
+                val binding: ItemDateBinding =
+                    DataBindingUtil.inflate(inflater, R.layout.item_date, parent, false)
                 PersonDetailViewHolder.DateViewHolder(binding)
             }
             else -> {
@@ -68,14 +70,36 @@ class PersonDetailAdapter(val context: Context) : RecyclerView.Adapter<PersonDet
             is ListEntry.TransactionEntry -> {
                 val binding = (holder as PersonDetailViewHolder.TransactionViewHolder).mBinding
                 val printAsCurrency = FormatHelper.printAsCurrency(entry.transaction.amount)
-                binding.tvAmount.text = printAsCurrency
-                binding.tvReason.text = when(entry.transaction.reason.isBlank()) {
-                    true -> context.getString(R.string.no_reason)
-                    false -> entry.transaction.reason
+                binding.amountInclude.tvAmount.text = printAsCurrency
+
+                when (entry.transaction.reason.isBlank()) {
+                    true -> binding.reasonInclude.tvTransactionReason.visibility = View.GONE
+                    false -> {
+                        binding.reasonInclude.tvTransactionReason.visibility = View.VISIBLE
+                        binding.reasonInclude.tvTransactionReason.text = entry.transaction.reason
+                    }
                 }
+
+                when (entry.transaction.received) {
+                    true -> {
+                        binding.personTransactionCard.strokeColor = context.resources.getColor(
+                            R.color.positive_100
+                        )
+                        binding.tvTransactionDirection.text =
+                            context.getString(R.string.received_transaction)
+                    }
+                    false -> {
+                        binding.personTransactionCard.strokeColor = context.resources.getColor(
+                            R.color.negative_100
+                        )
+                        binding.tvTransactionDirection.text =
+                            context.getString(R.string.sent_transaction)
+                    }
+                }
+
                 val dateFormatter: DateTimeFormatter =
                     DateTimeFormat.shortTime().withLocale(Locale.getDefault())
-                binding.tvTransactionTime.text = dateFormatter.print(entry.transaction.date)
+                binding.timeInclude.tvTransactionTime.text = dateFormatter.print(entry.transaction.date)
             }
             is ListEntry.DateEntry -> {
                 val binding = (holder as PersonDetailViewHolder.DateViewHolder).mBinding

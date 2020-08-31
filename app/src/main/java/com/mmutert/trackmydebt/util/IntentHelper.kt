@@ -2,7 +2,6 @@ package com.mmutert.trackmydebt.util
 
 import android.content.Intent
 import android.net.Uri
-import com.mmutert.trackmydebt.R
 
 object IntentHelper {
 
