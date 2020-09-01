@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 
 class PersonDetailViewModel(application: Application) : AndroidViewModel(application) {
 
+    private lateinit var transactionToDelete: Transaction
+
     private val repository: AppRepository =
         AppRepository(AppDatabase.getDatabase(application).dao())
 
@@ -28,6 +30,13 @@ class PersonDetailViewModel(application: Application) : AndroidViewModel(applica
     fun removeSelectedPerson() {
         viewModelScope.launch {
             repository.removePerson(person)
+        }
+    }
+
+
+    fun deleteTransaction(transaction: Transaction) {
+        viewModelScope.launch {
+            repository.removeTransaction(transaction)
         }
     }
 

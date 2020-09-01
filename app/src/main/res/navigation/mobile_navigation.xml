@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/navigation_recent_activity"
-        android:name="com.mmutert.trackmydebt.ui.dashboard.RecentActivityFragment"
+        android:name="com.mmutert.trackmydebt.ui.recentactivity.RecentActivityFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_recent_activity" >
         <action

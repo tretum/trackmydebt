@@ -1,6 +1,7 @@
 package com.mmutert.trackmydebt.ui.persondetail
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,9 @@ import java.util.Locale
 class PersonDetailAdapter(val context: Context) :
     RecyclerView.Adapter<PersonDetailAdapter.PersonDetailViewHolder>() {
 
-    var entries: List<ListEntry> = ArrayList()
+    private val LOG_TAG: String = "PersonDetailAdapter"
+    private lateinit var transactionToDelete: ListEntry.TransactionEntry
+    var entries: MutableList<ListEntry> = ArrayList()
 
     private val DATE: Int = 1
     private val TRANSACTION = 2
@@ -29,11 +32,11 @@ class PersonDetailAdapter(val context: Context) :
         class DateEntry(val date: LocalDate) : ListEntry()
     }
 
-    fun setTransactions(transactions: List<Transaction>) {
+    fun setTransactions(transactions: MutableList<Transaction>) {
         val dates: List<LocalDate> = transactions.map { it.date.toLocalDate() }.distinctBy {
             it.toString()
         }
-        val result: ArrayList<ListEntry> = ArrayList()
+        val result: MutableList<ListEntry> = ArrayList()
         dates.forEach { date ->
             result.add(ListEntry.DateEntry(date))
             transactions.filter { it.date.toLocalDate().isEqual(date) }.forEach { t ->
@@ -66,8 +69,10 @@ class PersonDetailAdapter(val context: Context) :
     }
 
     override fun onBindViewHolder(holder: PersonDetailViewHolder, position: Int) {
+        Log.d(LOG_TAG, "onBindViewHolder for position $position")
         when (val entry = entries[position]) {
             is ListEntry.TransactionEntry -> {
+                Log.d(LOG_TAG, "Amount: ${entry.transaction.amount}")
                 val binding = (holder as PersonDetailViewHolder.TransactionViewHolder).mBinding
                 val printAsCurrency = FormatHelper.printAsCurrency(entry.transaction.amount)
                 binding.amountInclude.tvAmount.text = printAsCurrency
@@ -100,6 +105,7 @@ class PersonDetailAdapter(val context: Context) :
                 val dateFormatter: DateTimeFormatter =
                     DateTimeFormat.shortTime().withLocale(Locale.getDefault())
                 binding.timeInclude.tvTransactionTime.text = dateFormatter.print(entry.transaction.date)
+                binding.personTransactionCard.visibility = View.VISIBLE
             }
             is ListEntry.DateEntry -> {
                 val binding = (holder as PersonDetailViewHolder.DateViewHolder).mBinding
@@ -111,7 +117,8 @@ class PersonDetailAdapter(val context: Context) :
         }
     }
 
-    override fun getItemCount(): Int = entries.size
+    override fun getItemCount(): Int =
+        entries.size
 
     override fun getItemViewType(position: Int): Int {
         return when (entries[position]) {
@@ -126,5 +133,24 @@ class PersonDetailAdapter(val context: Context) :
 
         class DateViewHolder(val mBinding: ItemDateBinding) :
             PersonDetailViewHolder(mBinding.root)
+    }
+
+
+    fun markTransactionToDelete(position: Int) {
+        Log.d(LOG_TAG, "Deleting transaction")
+        this.transactionToDelete = entries[position] as ListEntry.TransactionEntry
+        this.entries.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    fun restoreTransaction(position: Int) {
+        Log.d(LOG_TAG, "Restoring transaction")
+        this.entries.add(position, this.transactionToDelete)
+        notifyItemInserted(position)
+    }
+
+
+    fun getElementAtPosition(position: Int): ListEntry {
+        return entries[position]
     }
 }
