@@ -1,4 +1,4 @@
-package com.mmutert.trackmydebt.ui.dashboard
+package com.mmutert.trackmydebt.ui.recentactivity
 
 import android.content.Context
 import android.graphics.Canvas
