@@ -48,7 +48,7 @@ class RecentActivityFragment : Fragment() {
             false
         )
 
-        mAdapter = RecentActivityListAdapter(mViewModel, requireContext())
+        mAdapter = RecentActivityListAdapter(requireContext())
         mBinding.rvRecentActivityList.adapter = mAdapter
         mBinding.rvRecentActivityList.layoutManager = LinearLayoutManager(
             requireContext(),
@@ -232,11 +232,11 @@ class RecentActivityFragment : Fragment() {
         mDeleteSnackbar.show()
     }
 
-    class RecentActivityListAdapter(val viewModel: RecentActivityViewModel, val context: Context) :
+    class RecentActivityListAdapter(val context: Context) :
         RecyclerView.Adapter<RecentActivityListAdapter.RecentActivityListViewHolder>() {
 
         private lateinit var transactionToDelete: ListEntry.TransactionEntry
-        private val LOG_TAG: String = "RecentActivityListAdapter"
+        private val LOG_TAG: String = "RecentActListAdapter"
         private val DATE: Int = 1
         private val TRANSACTION = 2
 
