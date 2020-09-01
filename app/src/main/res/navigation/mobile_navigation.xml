@@ -51,7 +51,10 @@
         android:id="@+id/personDetailFragment"
         android:name="com.mmutert.trackmydebt.ui.persondetail.PersonDetailFragment"
         tools:layout="@layout/fragment_person_detail"
-        android:label="PersonDetailFragment">
+        android:label="{title}">
+        <argument
+            android:name="title"
+            app:argType="string"/>
     </fragment>
 
     <fragment
@@ -63,5 +66,5 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.mmutert.trackmydebt.ui.settings.SettingsFragment"
-        android:label="Settings" />
+        android:label="@string/fragment_settings_title" />
 </navigation>

@@ -59,6 +59,7 @@ class PersonDetailFragment : Fragment() {
 
             when {
                 it < 0L -> {
+                    mBinding.tvDebtDescription.text = getString(R.string.fragment_person_detail_credit_label)
                     mBinding.btPaypal.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.button_paypal_request_label)
@@ -103,6 +104,7 @@ class PersonDetailFragment : Fragment() {
                     }
                 }
                 it > 0L -> {
+                    mBinding.tvDebtDescription.text = getString(R.string.fragment_person_detail_debt_label)
                     mBinding.btPaypal.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.button_paypal_send_label)
@@ -116,6 +118,7 @@ class PersonDetailFragment : Fragment() {
                 }
                 else -> {
                     mBinding.btPaypal.visibility = View.GONE
+                    mBinding.tvDebtDescription.text = ""
                 }
             }
         }

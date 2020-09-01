@@ -42,7 +42,10 @@
     <string name="button_paypal_send_label">Pay</string>
     <string name="pref_paypal_username_key">pref_paypal_username</string>
     <string name="menu_item_settings_title">Settings</string>
-    <string name="paypal_link_share_menu_title">Share with...</string>
+    <string name="paypal_link_share_menu_title">Share with…</string>
     <string name="undo_button_label">Undo</string>
     <string name="fragment_home_overall_balance_label">Overall balance</string>
+    <string name="fragment_settings_title">Settings</string>
+    <string name="fragment_person_detail_credit_label">Credit:</string>
+    <string name="fragment_person_detail_debt_label">Debt:</string>
 </resources>

@@ -56,36 +56,38 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             false
         )
 
-        mBinding.rvDebtList.addItemDecoration(BottomSpaceDecoration(200))
-        mBinding.rvDebtList.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        mAdapter =
-            DebtListAdapter(requireContext(), object : DebtListAdapter.ListItemClickListener {
-                override fun listItemClicked(p: Person) {
-                    mSharedViewModel.selectPerson(p)
-                    val fragmentPersonDetail = HomeFragmentDirections.fragmentPersonDetail()
-                    Navigation.findNavController(mBinding.root).navigate(fragmentPersonDetail)
-                }
-            })
-        mAdapter.setList(ArrayList())
-        mBinding.rvDebtList.adapter = mAdapter
-
-        mBinding.fabAddItem.setOnClickListener {
-            AddPersonDialogFragment(this).show(parentFragmentManager, "AddPerson")
-        }
-
-        mViewModel.persons.observe(viewLifecycleOwner, {
-            mAdapter.setList(it)
-        })
-
         mViewModel.balance.observe(viewLifecycleOwner) {
             if (it !== null) {
                 mBinding.tvOverallBalanceValue.text = FormatHelper.printAsCurrency(it)
             }
         }
 
+        mAdapter =
+            DebtListAdapter(requireContext(), object : DebtListAdapter.ListItemClickListener {
+                override fun listItemClicked(p: Person) {
+                    mSharedViewModel.selectPerson(p)
+                    val fragmentPersonDetail = HomeFragmentDirections.fragmentPersonDetail(p.name)
+                    Navigation.findNavController(mBinding.root).navigate(fragmentPersonDetail)
+                }
+            })
+        mAdapter.setList(ArrayList())
+        mViewModel.persons.observe(viewLifecycleOwner, {
+            mAdapter.setList(it)
+        })
+
+        mBinding.rvDebtList.apply {
+            addItemDecoration(BottomSpaceDecoration(200))
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            adapter = mAdapter
+        }
+
         val createSwipeHelper = createSwipeHelper()
         createSwipeHelper.attachToRecyclerView(mBinding.rvDebtList)
+
+        mBinding.fabAddItem.setOnClickListener {
+            AddPersonDialogFragment(this).show(parentFragmentManager, "AddPerson")
+        }
 
         return mBinding.root
     }

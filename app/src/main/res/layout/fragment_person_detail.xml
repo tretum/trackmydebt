@@ -39,30 +39,28 @@
                 android:scaleType="centerInside" />
 
             <TextView
-                android:id="@+id/tv_person_name"
-                android:text="@{viewModel.selection.name}"
-                tools:text="First Last"
+                android:id="@+id/tv_debt_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_sum"
                 app:layout_constraintStart_toStartOf="parent"
+                android:textSize="20sp"
                 android:textColor="@android:color/primary_text_dark"
-                android:textSize="22sp"
-                app:layout_constraintEnd_toStartOf="@+id/bt_paypal"
-                app:layout_constraintHorizontal_bias="0.0" />
+                tools:text="Debt:"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_sum" />
 
             <TextView
                 android:id="@+id/tv_sum"
                 android:text='@{formattedSum}'
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@id/tv_person_name"
-                app:layout_constraintStart_toStartOf="@+id/tv_person_name"
+                android:layout_marginStart="8dp"
+                app:layout_constraintTop_toTopOf="@+id/bt_paypal"
+                app:layout_constraintStart_toEndOf="@id/tv_debt_description"
                 android:textSize="20sp"
                 android:textColor="@android:color/primary_text_dark"
-                tools:text="5.00€" />
+                tools:text="5.00€"
+                app:layout_constraintBottom_toBottomOf="@+id/bt_paypal" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
