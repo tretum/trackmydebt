@@ -8,6 +8,7 @@ import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.util.ThemeHelper
 
 class SettingsFragment : PreferenceFragmentCompat() {
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey)
         val nightModePref = findPreference<ListPreference>(getString(R.string.pref_night_mode_key))
