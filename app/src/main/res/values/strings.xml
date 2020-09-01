@@ -44,4 +44,5 @@
     <string name="menu_item_settings_title">Settings</string>
     <string name="paypal_link_share_menu_title">Share with...</string>
     <string name="undo_button_label">Undo</string>
+    <string name="fragment_home_overall_balance_label">Overall balance</string>
 </resources>

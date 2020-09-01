@@ -13,4 +13,5 @@
     <color name="negative_200">#F48FB1</color>
 
     <color name="list_item_background">#FFFFFF</color>
+    <color name="fragment_home_balance_background">#C5CAE9</color>
 </resources>
