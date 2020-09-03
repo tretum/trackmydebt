@@ -37,7 +37,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:id="@+id/et_amount_input"
-                    android:hint="Enter amount"
+                    android:hint="@string/hint_enter_amount"
                     android:inputType="numberSigned|numberDecimal"
                     android:paddingStart="@dimen/text_input_pad_horizontal"
                     android:paddingLeft="@dimen/text_input_pad_horizontal"
@@ -62,7 +62,7 @@
                     android:layout_height="wrap_content"
                     android:minLines="2"
                     android:id="@+id/et_reason_input"
-                    android:hint="Enter reason (optional)"
+                    android:hint="@string/hint_enter_reason_optional"
                     android:inputType="textMultiLine"
                     android:paddingStart="@dimen/text_input_pad_horizontal"
                     android:paddingLeft="@dimen/text_input_pad_horizontal"

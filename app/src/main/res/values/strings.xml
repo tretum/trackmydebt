@@ -48,4 +48,6 @@
     <string name="fragment_settings_title">Settings</string>
     <string name="fragment_person_detail_credit_label">Credit:</string>
     <string name="fragment_person_detail_debt_label">Debt:</string>
+    <string name="hint_enter_reason_optional">Enter reason (optional)</string>
+    <string name="hint_enter_amount">Enter amount</string>
 </resources>
