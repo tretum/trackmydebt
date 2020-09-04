@@ -5,6 +5,7 @@
     <string name="title_notifications">Notifications</string>
 
     <!-- About fragment -->
+    <string name="developer_name" translatable="false">Michael Mutert</string>
     <string name="fragment_about_licenses_header_title">Third-Party Libraries and Licenses</string>
     <string name="fragment_about_links_header_title">Links</string>
     <string name="fragment_about_send_feedback_button_label">Send feedback</string>
@@ -17,10 +18,12 @@
     <string name="github_repository_url" translatable="false">https://github.com/tretum/trackmydebt</string>
     <string name="joda_time_url" translatable="false">https://www.joda.org/joda-time/</string>
 
+    <string name="fragment_settings_title">Settings</string>
     <string name="pref_night_mode_title">Night mode</string>
     <string name="pref_night_mode_summary_off">Light mode enabled</string>
     <string name="pref_night_mode_summary_on">Night mode enabled</string>
     <string name="pref_night_mode_key" translatable="false">pref_night_mode_key</string>
+    <string name="pref_paypal_username_key">pref_paypal_username</string>
 
     <string name="theme_label_light">Light</string>
     <string name="theme_label_dark">Dark</string>
@@ -29,25 +32,32 @@
     <string name="theme_value_dark" translatable="false">dark</string>
     <string name="theme_value_default" translatable="false">default</string>
 
+
     <string name="dialog_add_person_title">Add Person</string>
     <string name="dialog_add_person_enter_name_hint">Enter name</string>
     <string name="dialog_add_person_paypal_username_hint">Paypal.me Username (Optional)</string>
 
+    <string name="fragment_person_detail_credit_label">Credit:</string>
+    <string name="fragment_person_detail_debt_label">Debt:</string>
+    <string name="button_paypal_request_label">Request</string>
+    <string name="button_paypal_send_label">Pay</string>
+
     <string name="menu_item_about_title">About</string>
-    <string name="developer_name" translatable="false">Michael Mutert</string>
+    <string name="menu_item_settings_title">Settings</string>
+
+    <string name="fragment_home_overall_balance_label">Overall balance</string>
+
+    <string name="transaction_state_money_to_user">I received money</string>
+    <string name="transaction_state_money_from_user">I gave money</string>
+    <string name="transaction_state_lent_to_user">I bought for someone</string>
+    <string name="transaction_state_lent_from_user">Someone bought for me</string>
+
     <string name="no_reason">(No reason given)</string>
     <string name="received_transaction">Received</string>
     <string name="sent_transaction">Given</string>
-    <string name="button_paypal_request_label">Request</string>
-    <string name="button_paypal_send_label">Pay</string>
-    <string name="pref_paypal_username_key">pref_paypal_username</string>
-    <string name="menu_item_settings_title">Settings</string>
     <string name="paypal_link_share_menu_title">Share with…</string>
     <string name="undo_button_label">Undo</string>
-    <string name="fragment_home_overall_balance_label">Overall balance</string>
-    <string name="fragment_settings_title">Settings</string>
-    <string name="fragment_person_detail_credit_label">Credit:</string>
-    <string name="fragment_person_detail_debt_label">Debt:</string>
     <string name="hint_enter_reason_optional">Enter reason (optional)</string>
     <string name="hint_enter_amount">Enter amount</string>
+    <string name="error_string">Required field</string>
 </resources>
