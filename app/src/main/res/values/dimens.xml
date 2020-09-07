@@ -10,4 +10,6 @@
 
     <dimen name="about_section_header_text_size">16sp</dimen>
     <dimen name="about_entry_text_size">18sp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="margin_large">16dp</dimen>
 </resources>
