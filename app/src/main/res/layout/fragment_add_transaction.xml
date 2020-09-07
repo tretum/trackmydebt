@@ -83,28 +83,31 @@
                         android:paddingTop="12dp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/iv_calendar_icon"
-                    android:layout_marginTop="16dp"
-                    android:padding="8dp"
-                    app:srcCompat="@drawable/ic_calendar_today_24px"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/til_reason_short_input" />
-
-                <TextView
-                    android:textSize="18sp"
+                <com.google.android.material.button.MaterialButton
+                    tools:text="2020-09-01"
+                    android:id="@+id/bt_date_selection"
+                    android:textSize="16sp"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
-                    android:id="@+id/tv_date_selection"
-                    android:layout_marginStart="@dimen/margin_large"
+                    android:layout_marginEnd="@dimen/margin_large"
                     android:padding="8dp"
-                    app:layout_constraintTop_toTopOf="@+id/iv_calendar_icon"
-                    app:layout_constraintBottom_toBottomOf="@+id/iv_calendar_icon"
-                    app:layout_constraintStart_toEndOf="@+id/iv_calendar_icon"
+                    app:layout_constraintTop_toBottomOf="@id/til_reason_short_input"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/bt_time_selection"
+                    app:icon="@drawable/ic_calendar_today_24px"
+                    android:layout_marginTop="@dimen/margin_large" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:textSize="16sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/bt_time_selection"
+                    android:padding="8dp"
+                    app:layout_constraintTop_toTopOf="@id/bt_date_selection"
+                    app:layout_constraintBottom_toBottomOf="@id/bt_date_selection"
                     app:layout_constraintEnd_toEndOf="parent"
-                    tools:text="2020-09-01" />
+                    tools:text="12:30 PM"
+                    app:icon="@drawable/ic_baseline_access_time_24" />
 
                 <ImageView
                     android:id="@+id/iv_person_icon"
@@ -114,7 +117,7 @@
                     android:padding="8dp"
                     app:srcCompat="@drawable/ic_baseline_person_24"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/iv_calendar_icon" />
+                    app:layout_constraintTop_toBottomOf="@+id/bt_date_selection" />
 
                 <Spinner
                     android:id="@+id/sp_select_person"
