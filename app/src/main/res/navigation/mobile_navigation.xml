@@ -101,5 +101,9 @@
             android:name="title"
             app:argType="string"
             android:defaultValue="Add transaction" />
+        <argument
+            android:name="referringPersonId"
+            app:argType="long"
+            android:defaultValue="0L" />
     </fragment>
 </navigation>
