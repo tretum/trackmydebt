@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.mmutert.trackmydebt.TransactionAction
 import org.joda.time.LocalDateTime
 import java.math.BigDecimal
 
@@ -32,6 +33,8 @@ data class Transaction(
     val amount: BigDecimal,
 
     val date: LocalDateTime,
+
+    val action: TransactionAction,
 
     val reason: String,
 

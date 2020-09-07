@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
@@ -32,12 +33,45 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun giveMoney(partner: Person, amount: BigDecimal, reason: String) {
-        addTransaction(Transaction(0, partner.id, false, -amount, TimeHelper.currentDateTimeLocalized, reason))
+    fun giveMoney(
+        partner: Person,
+        amount: BigDecimal,
+        action: TransactionAction,
+        reason: String,
+        reasonLong: String
+    ) {
+        addTransaction(
+            Transaction(
+                0,
+                partner.id,
+                false,
+                -amount,
+                TimeHelper.currentDateTimeLocalized,
+                action,
+                reason,
+                reasonLong
+            )
+        )
     }
 
-    fun receiveMoney(partner: Person, amount: BigDecimal, reason: String) {
-        addTransaction(Transaction(0, partner.id, true, amount, TimeHelper.currentDateTimeLocalized, reason))
+    fun receiveMoney(
+        partner: Person,
+        amount: BigDecimal,
+        action: TransactionAction,
+        reason: String,
+        reasonLong: String
+    ) {
+        addTransaction(
+            Transaction(
+                0,
+                partner.id,
+                true,
+                amount,
+                TimeHelper.currentDateTimeLocalized,
+                action,
+                reason,
+                reasonLong
+            )
+        )
     }
-
 }

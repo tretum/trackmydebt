@@ -2,7 +2,7 @@ package com.mmutert.trackmydebt.ui.transaction
 
 import android.content.Context
 import android.widget.ArrayAdapter
-import com.mmutert.trackmydebt.TransactionState
+import com.mmutert.trackmydebt.TransactionAction
 import java.util.ArrayList
 
 class TransactionStateArrayAdapter(context: Context, resource: Int) :
@@ -10,16 +10,16 @@ class TransactionStateArrayAdapter(context: Context, resource: Int) :
 
     private val values: MutableList<CharSequence> = ArrayList()
 
-    fun getSelectedUnit(position: Int): TransactionState {
-        return TransactionState.values()[position]
+    fun getSelectedUnit(position: Int): TransactionAction {
+        return TransactionAction.values()[position]
     }
 
-    fun getIndexOfUnit(unit: TransactionState): Int {
-        return TransactionState.values().indexOf(unit)
+    fun getIndexOfUnit(unit: TransactionAction): Int {
+        return TransactionAction.values().indexOf(unit)
     }
 
     init {
-        for (value in TransactionState.values()) {
+        for (value in TransactionAction.values()) {
             val valueString = context.resources.getString(value.labelId)
             values.add(valueString)
         }
