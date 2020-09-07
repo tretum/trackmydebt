@@ -1,6 +1,7 @@
 package com.mmutert.trackmydebt.ui.transaction
 
 import android.app.Application
+import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -13,13 +14,20 @@ import com.mmutert.trackmydebt.util.TimeHelper
 import kotlinx.coroutines.launch
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
+import org.joda.time.format.DateTimeFormat
+import org.joda.time.format.DateTimeFormatter
 import java.math.BigDecimal
+import java.util.Locale
 
 class AddTransactionViewModel(application: Application) : AndroidViewModel(application) {
 
     val repository: AppRepository = AppRepository(AppDatabase.getDatabase(application).dao())
     val persons = repository.persons
 
+    val DATE_FORMATTER: DateTimeFormatter =
+        DateTimeFormat.longDate().withLocale(Locale.getDefault())
+
+    // TODO ObservableField, MutableLiveData?
     var selectedPartnerId: Long = 0L
     var selectedDate: LocalDate = TimeHelper.currentDateLocalized
     var selectedTime: LocalTime = TimeHelper.currentTimeLocalized

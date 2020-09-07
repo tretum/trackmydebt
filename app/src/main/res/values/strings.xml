@@ -63,4 +63,5 @@
     <string name="action_save">Save</string>
     <string name="fragment_title_edit_transaction">Edit Transaction</string>
     <string name="fragment_title_new_transaction">New transaction</string>
+    <string name="fragment_add_transaction_date_picker_title">Pick date of transaction</string>
 </resources>

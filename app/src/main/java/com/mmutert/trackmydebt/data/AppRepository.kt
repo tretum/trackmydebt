@@ -12,7 +12,12 @@ class AppRepository(private val dao: AppDao) {
     val transactions : LiveData<List<Transaction>> = dao.transactions
     private val _balance : LiveData<Long> = dao.balance
     val balance = Transformations.map(_balance) {
-        BigDecimal(it / 100.0)
+        if(it != null) {
+            BigDecimal(it / 100.0)
+        } else {
+            // Fixes crash on initialization
+            BigDecimal.ZERO
+        }
     }
 
     fun getTransactions(p: Person): LiveData<List<Transaction>> {
