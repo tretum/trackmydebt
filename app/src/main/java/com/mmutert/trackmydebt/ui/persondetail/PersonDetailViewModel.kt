@@ -11,6 +11,7 @@ import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.Transaction
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 class PersonDetailViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -43,12 +44,7 @@ class PersonDetailViewModel(application: Application) : AndroidViewModel(applica
     val transactions: LiveData<List<Transaction>> =
         Transformations.switchMap(selection) { person -> repository.getTransactions(person) }
 
-    val sum: LiveData<Long> = Transformations.map(transactions) {
-        // -1 * it.sumOf { transaction -> transaction.amount }
-        var sum = 0L
-        it.forEach {
-            sum += it.amount
-        }
-        sum
+    val sum: LiveData<BigDecimal> = Transformations.map(transactions) {
+        BigDecimal(-1) * it.sumOf { t -> t.amount }
     }
 }

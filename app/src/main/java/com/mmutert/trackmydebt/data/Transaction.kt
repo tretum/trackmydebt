@@ -29,7 +29,7 @@ data class Transaction(
 
     val received: Boolean,
 
-    val amount: Long,
+    val amount: BigDecimal,
 
     val date: LocalDateTime,
 

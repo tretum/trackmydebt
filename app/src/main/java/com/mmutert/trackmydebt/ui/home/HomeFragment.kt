@@ -27,6 +27,7 @@ import com.mmutert.trackmydebt.ui.BottomSpaceDecoration
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
 import com.mmutert.trackmydebt.ui.dialogs.TransactionDialogFragment
 import com.mmutert.trackmydebt.util.FormatHelper
+import java.math.BigDecimal
 
 class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
@@ -130,7 +131,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                         false,
                         object : TransactionDialogFragment.TransactionConfirmedListener {
                             override fun transactionConfirmed(
-                                amount: Long,
+                                amount: BigDecimal,
                                 receiving: Boolean,
                                 reason: String
                             ) {
@@ -142,7 +143,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                         true,
                         object : TransactionDialogFragment.TransactionConfirmedListener {
                             override fun transactionConfirmed(
-                                amount: Long,
+                                amount: BigDecimal,
                                 receiving: Boolean,
                                 reason: String
                             ) {
@@ -251,28 +252,28 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
             val (person, transactions) = list[position]
             val (id, name, paypalUsername) = person
 
-            var sum = 0L
+            var sum = BigDecimal(0)
             transactions.forEach {
-                sum += -it.amount
+                sum = sum.plus(-it.amount)
             }
 
             val printAsCurrency = FormatHelper.printAsCurrency(sum)
             holder.binding.tvAmount.text = printAsCurrency
             holder.binding.tvName.text = name
             when {
-                sum == 0L -> {
+                sum == BigDecimal.ZERO -> {
                     holder.binding.listItemForegroundCard.strokeColor =
                         context.resources.getColor(
                             R.color.white
                         )
                 }
-                sum > 0L -> {
+                sum > BigDecimal.ZERO -> {
                     holder.binding.listItemForegroundCard.strokeColor =
                         context.resources.getColor(
                             R.color.positive_100
                         )
                 }
-                sum < 0L -> {
+                sum < BigDecimal.ZERO -> {
                     holder.binding.listItemForegroundCard.strokeColor =
                         context.resources.getColor(
                             R.color.negative_100
