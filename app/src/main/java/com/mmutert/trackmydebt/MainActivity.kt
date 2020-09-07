@@ -39,10 +39,13 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { controller, destination, bundle ->
             val id = destination.id
-            if(id == R.id.personDetailFragment) {
-                navView.visibility = View.GONE
-            } else {
-                navView.visibility = View.VISIBLE
+            when (id) {
+                R.id.personDetailFragment, R.id.addTransactionFragment -> {
+                    navView.visibility = View.GONE
+                }
+                else -> {
+                    navView.visibility = View.VISIBLE
+                }
             }
         }
 
