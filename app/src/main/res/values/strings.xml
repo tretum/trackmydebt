@@ -61,4 +61,6 @@
     <string name="hint_enter_amount">Enter amount</string>
     <string name="error_string">Required field</string>
     <string name="action_save">Save</string>
+    <string name="fragment_title_edit_transaction">Edit Transaction</string>
+    <string name="fragment_title_new_transaction">New transaction</string>
 </resources>

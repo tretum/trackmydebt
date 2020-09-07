@@ -21,13 +21,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.databinding.FragmentPersonDetailBinding
 import com.mmutert.trackmydebt.ui.home.SharedViewModel
 import com.mmutert.trackmydebt.util.FormatHelper
 import com.mmutert.trackmydebt.util.IntentHelper
 import java.math.BigDecimal
 
-class PersonDetailFragment : Fragment() {
+class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedListener {
 
     private lateinit var mBinding: FragmentPersonDetailBinding
     private lateinit var mViewModel: PersonDetailViewModel
@@ -125,8 +126,17 @@ class PersonDetailFragment : Fragment() {
             }
         }
 
+        mBinding.fabAddTransaction.setOnClickListener {
+            val directions =
+                PersonDetailFragmentDirections.actionPersonDetailFragmentToAddTransactionFragment(
+                    title = getString(R.string.fragment_title_new_transaction),
+                    referringPersonId = mViewModel.person.id
+                )
+            findNavController().navigate(directions)
+        }
+
         // Set the adapter
-        mAdapter = PersonDetailAdapter(requireContext())
+        mAdapter = PersonDetailAdapter(requireContext(), this)
         mBinding.list.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = mAdapter
@@ -323,5 +333,15 @@ class PersonDetailFragment : Fragment() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onTransactionClicked(transaction: Transaction) {
+        val directions =
+            PersonDetailFragmentDirections.actionPersonDetailFragmentToAddTransactionFragment(
+                transaction.id,
+                title = getString(R.string.fragment_title_edit_transaction),
+                referringPersonId = mViewModel.person.id
+            )
+        findNavController().navigate(directions)
     }
 }

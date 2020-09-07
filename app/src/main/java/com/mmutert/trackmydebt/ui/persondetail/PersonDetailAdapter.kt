@@ -17,7 +17,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PersonDetailAdapter(val context: Context) :
+class PersonDetailAdapter(val context: Context, val transactionClickedListener: TransactionClickedListener) :
     RecyclerView.Adapter<PersonDetailAdapter.PersonDetailViewHolder>() {
 
     private val LOG_TAG: String = "PersonDetailAdapter"
@@ -26,6 +26,10 @@ class PersonDetailAdapter(val context: Context) :
 
     private val DATE: Int = 1
     private val TRANSACTION = 2
+
+    interface TransactionClickedListener {
+        fun onTransactionClicked(transaction: Transaction)
+    }
 
     sealed class ListEntry {
         class TransactionEntry(val transaction: Transaction) : ListEntry()
@@ -100,6 +104,11 @@ class PersonDetailAdapter(val context: Context) :
                         binding.tvTransactionDirection.text =
                             context.getString(R.string.sent_transaction)
                     }
+                }
+
+                binding.root.setOnClickListener {
+                    Log.d(LOG_TAG, "Clicked on item at position $position")
+                    transactionClickedListener.onTransactionClicked(entry.transaction)
                 }
 
                 val dateFormatter: DateTimeFormatter =
