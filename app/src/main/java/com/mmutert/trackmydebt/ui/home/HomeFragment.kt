@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.PersonAndTransactions
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
@@ -133,9 +134,11 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                             override fun transactionConfirmed(
                                 amount: BigDecimal,
                                 receiving: Boolean,
-                                reason: String
+                                action: TransactionAction,
+                                reason: String,
+                                reasonLong: String
                             ) {
-                                mViewModel.giveMoney(partner, amount, reason)
+                                mViewModel.giveMoney(partner, amount, action, reason, reasonLong)
                             }
                         }).show(parentFragmentManager, "GiveMoney")
                 } else if (direction == ItemTouchHelper.LEFT) {
@@ -145,9 +148,11 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                             override fun transactionConfirmed(
                                 amount: BigDecimal,
                                 receiving: Boolean,
-                                reason: String
+                                action: TransactionAction,
+                                reason: String,
+                                reasonLong: String
                             ) {
-                                mViewModel.receiveMoney(partner, amount, reason)
+                                mViewModel.receiveMoney(partner, amount, action, reason, reasonLong)
                             }
                         }).show(parentFragmentManager, "ReceiveMoney")
                 }

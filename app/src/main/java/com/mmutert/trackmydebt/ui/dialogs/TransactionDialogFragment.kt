@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.databinding.DialogTransactionBinding
 import com.mmutert.trackmydebt.util.FormatHelper
 import java.math.BigDecimal
@@ -16,7 +17,13 @@ class TransactionDialogFragment(
 ) : DialogFragment() {
 
     interface TransactionConfirmedListener {
-        fun transactionConfirmed(amount: BigDecimal, receiving: Boolean, reason: String)
+        fun transactionConfirmed(
+            amount: BigDecimal,
+            receiving: Boolean,
+            action: TransactionAction,
+            reason: String,
+            reasonLong: String
+        )
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -34,8 +41,13 @@ class TransactionDialogFragment(
             .setPositiveButton(android.R.string.ok) { dialog, which ->
                 val amountInput = binding.etAmountInput.text.toString()
                 val amount = FormatHelper.parseNumber(amountInput)
-                val reason : String = binding.etReasonInput.text.toString()
-                listener.transactionConfirmed(amount, receiving, reason)
+                val reason: String = binding.etReasonInput.text.toString()
+                val action = if(receiving) {
+                    TransactionAction.MONEY_TO_USER
+                } else {
+                    TransactionAction.MONEY_FROM_USER
+                }
+                listener.transactionConfirmed(amount, receiving, action, reason, "")
             }
             .setNegativeButton(android.R.string.cancel) { dialog, which -> }
             .create()

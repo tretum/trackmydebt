@@ -303,7 +303,7 @@ class RecentActivityFragment : Fragment() {
             when (holder) {
                 is RecentActivityListViewHolder.TransactionViewHolder -> {
                     val listEntry = (entries[position] as ListEntry.TransactionEntry).transaction
-                    val (id, partnerId, received, amount, date, reason) = listEntry.transaction
+                    val (id, partnerId, received, amount, date, action, reason, reasonLong) = listEntry.transaction
 
                     val dateFormatter: DateTimeFormatter =
                         DateTimeFormat.shortTime().withLocale(Locale.getDefault())

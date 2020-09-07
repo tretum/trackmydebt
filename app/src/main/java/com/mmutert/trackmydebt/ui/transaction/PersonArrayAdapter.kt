@@ -2,7 +2,6 @@ package com.mmutert.trackmydebt.ui.transaction
 
 import android.content.Context
 import android.widget.ArrayAdapter
-import com.mmutert.trackmydebt.TransactionState
 import com.mmutert.trackmydebt.data.Person
 import java.util.ArrayList
 
