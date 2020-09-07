@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.joda.time.LocalDateTime
+import java.math.BigDecimal
 
 @Entity(
     tableName = "transactions",
@@ -32,5 +33,8 @@ data class Transaction(
 
     val date: LocalDateTime,
 
-    val reason: String
+    val reason: String,
+
+    @ColumnInfo(name = "reason_long")
+    val reasonLong: String
 )
