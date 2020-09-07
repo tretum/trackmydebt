@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.mmutert.trackmydebt.ui.transaction.AddTransactionViewModel" />
@@ -14,149 +15,158 @@
         android:layout_height="match_parent"
         tools:context=".ui.transaction.AddTransactionFragment">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:layout_height="wrap_content">
 
-            <Spinner
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:id="@+id/sp_transaction_cause_selector" />
+                android:padding="16dp">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_value_input"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
-                android:layout_marginHorizontal="64dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:startIconDrawable="@drawable/ic_baseline_attach_money_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sp_transaction_cause_selector"
-                app:hintAnimationEnabled="false"
-                app:hintEnabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
+                <Spinner
+                    android:id="@+id/sp_transaction_cause_selector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/et_value_input"
-                    android:hint="Value"
-                    android:inputType="numberDecimal"
-                    android:paddingStart="@dimen/text_input_pad_horizontal"
-                    android:paddingLeft="@dimen/text_input_pad_horizontal"
-                    android:paddingRight="@dimen/text_input_pad_horizontal"
-                    android:paddingTop="12dp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_reason_short_input"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/til_value_input"
-                app:hintAnimationEnabled="false"
-                app:hintEnabled="false">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_value_input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    android:layout_marginHorizontal="64dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:startIconDrawable="@drawable/ic_baseline_attach_money_24"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sp_transaction_cause_selector"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
 
-                <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_value_input"
+                        android:hint="Value"
+                        android:inputType="numberDecimal"
+                        android:paddingStart="@dimen/text_input_pad_horizontal"
+                        android:paddingLeft="@dimen/text_input_pad_horizontal"
+                        android:paddingRight="@dimen/text_input_pad_horizontal"
+                        android:paddingTop="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_reason_short_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/et_reason_short_input"
-                    android:hint="Reason (short, optional)"
-                    android:inputType="text"
-                    android:paddingStart="@dimen/text_input_pad_horizontal"
-                    android:paddingLeft="@dimen/text_input_pad_horizontal"
-                    android:paddingRight="@dimen/text_input_pad_horizontal"
-                    android:paddingTop="12dp" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginTop="16dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/til_value_input"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_calendar_today_24px"
-                android:id="@+id/iv_calendar_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_reason_short_input"
-                android:layout_marginTop="16dp"
-                android:padding="8dp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_reason_short_input"
+                        android:hint="Reason (short, optional)"
+                        android:inputType="text"
+                        android:paddingStart="@dimen/text_input_pad_horizontal"
+                        android:paddingLeft="@dimen/text_input_pad_horizontal"
+                        android:paddingRight="@dimen/text_input_pad_horizontal"
+                        android:paddingTop="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                tools:text="2020-09-01"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:textSize="18sp"
-                android:layout_height="wrap_content"
-                android:layout_width="0dp"
-                android:id="@+id/tv_date_selection"
-                app:layout_constraintTop_toTopOf="@+id/iv_calendar_icon"
-                app:layout_constraintBottom_toBottomOf="@+id/iv_calendar_icon"
-                app:layout_constraintStart_toEndOf="@+id/iv_calendar_icon"
-                android:layout_marginStart="16dp"
-                android:padding="8dp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_baseline_person_24"
-                android:id="@+id/iv_person_icon"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/iv_calendar_icon"
-                android:layout_marginTop="16dp"
-                android:padding="8dp" />
-
-            <Spinner
-                android:id="@+id/sp_select_person"
-                app:layout_constraintStart_toEndOf="@id/iv_person_icon"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/iv_person_icon"
-                app:layout_constraintBottom_toBottomOf="@id/iv_person_icon"
-                android:layout_marginStart="16dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:padding="8dp" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_reason_long_input"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="16dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/sp_select_person"
-                app:hintAnimationEnabled="false"
-                app:hintEnabled="false">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minLines="2"
-                    android:id="@+id/et_reason_long_input"
-                    android:hint="Reason (long, optional)"
-                    android:inputType="textMultiLine"
-                    android:paddingStart="@dimen/text_input_pad_horizontal"
-                    android:paddingLeft="@dimen/text_input_pad_horizontal"
-                    android:paddingRight="@dimen/text_input_pad_horizontal"
-                    android:paddingTop="12dp" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:id="@+id/iv_calendar_icon"
+                    android:layout_marginTop="16dp"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/ic_calendar_today_24px"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/til_reason_short_input" />
+
+                <TextView
+                    android:textSize="18sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:id="@+id/tv_date_selection"
+                    android:layout_marginStart="@dimen/margin_large"
+                    android:padding="8dp"
+                    app:layout_constraintTop_toTopOf="@+id/iv_calendar_icon"
+                    app:layout_constraintBottom_toBottomOf="@+id/iv_calendar_icon"
+                    app:layout_constraintStart_toEndOf="@+id/iv_calendar_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:text="2020-09-01" />
+
+                <ImageView
+                    android:id="@+id/iv_person_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/ic_baseline_person_24"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/iv_calendar_icon" />
+
+                <Spinner
+                    android:id="@+id/sp_select_person"
+                    android:layout_marginStart="@dimen/margin_large"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    app:layout_constraintStart_toEndOf="@id/iv_person_icon"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/iv_person_icon"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_person_icon" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_reason_long_input"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="16dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sp_select_person"
+                    app:hintAnimationEnabled="false"
+                    app:hintEnabled="false">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minLines="2"
+                        android:id="@+id/et_reason_long_input"
+                        android:hint="Reason (long, optional)"
+                        android:inputType="textMultiLine"
+                        android:paddingStart="@dimen/text_input_pad_horizontal"
+                        android:paddingLeft="@dimen/text_input_pad_horizontal"
+                        android:paddingRight="@dimen/text_input_pad_horizontal"
+                        android:paddingTop="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/floatingActionButton"
-            android:icon="@drawable/ic_done_24px"
-            android:text="Save"
+            android:text="@string/action_save"
+            android:theme="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:clickable="true"
             android:focusable="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="16dp" />
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/fab_margin"
+            app:icon="@android:drawable/ic_menu_save" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
