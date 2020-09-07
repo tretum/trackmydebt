@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Database(entities = [Person::class, Transaction::class], version = 1, exportSchema = false)
-@TypeConverters(value = [LocalDateTimeConverter::class])
+@TypeConverters(value = [Converters::class])
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun dao(): AppDao

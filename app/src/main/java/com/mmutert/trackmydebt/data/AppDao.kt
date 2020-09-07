@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface AppDao {
@@ -27,18 +28,27 @@ interface AppDao {
     @get:Query("Select * from transactions ORDER BY datetime(date) DESC")
     val transactionAndPerson: LiveData<List<TransactionAndPerson>>
 
+    @Query("SELECT * FROM persons where id = :referringPersonId")
+    fun getPerson(referringPersonId: Long) : LiveData<Person>
+
+    @Query("SELECT * FROM transactions where id = :transactionId")
+    fun getTransaction(transactionId: Long): LiveData<Transaction>
+
+    @get:Query("Select -SUM(t.amount) FROM transactions t")
+    val balance: LiveData<Long>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPerson(p: Person)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTransaction(t: Transaction)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateTransaction(t: Transaction)
+
     @Delete
     suspend fun deletePerson(p: Person)
 
     @Delete
     suspend fun deleteTransaction(t: Transaction)
-
-    @get:Query("Select -SUM(t.amount) FROM transactions t")
-    val balance: LiveData<Long>
 }
