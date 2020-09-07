@@ -25,6 +25,7 @@ import com.mmutert.trackmydebt.databinding.FragmentPersonDetailBinding
 import com.mmutert.trackmydebt.ui.home.SharedViewModel
 import com.mmutert.trackmydebt.util.FormatHelper
 import com.mmutert.trackmydebt.util.IntentHelper
+import java.math.BigDecimal
 
 class PersonDetailFragment : Fragment() {
 
@@ -53,12 +54,13 @@ class PersonDetailFragment : Fragment() {
         }
         mBinding.viewModel = mViewModel
 
+        // Set up the sum display and the paypal button
         mViewModel.sum.observe(viewLifecycleOwner) {
             val formattedSum = FormatHelper.printAsCurrency(-it)
             mBinding.formattedSum = formattedSum
 
             when {
-                it < 0L -> {
+                it < BigDecimal.ZERO -> {
                     mBinding.tvDebtDescription.text = getString(R.string.fragment_person_detail_credit_label)
                     mBinding.btPaypal.apply {
                         visibility = View.VISIBLE
@@ -103,7 +105,7 @@ class PersonDetailFragment : Fragment() {
                         }
                     }
                 }
-                it > 0L -> {
+                it > BigDecimal.ZERO -> {
                     mBinding.tvDebtDescription.text = getString(R.string.fragment_person_detail_debt_label)
                     mBinding.btPaypal.apply {
                         visibility = View.VISIBLE
@@ -265,8 +267,6 @@ class PersonDetailFragment : Fragment() {
 
     /**
      * Displays a snackbar that allows undoing the operation and on dismissing of the snackbar deletes the item
-     *
-     * @param itemToArchive The item to archive.
      */
     private fun deleteTransaction(position: Int) {
 

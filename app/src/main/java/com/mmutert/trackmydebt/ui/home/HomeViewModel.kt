@@ -11,12 +11,13 @@ import com.mmutert.trackmydebt.data.PersonAndTransactions
 import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.util.TimeHelper
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: AppRepository =
         AppRepository(AppDatabase.getDatabase(application).dao())
-    val balance: LiveData<Long> = repository.balance
+    val balance: LiveData<BigDecimal> = repository.balance
     val persons: LiveData<List<PersonAndTransactions>> = repository.personAndTransactions
 
     fun addPerson(name: String, paypalUsername: String?) {
@@ -31,11 +32,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun giveMoney(partner: Person, amount: Long, reason: String) {
+    fun giveMoney(partner: Person, amount: BigDecimal, reason: String) {
         addTransaction(Transaction(0, partner.id, false, -amount, TimeHelper.currentDateTimeLocalized, reason))
     }
 
-    fun receiveMoney(partner: Person, amount: Long, reason: String) {
+    fun receiveMoney(partner: Person, amount: BigDecimal, reason: String) {
         addTransaction(Transaction(0, partner.id, true, amount, TimeHelper.currentDateTimeLocalized, reason))
     }
 

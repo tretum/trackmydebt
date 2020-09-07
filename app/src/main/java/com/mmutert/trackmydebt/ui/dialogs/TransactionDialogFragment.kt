@@ -7,8 +7,8 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.databinding.DialogTransactionBinding
-import java.lang.NumberFormatException
-import kotlin.math.roundToLong
+import com.mmutert.trackmydebt.util.FormatHelper
+import java.math.BigDecimal
 
 class TransactionDialogFragment(
     private val receiving: Boolean,
@@ -16,7 +16,7 @@ class TransactionDialogFragment(
 ) : DialogFragment() {
 
     interface TransactionConfirmedListener {
-        fun transactionConfirmed(amount: Long, receiving: Boolean, reason: String)
+        fun transactionConfirmed(amount: BigDecimal, receiving: Boolean, reason: String)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -33,19 +33,7 @@ class TransactionDialogFragment(
             .setView(binding.root)
             .setPositiveButton(android.R.string.ok) { dialog, which ->
                 val amountInput = binding.etAmountInput.text.toString()
-                val amount : Long = if(amountInput.contains('.') || amountInput.contains(',')) {
-                    try {
-                        (amountInput.toFloat() * 100).roundToLong()
-                    } catch (e : NumberFormatException) {
-                        0L
-                    }
-                } else {
-                    try {
-                        amountInput.toLong() * 100
-                    } catch (e: NumberFormatException) {
-                        0
-                    }
-                }
+                val amount = FormatHelper.parseNumber(amountInput)
                 val reason : String = binding.etReasonInput.text.toString()
                 listener.transactionConfirmed(amount, receiving, reason)
             }
