@@ -44,7 +44,7 @@ dependencies {
     def junit_version = "4.13"
     def preference_version = '1.1.1'
     def appcompat_version = '1.2.0'
-    def material_version = '1.2.0'
+    def material_version = '1.2.1'
     def constraint_layout_version = '2.0.1'
     def navigation_version = '2.3.0'
     def espresso_version = '3.3.0'
@@ -76,7 +76,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:+'
     implementation "androidx.appcompat:appcompat:${appcompat_version}"
-    implementation 'com.google.android.material:material:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
     implementation "androidx.constraintlayout:constraintlayout:${constraint_layout_version}"
     implementation "androidx.navigation:navigation-fragment-ktx:${navigation_version}"
     implementation "androidx.navigation:navigation-ui-ktx:${navigation_version}"
