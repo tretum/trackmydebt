@@ -32,7 +32,7 @@ class Converters() {
     }
 
     @TypeConverter
-    fun toTransactionAction(unit: String?): TransactionAction {
-        return TransactionAction.valueOf(unit!!)
+    fun toTransactionAction(unit: String): TransactionAction {
+        return TransactionAction.valueOf(unit)
     }
 }

@@ -10,12 +10,12 @@ class TransactionStateArrayAdapter(context: Context, resource: Int) :
 
     private val values: MutableList<CharSequence> = ArrayList()
 
-    fun getSelectedUnit(position: Int): TransactionAction {
+    fun getSelectedAction(position: Int): TransactionAction {
         return TransactionAction.values()[position]
     }
 
-    fun getIndexOfUnit(unit: TransactionAction): Int {
-        return TransactionAction.values().indexOf(unit)
+    fun getIndexOfAction(action: TransactionAction): Int {
+        return TransactionAction.values().indexOf(action)
     }
 
     init {
