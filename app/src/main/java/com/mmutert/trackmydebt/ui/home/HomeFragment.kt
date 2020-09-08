@@ -19,14 +19,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
-import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.PersonAndTransactions
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.databinding.ItemDebtListBinding
 import com.mmutert.trackmydebt.ui.BottomSpaceDecoration
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
-import com.mmutert.trackmydebt.ui.dialogs.TransactionDialogFragment
 import com.mmutert.trackmydebt.util.FormatHelper
 import java.math.BigDecimal
 
@@ -128,33 +126,9 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                 val partner = mAdapter.getElementAtPosition(pos)
 
                 if (direction == ItemTouchHelper.RIGHT) {
-                    TransactionDialogFragment(
-                        false,
-                        object : TransactionDialogFragment.TransactionConfirmedListener {
-                            override fun transactionConfirmed(
-                                amount: BigDecimal,
-                                receiving: Boolean,
-                                action: TransactionAction,
-                                reason: String,
-                                reasonLong: String
-                            ) {
-                                mViewModel.giveMoney(partner, amount, action, reason, reasonLong)
-                            }
-                        }).show(parentFragmentManager, "GiveMoney")
+                    // TODO Delete transaction on swipe
                 } else if (direction == ItemTouchHelper.LEFT) {
-                    TransactionDialogFragment(
-                        true,
-                        object : TransactionDialogFragment.TransactionConfirmedListener {
-                            override fun transactionConfirmed(
-                                amount: BigDecimal,
-                                receiving: Boolean,
-                                action: TransactionAction,
-                                reason: String,
-                                reasonLong: String
-                            ) {
-                                mViewModel.receiveMoney(partner, amount, action, reason, reasonLong)
-                            }
-                        }).show(parentFragmentManager, "ReceiveMoney")
+                    // TODO Show transaction editor on swipe
                 }
                 mAdapter.notifyItemChanged(pos)
             }
