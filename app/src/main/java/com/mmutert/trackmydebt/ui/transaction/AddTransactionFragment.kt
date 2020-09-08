@@ -21,7 +21,9 @@ import com.mmutert.trackmydebt.databinding.FragmentAddTransactionBinding
 import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
+import org.joda.time.format.DateTimeFormat
 import java.util.Date
+import java.util.Locale
 
 class AddTransactionFragment : Fragment() {
 
@@ -112,6 +114,7 @@ class AddTransactionFragment : Fragment() {
         }
 
 
+        // Set up the Floating Action button to save the entry on click if there is no error
         binding.floatingActionButton.setOnClickListener {
             var noErrors = true
 
@@ -134,9 +137,7 @@ class AddTransactionFragment : Fragment() {
 
         setupDatePicker()
         setupTimePicker()
-        // TODO Setup time picker dialog
 
-        // viewModel.prepare(transactionId, referringPersonId)
     }
 
     private fun setupPerson(personId: Long) {
@@ -181,14 +182,14 @@ class AddTransactionFragment : Fragment() {
         val hour: Int = viewModel.selectedTime.hourOfDay
 
         // Initial label for the button#
-        // TODO Fix time display
-        binding.btTimeSelection.text = viewModel.DATE_FORMATTER.print(viewModel.selectedTime)
-        
+        val timeFormatter = DateTimeFormat.shortTime().withLocale(Locale.getDefault())
+        binding.btTimeSelection.text = timeFormatter.print(viewModel.selectedTime)
+
         val materialTimePicker = TimePickerDialog(
             requireContext(),
             { view, hourOfDay, minute ->
                 viewModel.selectedTime = LocalTime(hourOfDay, minute)
-                binding.btTimeSelection.text = viewModel.DATE_FORMATTER.print(viewModel.selectedTime)
+                binding.btTimeSelection.text = timeFormatter.print(viewModel.selectedTime)
             }, hour, minute, is24HourFormat(context)
         )
 
