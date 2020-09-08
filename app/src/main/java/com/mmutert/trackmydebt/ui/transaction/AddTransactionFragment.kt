@@ -16,10 +16,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.databinding.FragmentAddTransactionBinding
 import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.LocalDate
+import org.joda.time.LocalDateTime
 import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
 import java.util.Date
@@ -27,11 +29,14 @@ import java.util.Locale
 
 class AddTransactionFragment : Fragment() {
 
+    private lateinit var transactionStateAdapter: TransactionStateArrayAdapter
     private val LOG_TAG: String = "AddTransactionFragment"
     private lateinit var viewModel: AddTransactionViewModel
 
     private lateinit var personArrayAdapter: PersonArrayAdapter
     private lateinit var binding: FragmentAddTransactionBinding
+    private lateinit var materialTimePicker: TimePickerDialog
+    private lateinit var datePickerBuilder: MaterialDatePicker.Builder<Long>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,33 +63,46 @@ class AddTransactionFragment : Fragment() {
         Log.d(LOG_TAG, "Argument transactionId: $transactionId")
         Log.d(LOG_TAG, "Argument referringPersonId: $referringPersonId")
 
+        // Set up the person selection spinner
+        setupPersonSpinner()
+        setupTransactionActionSpinner()
+
+        setupDatePicker()
+        setupTimePicker()
+
         if (transactionId > 0L) {
             val transactionLiveData = viewModel.loadTransaction(transactionId)
             transactionLiveData.observe(viewLifecycleOwner) {
                 viewModel.transaction = it
+
                 // TODO Setup all values in the layout
                 binding.etReasonShortInput.text =
                     Editable.Factory.getInstance().newEditable(it.reason)
+                binding.etReasonLongInput.text =
+                    Editable.Factory.getInstance().newEditable(it.reasonLong)
                 binding.etValueInput.text =
                     Editable.Factory.getInstance().newEditable(FormatHelper.printAsFloat(it.amount))
-                setupPerson(it.partnerId)
+                updateSpinnerWithPerson(it.partnerId)
+                updateTransactionActionSpinnerWithAction(it.action)
+                updateTimePicker(it.date)
+                updateDatePicker(it.date)
 
                 // TODO Save editing status for preserving after rotation
             }
         } else if (referringPersonId > 0L) {
-            setupPerson(referringPersonId)
+            updateSpinnerWithPerson(referringPersonId)
         }
+
 
         binding.apply {
             viewModel = this@AddTransactionFragment.viewModel
-
-            spTransactionCauseSelector.adapter = TransactionStateArrayAdapter(
-                requireContext(),
-                android.R.layout.simple_spinner_dropdown_item
-            )
         }
 
+        // Set up the Floating Action button to save the entry on click if there is no error
+        setupSaveFAB()
+    }
 
+    private fun setupPersonSpinner() {
         personArrayAdapter = PersonArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item
@@ -112,9 +130,9 @@ class AddTransactionFragment : Fragment() {
                     }
                 }
         }
+    }
 
-
-        // Set up the Floating Action button to save the entry on click if there is no error
+    private fun setupSaveFAB() {
         binding.floatingActionButton.setOnClickListener {
             var noErrors = true
 
@@ -134,13 +152,24 @@ class AddTransactionFragment : Fragment() {
                 findNavController().navigateUp()
             }
         }
-
-        setupDatePicker()
-        setupTimePicker()
-
     }
 
-    private fun setupPerson(personId: Long) {
+    private fun setupTransactionActionSpinner() {
+        transactionStateAdapter = TransactionStateArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item
+        )
+
+        binding.spTransactionActionSelector.adapter = transactionStateAdapter
+    }
+
+    private fun updateTransactionActionSpinnerWithAction(action: TransactionAction) {
+
+        val indexOfAction = transactionStateAdapter.getIndexOfAction(action)
+        binding.spTransactionActionSelector.setSelection(indexOfAction)
+    }
+
+    private fun updateSpinnerWithPerson(personId: Long) {
         val referringPerson: LiveData<Person> = viewModel.loadPerson(personId)
         referringPerson.observe(viewLifecycleOwner) {
             val indexOfPerson = personArrayAdapter.getIndexOfPerson(it)
@@ -155,37 +184,52 @@ class AddTransactionFragment : Fragment() {
     private fun setupDatePicker() {
         binding.btDateSelection.text = viewModel.DATE_FORMATTER.print(viewModel.transaction.date)
 
-        // Set up the freezing date picker
-        val datePicker = createDatePicker(
-            R.string.fragment_add_transaction_date_picker_title,
-            viewModel.transaction.date.toLocalDate()
-        )
-
-        // Add the behavior for the positive button of the date picker
-        datePicker.addOnPositiveButtonClickListener { selection: Long ->
-            val date: LocalDate = convertSelectedDate(selection)
-
-            viewModel.selectedDate = date
-
-            val selectedFrozenDateFormatted = viewModel.DATE_FORMATTER.print(date)
-            binding.btDateSelection.text = selectedFrozenDateFormatted
-        }
+        // Set up the date picker
+        datePickerBuilder = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(getString(R.string.fragment_add_transaction_date_picker_title))
+            // TODO Fix hack with adding hours to get the correct selection
+            .setSelection(
+                viewModel.transaction.date.toLocalDate()
+                    .toLocalDateTime(LocalTime.MIDNIGHT.plusHours(12))
+                    .toDate().time
+            )
 
         // Open the date picker on clicking the text view
         binding.btDateSelection.setOnClickListener {
-            datePicker.show(parentFragmentManager, datePicker.toString())
+            // Add the behavior for the positive button of the date picker
+            val picker = datePickerBuilder.build()
+            picker.addOnPositiveButtonClickListener { selection: Long ->
+                val date: LocalDate = convertSelectedDate(selection)
+
+                viewModel.selectedDate = date
+
+                val selectedFrozenDateFormatted = viewModel.DATE_FORMATTER.print(date)
+                binding.btDateSelection.text = selectedFrozenDateFormatted
+            }
+
+            picker.show(parentFragmentManager, datePickerBuilder.toString())
         }
+    }
+
+    private fun updateDatePicker(date: LocalDateTime) {
+        datePickerBuilder.setSelection(
+            date.toLocalDate()
+                .toLocalDateTime(LocalTime.MIDNIGHT.plusHours(12))
+                .toDate().time
+        )
+        binding.btDateSelection.text = viewModel.DATE_FORMATTER.print(date)
     }
 
     private fun setupTimePicker() {
         val minute: Int = viewModel.selectedTime.minuteOfHour
         val hour: Int = viewModel.selectedTime.hourOfDay
 
-        // Initial label for the button#
+        // Initial label for the button
+        // TODO Extract common formatter
         val timeFormatter = DateTimeFormat.shortTime().withLocale(Locale.getDefault())
         binding.btTimeSelection.text = timeFormatter.print(viewModel.selectedTime)
 
-        val materialTimePicker = TimePickerDialog(
+        materialTimePicker = TimePickerDialog(
             requireContext(),
             { view, hourOfDay, minute ->
                 viewModel.selectedTime = LocalTime(hourOfDay, minute)
@@ -198,6 +242,15 @@ class AddTransactionFragment : Fragment() {
         }
     }
 
+    private fun updateTimePicker(date: LocalDateTime) {
+        val hourOfDay = date.hourOfDay
+        val minuteOfHour = date.minuteOfHour
+        materialTimePicker.updateTime(hourOfDay, minuteOfHour)
+
+        val timeFormatter = DateTimeFormat.shortTime().withLocale(Locale.getDefault())
+        binding.btTimeSelection.text = timeFormatter.print(date)
+    }
+
     /**
      * Converts the selected date from a date picker to a [LocalDate].
      *
@@ -206,27 +259,5 @@ class AddTransactionFragment : Fragment() {
      */
     private fun convertSelectedDate(selection: Long): LocalDate {
         return LocalDate.fromDateFields(Date(selection))
-    }
-
-    /**
-     * Creates a material date picker. This can be shown using result.show()
-     *
-     * @param titleStringId        The string id of the title text
-     * @param defaultSelectionDate The date
-     * @return The date picker
-     */
-    private fun createDatePicker(
-        titleStringId: Int,
-        defaultSelectionDate: LocalDate
-    ): MaterialDatePicker<Long> {
-
-        val builder = MaterialDatePicker.Builder.datePicker()
-        builder.setTitleText(resources.getString(titleStringId))
-        // TODO Fix hack with adding hours to get the correct selection
-        builder.setSelection(
-            defaultSelectionDate.toLocalDateTime(LocalTime.MIDNIGHT.plusHours(12))
-                .toDate().time
-        )
-        return builder.build()
     }
 }

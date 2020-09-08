@@ -26,7 +26,7 @@
                 android:padding="16dp">
 
                 <Spinner
-                    android:id="@+id/sp_transaction_cause_selector"
+                    android:id="@+id/sp_transaction_action_selector"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +43,7 @@
                     app:startIconDrawable="@drawable/ic_baseline_attach_money_24"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/sp_transaction_cause_selector"
+                    app:layout_constraintTop_toBottomOf="@id/sp_transaction_action_selector"
                     app:hintAnimationEnabled="false"
                     app:hintEnabled="false">
 
