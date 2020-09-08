@@ -49,8 +49,8 @@
 
     <string name="transaction_state_money_to_user">I received money</string>
     <string name="transaction_state_money_from_user">I gave money</string>
-    <string name="transaction_state_lent_to_user">I bought for someone</string>
-    <string name="transaction_state_lent_from_user">Someone bought for me</string>
+    <string name="transaction_state_lent_by_user">I bought for someone</string>
+    <string name="transaction_state_lent_to_user">Someone bought for me</string>
 
     <string name="no_reason">(No reason given)</string>
     <string name="received_transaction">Received</string>

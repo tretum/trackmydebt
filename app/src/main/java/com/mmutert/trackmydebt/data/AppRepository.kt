@@ -2,17 +2,23 @@ package com.mmutert.trackmydebt.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 
-class AppRepository(private val dao: AppDao) {
+class AppRepository(
+    private val dao: AppDao,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+) {
 
     val personAndTransactions: LiveData<List<PersonAndTransactions>> = dao.personAndTransactions
     val transactionAndPerson: LiveData<List<TransactionAndPerson>> = dao.transactionAndPerson
-    val persons : LiveData<List<Person>> = dao.persons
-    val transactions : LiveData<List<Transaction>> = dao.transactions
-    private val _balance : LiveData<Long> = dao.balance
+    val persons: LiveData<List<Person>> = dao.persons
+    val transactions: LiveData<List<Transaction>> = dao.transactions
+    private val _balance: LiveData<Long> = dao.balance
     val balance = Transformations.map(_balance) {
-        if(it != null) {
+        if (it != null) {
             BigDecimal(it / 100.0)
         } else {
             // Fixes crash on initialization
@@ -36,19 +42,33 @@ class AppRepository(private val dao: AppDao) {
         dao.deleteTransaction(t)
     }
 
-    suspend fun removePerson(p : Person) {
+    suspend fun removePerson(p: Person) {
         dao.deletePerson(p)
     }
 
-    suspend fun addPerson(p : Person) {
+    suspend fun addPerson(p: Person) {
         dao.insertPerson(p)
     }
 
-    fun getPerson(referringPersonId: Long): LiveData<Person> {
-        return dao.getPerson(referringPersonId)
+    suspend fun getPerson(referringPersonId: Long): Result<Person> =
+        withContext(ioDispatcher) {
+        try {
+            val person = dao.getPerson(referringPersonId)
+                ?: return@withContext Result.Error(Exception("Transaction not found!"))
+            return@withContext Result.Success(person)
+        } catch (e: java.lang.Exception) {
+            return@withContext Result.Error(e)
+        }
     }
 
-    fun getTransaction(transactionId: Long): LiveData<Transaction> {
-        return dao.getTransaction(transactionId)
-    }
+    suspend fun getTransaction(transactionId: Long): Result<Transaction> =
+        withContext(ioDispatcher) {
+            try {
+                val transaction = dao.getTransaction(transactionId)
+                    ?: return@withContext Result.Error(Exception("Transaction not found!"))
+                return@withContext Result.Success(transaction)
+            } catch (e: java.lang.Exception) {
+                return@withContext Result.Error(e)
+            }
+        }
 }

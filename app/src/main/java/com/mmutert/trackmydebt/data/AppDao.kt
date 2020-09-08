@@ -29,10 +29,10 @@ interface AppDao {
     val transactionAndPerson: LiveData<List<TransactionAndPerson>>
 
     @Query("SELECT * FROM persons where id = :referringPersonId")
-    fun getPerson(referringPersonId: Long) : LiveData<Person>
+    fun getPerson(referringPersonId: Long) : Person?
 
     @Query("SELECT * FROM transactions where id = :transactionId")
-    fun getTransaction(transactionId: Long): LiveData<Transaction>
+    fun getTransaction(transactionId: Long): Transaction?
 
     @get:Query("Select -SUM(t.amount) FROM transactions t")
     val balance: LiveData<Long>
