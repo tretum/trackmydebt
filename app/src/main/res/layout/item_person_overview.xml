@@ -43,7 +43,8 @@
             android:id="@+id/list_item_receive_money_background"
             android:visibility="invisible"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:visibility="visible">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/list_item_receive_money_card"
@@ -55,15 +56,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/list_item_take_icon"
-                        android:text="Receive\nMoney"
+                    <ImageView
+                        android:id="@+id/iv_list_item_delete_icon"
                         android:layout_alignParentEnd="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="@dimen/list_item_swipe_icon_margin_horizontal"
-                        android:layout_marginEnd="@dimen/list_item_swipe_icon_margin_horizontal" />
+                        android:layout_marginEnd="@dimen/list_item_swipe_icon_margin_horizontal"
+                        app:srcCompat="@drawable/ic_baseline_delete_24" />
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
         </RelativeLayout>
@@ -72,15 +73,15 @@
             android:visibility="visible"
             android:id="@+id/list_item_foreground"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:visibility="invisible">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/list_item_foreground_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:strokeWidth="2dp"
-                android:background="?android:attr/selectableItemBackground"
-                style="@style/Card">
+                style="@style/Card"
+                android:background="?android:attr/selectableItemBackground">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:padding="16dp"
@@ -91,6 +92,7 @@
                         tools:text="John Doe"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:id="@+id/tv_name"
                         android:textSize="18sp"
                         android:layout_marginEnd="16dp"
@@ -102,6 +104,7 @@
                         tools:text="5,63€"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:textAppearance="?attr/textAppearanceListItem"
                         android:id="@+id/tv_amount"
                         android:textSize="18sp"
                         app:layout_constraintTop_toTopOf="parent"
