@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 app:layoutManager="LinearLayoutManager"
                 tools:context=".ui.persondetail.PersonDetailFragment"
-                tools:listitem="@layout/item_person_detail" />
+                tools:listitem="@layout/item_transaction_person" />
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

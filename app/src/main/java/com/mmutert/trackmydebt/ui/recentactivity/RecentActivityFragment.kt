@@ -19,7 +19,7 @@ import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.TransactionAndPerson
 import com.mmutert.trackmydebt.databinding.FragmentRecentActivityBinding
 import com.mmutert.trackmydebt.databinding.ItemDateBinding
-import com.mmutert.trackmydebt.databinding.ItemRecentActivityBinding
+import com.mmutert.trackmydebt.databinding.ItemTransactionRecentActivityBinding
 import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
@@ -285,7 +285,7 @@ class RecentActivityFragment : Fragment() {
                     return RecentActivityListViewHolder.DateViewHolder(inflate)
                 }
                 TRANSACTION -> {
-                    val binding = ItemRecentActivityBinding.inflate(inflater, parent, false)
+                    val binding = ItemTransactionRecentActivityBinding.inflate(inflater, parent, false)
                     return RecentActivityListViewHolder.TransactionViewHolder(binding)
                 }
                 else -> return RecentActivityListViewHolder.DateViewHolder(
@@ -372,7 +372,7 @@ class RecentActivityFragment : Fragment() {
         }
 
         sealed class RecentActivityListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            class TransactionViewHolder(val mBinding: ItemRecentActivityBinding) :
+            class TransactionViewHolder(val mBinding: ItemTransactionRecentActivityBinding) :
                 RecentActivityListViewHolder(mBinding.root)
 
             class DateViewHolder(val mBinding: ItemDateBinding) :

@@ -57,7 +57,7 @@
                 android:id="@+id/rv_debt_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:listitem="@layout/item_debt_list"
+                tools:listitem="@layout/item_person_overview"
                 tools:itemCount="20" />
         </LinearLayout>
 

@@ -14,7 +14,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_recent_activity"
+            tools:listitem="@layout/item_transaction_recent_activity"
             android:id="@+id/rv_recent_activity_list" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

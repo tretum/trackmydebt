@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.databinding.ItemDateBinding
-import com.mmutert.trackmydebt.databinding.ItemPersonDetailBinding
+import com.mmutert.trackmydebt.databinding.ItemTransactionPersonBinding
 import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
@@ -61,9 +61,9 @@ class PersonDetailAdapter(val context: Context, val transactionClickedListener: 
                 PersonDetailViewHolder.DateViewHolder(binding)
             }
             else -> {
-                val binding: ItemPersonDetailBinding = DataBindingUtil.inflate(
+                val binding: ItemTransactionPersonBinding = DataBindingUtil.inflate(
                     inflater,
-                    R.layout.item_person_detail,
+                    R.layout.item_transaction_person,
                     parent,
                     false
                 )
@@ -134,7 +134,7 @@ class PersonDetailAdapter(val context: Context, val transactionClickedListener: 
     }
 
     sealed class PersonDetailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        class TransactionViewHolder(val mBinding: ItemPersonDetailBinding) :
+        class TransactionViewHolder(val mBinding: ItemTransactionPersonBinding) :
             PersonDetailViewHolder(mBinding.root)
 
         class DateViewHolder(val mBinding: ItemDateBinding) :
