@@ -34,9 +34,6 @@ interface AppDao {
     @Query("SELECT * FROM transactions where id = :transactionId")
     fun getTransaction(transactionId: Long): Transaction?
 
-    @get:Query("Select -SUM(t.amount) FROM transactions t")
-    val balance: LiveData<Long>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPerson(p: Person)
 

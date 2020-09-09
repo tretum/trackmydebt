@@ -30,12 +30,14 @@
                     android:text="@string/fragment_home_overall_balance_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:textAppearance="?attr/textAppearanceHeadline4"
+                    app:layout_constraintTop_toTopOf="@+id/tv_overall_balance_value"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:textSize="20sp"
                     android:id="@+id/tv_overall_balance_label"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_overall_balance_value"
+                    android:layout_marginBottom="5dp" />
 
                 <TextView
                     tools:text="10.00€"
@@ -43,11 +45,56 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="24sp"
+                    android:textAppearance="?attr/textAppearanceHeadline4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     android:id="@+id/tv_overall_balance_value"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_sum_of_money_lent_label"
+                    android:text="Money lent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="18sp"
+                    android:labelFor="@id/tv_sum_of_money_lent_value"
+                    app:layout_constraintStart_toStartOf="@+id/tv_overall_balance_label"
+                    app:layout_constraintTop_toTopOf="@+id/tv_sum_of_money_lent_value"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_sum_of_money_lent_value" />
+
+                <TextView
+                    android:id="@+id/tv_sum_of_money_lent_value"
+                    tools:text="20,00 €"
+                    android:text="@{viewmodel.sumCreditFormatted}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_overall_balance_value" />
+
+                <TextView
+                    android:id="@+id/tv_sum_of_money_owed_label"
+                    android:text="Money owed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:labelFor="@id/tv_sum_of_money_owed_value"
+                    app:layout_constraintStart_toStartOf="@+id/tv_sum_of_money_lent_label"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_sum_of_money_owed_value"
+                    app:layout_constraintTop_toTopOf="@+id/tv_sum_of_money_owed_value" />
+
+                <TextView
+                    android:id="@+id/tv_sum_of_money_owed_value"
+                    tools:text="10.00 €"
+                    android:text="@{viewmodel.sumDebtFormatted}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_sum_of_money_lent_value" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View

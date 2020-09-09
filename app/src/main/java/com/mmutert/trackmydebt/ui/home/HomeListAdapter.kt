@@ -9,10 +9,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.PersonAndTransactions
 import com.mmutert.trackmydebt.databinding.ItemPersonOverviewBinding
 import com.mmutert.trackmydebt.util.FormatHelper
+import com.mmutert.trackmydebt.util.balance
 import java.math.BigDecimal
 
 class HomeListAdapter(
@@ -35,10 +37,7 @@ class HomeListAdapter(
         val (person, transactions) = getItem(position)
         val (_, name, _) = person
 
-        var sum = BigDecimal(0)
-        transactions.forEach {
-            sum = sum.plus(-it.amount)
-        }
+        val sum = transactions.balance()
 
         val printAsCurrency = FormatHelper.printAsCurrency(sum)
 
