@@ -1,6 +1,5 @@
 package com.mmutert.trackmydebt.ui.home
 
-import android.content.Context
 import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,13 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Person
-import com.mmutert.trackmydebt.data.PersonAndTransactions
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
-import com.mmutert.trackmydebt.databinding.ItemPersonOverviewBinding
 import com.mmutert.trackmydebt.ui.BottomSpaceDecoration
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
 import com.mmutert.trackmydebt.util.FormatHelper
-import java.math.BigDecimal
 
 class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
@@ -35,7 +31,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         private set
     private lateinit var mBinding: FragmentHomeBinding
 
-    private lateinit var mAdapter: DebtListAdapter
+    private lateinit var mAdapter: HomeListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,16 +59,20 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         }
 
         mAdapter =
-            DebtListAdapter(requireContext(), object : DebtListAdapter.ListItemClickListener {
-                override fun listItemClicked(p: Person) {
-                    mSharedViewModel.selectPerson(p)
-                    val fragmentPersonDetail = HomeFragmentDirections.fragmentPersonDetail(p.name)
-                    Navigation.findNavController(mBinding.root).navigate(fragmentPersonDetail)
-                }
-            })
-        mAdapter.setList(ArrayList())
+            HomeListAdapter(
+                requireContext(),
+                mViewModel,
+                object : HomeListAdapter.ListItemClickListener {
+                    override fun listItemClicked(p: Person) {
+                        mSharedViewModel.selectPerson(p)
+                        val fragmentPersonDetail =
+                            HomeFragmentDirections.fragmentPersonDetail(p.name)
+                        Navigation.findNavController(mBinding.root).navigate(fragmentPersonDetail)
+                    }
+                })
+
         mViewModel.persons.observe(viewLifecycleOwner, {
-            mAdapter.setList(it)
+            mAdapter.submitList(it)
         })
 
         mBinding.rvDebtList.apply {
@@ -123,7 +123,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val pos = viewHolder.adapterPosition
-                val partner = mAdapter.getElementAtPosition(pos)
+                val partner = mAdapter.currentList[pos].person
 
                 if (direction == ItemTouchHelper.RIGHT) {
                     // TODO Delete transaction on swipe
@@ -137,7 +137,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                 super.onSelectedChanged(viewHolder, actionState)
 
                 if (viewHolder != null) {
-                    val binding = (viewHolder as DebtListAdapter.DebtListViewHolder).binding
+                    val binding = (viewHolder as HomeListAdapter.HomeListViewHolder).binding
                     val foregroundView: View = binding.listItemForeground
                     getDefaultUIUtil().onSelected(foregroundView)
                 }
@@ -149,7 +149,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                 actionState: Int, isCurrentlyActive: Boolean
             ) {
 
-                val binding = (viewHolder as DebtListAdapter.DebtListViewHolder).binding
+                val binding = (viewHolder as HomeListAdapter.HomeListViewHolder).binding
                 val giveMoneyBackground: View = binding.listItemGiveMoneyBackground
                 val receiveMoneyBackground: View = binding.listItemReceiveMoneyBackground
                 when {
@@ -182,7 +182,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder
             ) {
-                val binding = (viewHolder as DebtListAdapter.DebtListViewHolder).binding
+                val binding = (viewHolder as HomeListAdapter.HomeListViewHolder).binding
                 val foregroundView: View = binding.listItemForeground
                 getDefaultUIUtil().clearView(foregroundView)
             }
@@ -192,7 +192,7 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                 viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float,
                 actionState: Int, isCurrentlyActive: Boolean
             ) {
-                val binding = (viewHolder as DebtListAdapter.DebtListViewHolder).binding
+                val binding = (viewHolder as HomeListAdapter.HomeListViewHolder).binding
                 val foregroundView: View = binding.listItemForeground
                 getDefaultUIUtil().onDraw(
                     c,
@@ -205,101 +205,6 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
                 )
             }
         })
-    }
-
-    class DebtListAdapter(val context: Context, val listener: ListItemClickListener) :
-        RecyclerView.Adapter<DebtListAdapter.DebtListViewHolder>() {
-
-        // private val mDiffer = AsyncListDiffer(this, DIFF_CALLBACK)
-        private lateinit var list: List<PersonAndTransactions>
-
-        fun setList(list: List<PersonAndTransactions>) {
-            this.list = list
-            notifyDataSetChanged()
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DebtListViewHolder {
-            val inflater = LayoutInflater.from(parent.context)
-
-            val binding: ItemPersonOverviewBinding =
-                DataBindingUtil.inflate(inflater, R.layout.item_person_overview, parent, false)
-
-            return DebtListViewHolder(binding)
-        }
-
-        override fun onBindViewHolder(holder: DebtListViewHolder, position: Int) {
-            val (person, transactions) = list[position]
-            val (id, name, paypalUsername) = person
-
-            var sum = BigDecimal(0)
-            transactions.forEach {
-                sum = sum.plus(-it.amount)
-            }
-
-            val printAsCurrency = FormatHelper.printAsCurrency(sum)
-            holder.binding.tvAmount.text = printAsCurrency
-            holder.binding.tvName.text = name
-            when {
-                sum == BigDecimal.ZERO -> {
-                    holder.binding.listItemForegroundCard.strokeColor =
-                        context.resources.getColor(
-                            R.color.white
-                        )
-                }
-                sum > BigDecimal.ZERO -> {
-                    holder.binding.listItemForegroundCard.strokeColor =
-                        context.resources.getColor(
-                            R.color.positive_100
-                        )
-                }
-                sum < BigDecimal.ZERO -> {
-                    holder.binding.listItemForegroundCard.strokeColor =
-                        context.resources.getColor(
-                            R.color.negative_100
-                        )
-                }
-            }
-
-            holder.binding.root.setOnClickListener {
-                listener.listItemClicked(person)
-            }
-        }
-
-        fun getElementAtPosition(position: Int): Person {
-            return list[position].person
-        }
-
-        override fun getItemCount(): Int {
-            return list.size
-        }
-
-        class DebtListViewHolder(val binding: ItemPersonOverviewBinding) :
-            RecyclerView.ViewHolder(binding.root)
-
-        interface ListItemClickListener {
-            fun listItemClicked(p: Person)
-        }
-
-        // companion object {
-        //     /**
-        //      * The Callback for the DiffUtil.
-        //      */
-        //     private val DIFF_CALLBACK: DiffUtil.ItemCallback<FrozenItem> =
-        //         object : DiffUtil.ItemCallback<FrozenItem>() {
-        //             override fun areItemsTheSame(
-        //                 oldFrozenItem: FrozenItem, newFrozenItem: FrozenItem): Boolean {
-        //                 // FrozenItem properties may have changed if reloaded from the DB, but ID is fixed
-        //                 return oldFrozenItem.id == newFrozenItem.id
-        //             }
-        //
-        //             override fun areContentsTheSame(
-        //                 oldFrozenItem: FrozenItem, newFrozenItem: FrozenItem): Boolean {
-        //                 // NOTE: if you use equals, your object must properly override Object#equals()
-        //                 // Incorrectly returning false here will result in too many animations.
-        //                 return oldFrozenItem == newFrozenItem
-        //             }
-        //         }
-        // }
     }
 
     override fun personAdded(name: String, paypalUsername: String?) {
