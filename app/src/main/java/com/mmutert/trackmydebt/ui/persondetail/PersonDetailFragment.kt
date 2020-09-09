@@ -47,78 +47,26 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
         mBinding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_person_detail, container, false)
 
+
         mViewModel = ViewModelProvider(this).get(PersonDetailViewModel::class.java)
 
         val sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.selectedPerson.observe(viewLifecycleOwner) { person ->
             mViewModel.selectPerson(person)
         }
-        mBinding.viewModel = mViewModel
+        mBinding.apply {
+
+            viewModel = mViewModel
+            lifecycleOwner = viewLifecycleOwner
+        }
 
         // Set up the sum display and the paypal button
         mViewModel.sum.observe(viewLifecycleOwner) {
-            val formattedSum = FormatHelper.printAsCurrency(-it)
-            mBinding.formattedSum = formattedSum
+            val formattedSum = FormatHelper.printAsCurrency(it)
 
             when {
-                it < BigDecimal.ZERO -> {
-                    mBinding.tvOverallDescription.text = getString(R.string.fragment_person_detail_credit_label)
-                    mBinding.btPaypal.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.button_paypal_request_label)
-                        setOnClickListener {
-                            // Share your paypal.me link or just a message which includes the amount
-
-                            val username = PreferenceManager.getDefaultSharedPreferences(context)
-                                .getString(context.getString(R.string.pref_paypal_username_key), "")
-
-                            val shareIntent: Intent = Intent().apply {
-                                action = Intent.ACTION_SEND
-
-                                // TODO Refactor with string resources
-                                val message =
-                                    """
-                                    You owe me $formattedSum. 
-                                    ${
-                                        if (username != null && username.isNotBlank()) {
-                                            """
-                                    Please send me the money using the following link:
-                                    https://paypal.me/$username/$formattedSum
-                                    """
-                                        } else {
-                                            ""
-                                        }
-                                    }
-                                    """.trimIndent()
-                                putExtra(
-                                    Intent.EXTRA_TEXT,
-                                    message
-                                )
-                                type = "text/plain"
-                            }
-                            startActivity(
-                                Intent.createChooser(
-                                    shareIntent,
-                                    context.getString(R.string.paypal_link_share_menu_title)
-                                )
-                            )
-
-                        }
-                    }
-                }
-                it > BigDecimal.ZERO -> {
-                    mBinding.tvOverallDescription.text = getString(R.string.fragment_person_detail_debt_label)
-                    mBinding.btPaypal.apply {
-                        visibility = View.VISIBLE
-                        text = context.getString(R.string.button_paypal_send_label)
-                        setOnClickListener {
-                            // Paying = Opening the browser to the paypal.me site
-                            val intent =
-                                IntentHelper.createBrowserIntent("https://paypal.me/${mViewModel.person.paypalUserName}/$formattedSum")
-                            requireActivity().startActivity(intent)
-                        }
-                    }
-                }
+                it > BigDecimal.ZERO -> preparePaypalShareButton(formattedSum)
+                it < BigDecimal.ZERO -> preparePaypalPayButton(formattedSum)
                 else -> {
                     mBinding.btPaypal.visibility = View.GONE
                     mBinding.tvOverallDescription.text = ""
@@ -137,17 +85,74 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
 
         // Set the adapter
         mAdapter = PersonDetailAdapter(requireContext(), this)
-        mBinding.list.apply {
+        mBinding.rvTransactionList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = mAdapter
             mViewModel.transactions.observe(
                 viewLifecycleOwner,
                 { mAdapter.setTransactions(it.toMutableList()) })
         }
-        createSwipeHelper().attachToRecyclerView(mBinding.list)
+        createSwipeHelper().attachToRecyclerView(mBinding.rvTransactionList)
         return mBinding.root
     }
 
+    private fun preparePaypalPayButton(formattedSum: String) {
+        mBinding.tvOverallDescription.text = getString(R.string.fragment_person_detail_debt_label)
+        mBinding.btPaypal.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                // Paying = Opening the browser to the paypal.me site
+                val intent =
+                    IntentHelper.createBrowserIntent("https://paypal.me/${mViewModel.person.paypalUserName}/$formattedSum")
+                requireActivity().startActivity(intent)
+            }
+        }
+    }
+
+    private fun preparePaypalShareButton(formattedSum: String) {
+        mBinding.tvOverallDescription.text = getString(R.string.fragment_person_detail_credit_label)
+        mBinding.btPaypal.apply {
+            visibility = View.VISIBLE
+            setOnClickListener {
+                // Share your paypal.me link or just a message which includes the amount
+
+                val username = PreferenceManager.getDefaultSharedPreferences(context)
+                    .getString(context.getString(R.string.pref_paypal_username_key), "")
+
+                val shareIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+
+                    // TODO Refactor with string resources
+                    val message =
+                        """
+                                        You owe me $formattedSum. 
+                                        ${
+                            if (username != null && username.isNotBlank()) {
+                                """
+                                        Please send me the money using the following link:
+                                        https://paypal.me/$username/$formattedSum
+                                        """
+                            } else {
+                                ""
+                            }
+                        }
+                                        """.trimIndent()
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        message
+                    )
+                    type = "text/plain"
+                }
+                startActivity(
+                    Intent.createChooser(
+                        shareIntent,
+                        context.getString(R.string.paypal_link_share_menu_title)
+                    )
+                )
+
+            }
+        }
+    }
 
     /**
      * Creates the ItemTouchHelper that archives items in the item list on swipe to the right.
@@ -285,7 +290,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
         val transaction =
             (elementAtPosition as PersonDetailAdapter.ListEntry.TransactionEntry).transaction
         val mDeleteSnackbar = Snackbar.make(
-            mBinding.list,
+            mBinding.rvTransactionList,
             "Removed transaction ${transaction.id}",
             Snackbar.LENGTH_LONG
         )

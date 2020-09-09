@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="androidx.core.content.ContextCompat"/>
+        <import type="android.view.View"/>
 
         <variable
             name="viewModel"
             type="com.mmutert.trackmydebt.ui.persondetail.PersonDetailViewModel" />
-
-        <variable
-            name="formattedSum"
-            type="String" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -34,6 +32,7 @@
 
                 <Button
                     android:id="@+id/bt_paypal"
+                    android:text='@{viewModel.paypalButtonLabelRes > 0 ? context.getString(viewModel.paypalButtonLabelRes) : ""}'
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_brand_paypal_24_black"
@@ -55,7 +54,7 @@
 
                 <TextView
                     android:id="@+id/tv_sum"
-                    android:text='@{formattedSum}'
+                    android:text='@{viewModel.formattedSum}'
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
@@ -69,7 +68,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list"
+                android:id="@+id/rv_transaction_list"
                 app:layout_constraintTop_toBottomOf="@id/header_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -78,7 +77,10 @@
                 android:layout_height="wrap_content"
                 app:layoutManager="LinearLayoutManager"
                 tools:context=".ui.persondetail.PersonDetailFragment"
-                tools:listitem="@layout/item_transaction_person" />
+                tools:listitem="@layout/item_transaction_person"
+                android:visibility="@{viewModel.empty ? View.GONE : View.VISIBLE}" />
+
+<!--            TODO Add empty list layout-->
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

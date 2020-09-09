@@ -1,7 +1,6 @@
 package com.mmutert.trackmydebt.ui.persondetail
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -39,6 +38,14 @@ class PersonDetailViewModel(application: Application) : AndroidViewModel(applica
     }
     val formattedSum = Transformations.map(sum) {
         FormatHelper.printAsCurrency(it)
+    }
+
+    val paypalButtonLabelRes : LiveData<Int> = Transformations.map(sum) {
+        when {
+            it > BigDecimal.ZERO -> R.string.button_paypal_request_label
+            it < BigDecimal.ZERO -> R.string.button_paypal_send_label
+            else -> R.string.empty_string
+        }
     }
 
     val empty : LiveData<Boolean> = Transformations.map(transactions) {
