@@ -89,18 +89,15 @@ class PersonDetailAdapter(val context: Context, val transactionClickedListener: 
                     }
                 }
 
+                binding.personTransactionCard.strokeColor = context.resources.getColor(
+                    R.color.grey_100
+                )
                 when (entry.transaction.received) {
                     true -> {
-                        binding.personTransactionCard.strokeColor = context.resources.getColor(
-                            R.color.positive_100
-                        )
                         binding.tvTransactionDirection.text =
                             context.getString(R.string.received_transaction)
                     }
                     false -> {
-                        binding.personTransactionCard.strokeColor = context.resources.getColor(
-                            R.color.negative_100
-                        )
                         binding.tvTransactionDirection.text =
                             context.getString(R.string.sent_transaction)
                     }
