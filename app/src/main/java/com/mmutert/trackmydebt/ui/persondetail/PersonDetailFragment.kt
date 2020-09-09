@@ -62,7 +62,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
 
             when {
                 it < BigDecimal.ZERO -> {
-                    mBinding.tvDebtDescription.text = getString(R.string.fragment_person_detail_credit_label)
+                    mBinding.tvOverallDescription.text = getString(R.string.fragment_person_detail_credit_label)
                     mBinding.btPaypal.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.button_paypal_request_label)
@@ -107,7 +107,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                     }
                 }
                 it > BigDecimal.ZERO -> {
-                    mBinding.tvDebtDescription.text = getString(R.string.fragment_person_detail_debt_label)
+                    mBinding.tvOverallDescription.text = getString(R.string.fragment_person_detail_debt_label)
                     mBinding.btPaypal.apply {
                         visibility = View.VISIBLE
                         text = context.getString(R.string.button_paypal_send_label)
@@ -121,7 +121,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                 }
                 else -> {
                     mBinding.btPaypal.visibility = View.GONE
-                    mBinding.tvDebtDescription.text = ""
+                    mBinding.tvOverallDescription.text = ""
                 }
             }
         }
