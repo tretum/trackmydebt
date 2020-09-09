@@ -5,7 +5,9 @@
     tools:context=".ui.home.HomeFragment">
 
     <data>
-
+        <variable
+            name="viewmodel"
+            type="com.mmutert.trackmydebt.ui.home.HomeViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -37,6 +39,7 @@
 
                 <TextView
                     tools:text="10.00€"
+                    android:text="@{viewmodel.balanceFormatted}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="24sp"

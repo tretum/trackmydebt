@@ -5,4 +5,8 @@
         <item name="cardElevation">8dp</item>
         <item name="android:layout_margin">4dp</item>
     </style>
+    <style name="CardNoShadow" parent="CardView">
+        <item name="cardCornerRadius">4dp</item>
+        <item name="android:layout_margin">4dp</item>
+    </style>
 </resources>
