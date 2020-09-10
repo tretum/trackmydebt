@@ -64,7 +64,6 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener, Ho
         })
 
         mBinding.rvDebtList.apply {
-            addItemDecoration(BottomSpaceDecoration(200))
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = mAdapter

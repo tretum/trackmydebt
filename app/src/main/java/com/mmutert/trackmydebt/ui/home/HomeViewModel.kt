@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
-import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
@@ -51,6 +50,14 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     val sumCreditFormatted: LiveData<String> = Transformations.map(_sumCredit) {
         FormatHelper.printAsCurrency(it.abs())
     }
+
+    /**
+     * Indicates whether the list of persons is empty.
+     */
+    val empty : LiveData<Boolean> = Transformations.map(persons) {
+        it.isEmpty()
+    }
+
 
     fun addPerson(name: String, paypalUsername: String?) {
         viewModelScope.launch {

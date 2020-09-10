@@ -21,17 +21,18 @@ class PersonDetailViewModel(application: Application) : AndroidViewModel(applica
     private val repository: AppRepository =
         AppRepository(AppDatabase.getDatabase(application).dao())
 
-    val selection: MutableLiveData<Person> = MutableLiveData()
+    private val _selection: MutableLiveData<Person> = MutableLiveData()
+    val selection : LiveData<Person> = _selection
     lateinit var person: Person
 
     fun selectPerson(p: Person) {
-        selection.value = p
+        _selection.value = p
         person = p
     }
 
 
     val transactions: LiveData<List<Transaction>> =
-        Transformations.switchMap(selection) { person -> repository.getTransactions(person) }
+        Transformations.switchMap(_selection) { person -> repository.getTransactions(person) }
 
     val sum: LiveData<BigDecimal> = Transformations.map(transactions) {
         it.balance()

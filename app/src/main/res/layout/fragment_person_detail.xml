@@ -6,6 +6,7 @@
     <data>
         <import type="androidx.core.content.ContextCompat"/>
         <import type="android.view.View"/>
+        <import type="java.math.BigDecimal"/>
 
         <variable
             name="viewModel"
@@ -35,11 +36,12 @@
                     android:text='@{viewModel.paypalButtonLabelRes > 0 ? context.getString(viewModel.paypalButtonLabelRes) : ""}'
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableEnd="@drawable/ic_brand_paypal_24_black"
+                    android:drawableEnd="@drawable/ic_brand_paypal_24"
                     android:scaleType="centerInside"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="@{viewModel.sum.equals(BigDecimal.ZERO) ? View.GONE : View.VISIBLE}"/>
 
                 <TextView
                     android:id="@+id/tv_overall_description"

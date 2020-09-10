@@ -5,6 +5,8 @@
     tools:context=".ui.home.HomeFragment">
 
     <data>
+        <import type="android.view.View"/>
+
         <variable
             name="viewmodel"
             type="com.mmutert.trackmydebt.ui.home.HomeViewModel" />
@@ -36,6 +38,7 @@
                     android:textSize="20sp"
                     android:id="@+id/tv_overall_balance_label"
                     android:textStyle="bold"
+                    android:labelFor="@id/tv_overall_balance_value"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_overall_balance_value"
                     android:layout_marginBottom="5dp" />
 
@@ -53,7 +56,7 @@
 
                 <TextView
                     android:id="@+id/tv_sum_of_money_lent_label"
-                    android:text="Money lent"
+                    android:text="@string/fragment_home_money_lent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -76,7 +79,7 @@
 
                 <TextView
                     android:id="@+id/tv_sum_of_money_owed_label"
-                    android:text="Money owed"
+                    android:text="@string/fragment_home_money_owed"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
@@ -103,12 +106,22 @@
                 android:layout_height="2dp"
                 android:background="?android:attr/listDivider" />
 
+
+            <TextView
+                android:text="No persons to display yet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:id="@+id/tv_empty_person_list"
+                android:visibility="@{viewmodel.empty ? View.VISIBLE : View.GONE}"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_debt_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:listitem="@layout/item_person_overview"
-                tools:itemCount="20" />
+                tools:itemCount="20"
+                android:visibility="@{viewmodel.empty ? View.GONE : View.VISIBLE}" />
         </LinearLayout>
 
 
