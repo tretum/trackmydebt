@@ -123,7 +123,7 @@ class PersonDetailAdapter(
                     personTransactionCard.strokeColor = ResourcesCompat.getColor(
                         context.resources, R.color.grey_100, null
                     )
-                    
+
                     reasonInclude.apply {
                         when (transaction.reason.isBlank()) {
                             true -> tvTransactionReason.visibility = View.GONE

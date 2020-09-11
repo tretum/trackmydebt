@@ -58,7 +58,7 @@ class PersonDetailFragment : Fragment(){
         viewModel = ViewModelProvider(this).get(PersonDetailViewModel::class.java)
 
         binding = FragmentPersonDetailBinding.inflate(inflater, container, false).apply {
-            viewModel = viewModel
+            viewModel = this@PersonDetailFragment.viewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
@@ -75,9 +75,9 @@ class PersonDetailFragment : Fragment(){
         binding.rvTransactionList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = mAdapter
-            viewModel.transactions.observe(
-                viewLifecycleOwner,
-                { mAdapter.setTransactions(it.toMutableList()) })
+            viewModel.transactions.observe(viewLifecycleOwner) {
+                mAdapter.setTransactions(it.toMutableList())
+            }
         }
         createSwipeHelper().attachToRecyclerView(binding.rvTransactionList)
 
