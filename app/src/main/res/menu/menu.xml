@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:title="@string/menu_item_filter_title"
+        android:id="@+id/action_filter_persons"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_filter_24px_black"/>
+    <item
         android:title="@string/menu_item_about_title"
-        android:id="@+id/aboutFragment" />
+        android:id="@+id/aboutFragment"
+        app:showAsAction="never"/>
     <item
         android:title="@string/menu_item_settings_title"
+        app:showAsAction="never"
         android:id="@+id/settingsFragment" />
+
 </menu>

@@ -10,12 +10,14 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.databinding.FragmentAddTransactionBinding
+import com.mmutert.trackmydebt.util.getViewModelFactory
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
 import java.util.Date
@@ -27,7 +29,7 @@ class AddTransactionFragment : Fragment() {
     }
 
     private lateinit var transactionStateAdapter: TransactionStateArrayAdapter
-    private lateinit var viewModel: AddTransactionViewModel
+    private val viewModel: AddTransactionViewModel by viewModels { getViewModelFactory() }
 
     private lateinit var personArrayAdapter: PersonArrayAdapter
     private lateinit var binding: FragmentAddTransactionBinding
@@ -41,7 +43,6 @@ class AddTransactionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(AddTransactionViewModel::class.java)
 
         binding = DataBindingUtil.inflate(
             inflater, R.layout.fragment_add_transaction, container, false

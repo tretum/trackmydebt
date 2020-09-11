@@ -4,6 +4,10 @@ import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.data.Transaction
 import java.math.BigDecimal
 
+/**
+ * A negative Balance signifies that the user owes money, i.e., is in debt.
+ * A positive one signifies that the user has lent money, i.e., has credit.
+ */
 fun List<Transaction>.balance(): BigDecimal {
     return this.sumOf { t ->
         // Money to other person = More credit = Positive action

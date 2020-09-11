@@ -1,14 +1,12 @@
 package com.mmutert.trackmydebt.ui.persondetail
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mmutert.trackmydebt.Event
 import com.mmutert.trackmydebt.R
-import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.Result
@@ -18,10 +16,7 @@ import com.mmutert.trackmydebt.util.balance
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-class PersonDetailViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository: AppRepository =
-        AppRepository(AppDatabase.getDatabase(application).dao())
+class PersonDetailViewModel(private val repository: AppRepository) : ViewModel() {
 
     private val _selection: MutableLiveData<Person> = MutableLiveData()
 

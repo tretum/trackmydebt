@@ -1,14 +1,12 @@
 package com.mmutert.trackmydebt.ui.transaction
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mmutert.trackmydebt.Event
 import com.mmutert.trackmydebt.TransactionAction
-import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.Result
@@ -22,9 +20,7 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Locale
 
-class AddTransactionViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository: AppRepository = AppRepository(AppDatabase.getDatabase(application).dao())
+class AddTransactionViewModel(private val repository: AppRepository) : ViewModel() {
 
     val persons = repository.persons
 

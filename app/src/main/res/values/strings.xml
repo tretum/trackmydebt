@@ -68,5 +68,9 @@
     <string name="money_request_paypal_instruction">Please send me the money using the following link:</string>
     <string name="money_request_paypal_opening_line">You owe me %s.</string>
     <string name="fragment_add_transaction_hint_reason_long_optional">Reason (long, optional)</string>
+    <string name="filter_all">All</string>
+    <string name="filter_debt">Debt only</string>
+    <string name="filter_credit">Credit only</string>
+    <string name="menu_item_filter_title">Filter</string>
 
 </resources>

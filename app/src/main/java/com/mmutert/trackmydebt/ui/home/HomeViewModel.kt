@@ -1,32 +1,40 @@
 package com.mmutert.trackmydebt.ui.home
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.mmutert.trackmydebt.Event
 import com.mmutert.trackmydebt.R
-import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.PersonAndTransactions
-import com.mmutert.trackmydebt.data.Transaction
-import com.mmutert.trackmydebt.ui.persondetail.ADD_EDIT_RESULT_OK
-import com.mmutert.trackmydebt.ui.persondetail.EDIT_RESULT_OK
+import com.mmutert.trackmydebt.ui.home.FilterType.FILTER_ALL
+import com.mmutert.trackmydebt.ui.home.FilterType.FILTER_CREDIT_ONLY
+import com.mmutert.trackmydebt.ui.home.FilterType.FILTER_DEBT_ONLY
 import com.mmutert.trackmydebt.util.FormatHelper
 import com.mmutert.trackmydebt.util.balance
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-class HomeViewModel(application: Application) : AndroidViewModel(application) {
+class HomeViewModel(
+    private val savedStateHandle: SavedStateHandle, private val repository: AppRepository
+) : ViewModel() {
 
-    private val repository: AppRepository =
-        AppRepository(AppDatabase.getDatabase(application).dao())
+    private val _forceUpdate = MutableLiveData(false)
 
-    val persons: LiveData<List<PersonAndTransactions>> = repository.personAndTransactions
-    private val transactions: LiveData<List<Transaction>> = repository.transactions
+    private val _persons: LiveData<List<PersonAndTransactions>> = _forceUpdate.switchMap {
+        repository.personAndTransactions.distinctUntilChanged().switchMap {
+            filterPersons(it)
+        }
+    }
+    val persons: LiveData<List<PersonAndTransactions>> = _persons
 
     val balanceFormatted: LiveData<String> = Transformations.map(repository.balance) {
         FormatHelper.printAsCurrency(it)
@@ -77,6 +85,64 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun setFilterMode(mode: FilterType) {
+        savedStateHandle.set(PERSONS_FILTER_SAVED_STATE_KEY, mode)
+
+        // TODO Apply changes to ui by setting the relevant resource ids
+        // when (mode) {
+        //     FILTER_DEBT_ONLY -> {
+        //         setFilter()
+        //     }
+        //     FILTER_ALL -> TODO()
+        //     FILTER_CREDIT_ONLY -> TODO()
+        // }
+        _forceUpdate.value = false
+    }
+
+    private fun setFilter(
+        @StringRes filteringLabelString: Int,
+        @StringRes noTasksLabelString: Int,
+        @DrawableRes noTaskIconDrawable: Int,
+        tasksAddVisible: Boolean
+    ) {
+        // _currentFilteringLabel.value = filteringLabelString
+        // _noTasksLabel.value = noTasksLabelString
+        // _noTaskIconRes.value = noTaskIconDrawable
+        // _tasksAddViewVisible.value = tasksAddVisible
+    }
+
+    private fun filterPersons(personsResult: List<PersonAndTransactions>): LiveData<List<PersonAndTransactions>> {
+        val result = MutableLiveData<List<PersonAndTransactions>>()
+
+        viewModelScope.launch {
+            result.value = filterItems(personsResult, getSavedFilterType())
+        }
+
+        return result
+    }
+
+    private fun filterItems(
+        persons: List<PersonAndTransactions>,
+        filterType: FilterType
+    ): List<PersonAndTransactions> {
+        val result = ArrayList<PersonAndTransactions>()
+
+        persons.forEach {
+            val balance = it.transactions.balance()
+            when (filterType) {
+                FILTER_DEBT_ONLY -> if (balance < BigDecimal.ZERO) result.add(it)
+                FILTER_ALL -> result.add(it)
+                FILTER_CREDIT_ONLY -> if (balance > BigDecimal.ZERO) result.add(it)
+            }
+        }
+
+        return result
+    }
+
+    private fun getSavedFilterType(): FilterType {
+        return savedStateHandle.get(PERSONS_FILTER_SAVED_STATE_KEY) ?: FILTER_ALL
+    }
+
     private val _personClicked = MutableLiveData<Event<Person>>()
     val personClicked: LiveData<Event<Person>> = _personClicked
 
@@ -89,4 +155,10 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             repository.addPerson(person)
         }
     }
+
+    init {
+        setFilterMode(getSavedFilterType())
+    }
 }
+
+const val PERSONS_FILTER_SAVED_STATE_KEY = "PERSONS_FILTER_SAVED_STATE_KEY"

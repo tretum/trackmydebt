@@ -7,7 +7,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -19,13 +21,14 @@ import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
+import com.mmutert.trackmydebt.util.getViewModelFactory
 import com.mmutert.trackmydebt.util.setupSnackbar
 
 const val PERSON_DELETED_OK = 1
 
 class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels { getViewModelFactory() }
 
     private lateinit var mBinding: FragmentHomeBinding
 
@@ -41,8 +44,6 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
         mBinding = FragmentHomeBinding.inflate(inflater, container, false).apply {
             viewmodel = viewModel
             lifecycleOwner = viewLifecycleOwner
@@ -105,9 +106,33 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.action_filter_persons){
+            showFilteringPopUpMenu()
+            return true
+        }
+
         return item.onNavDestinationSelected(findNavController()) || super.onOptionsItemSelected(
             item
         )
+    }
+
+    private fun showFilteringPopUpMenu() {
+        val view = activity?.findViewById<View>(R.id.action_filter_persons) ?: return
+        PopupMenu(requireContext(), view).run {
+            menuInflater.inflate(R.menu.filter_persons, menu)
+
+            setOnMenuItemClickListener {
+                viewModel.setFilterMode(
+                    when (it.itemId) {
+                        R.id.action_filter_credit -> FilterType.FILTER_CREDIT_ONLY
+                        R.id.action_filter_debt -> FilterType.FILTER_DEBT_ONLY
+                        else -> FilterType.FILTER_ALL
+                    }
+                )
+                true
+            }
+            show()
+        }
     }
 
     override fun personAdded(person: Person) {

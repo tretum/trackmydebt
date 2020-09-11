@@ -11,7 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.preference.PreferenceManager
@@ -22,11 +22,11 @@ import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.mmutert.trackmydebt.EventObserver
 import com.mmutert.trackmydebt.R
-import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.databinding.FragmentPersonDetailBinding
 import com.mmutert.trackmydebt.ui.home.PERSON_DELETED_OK
 import com.mmutert.trackmydebt.util.FormatHelper
 import com.mmutert.trackmydebt.util.IntentHelper
+import com.mmutert.trackmydebt.util.getViewModelFactory
 import com.mmutert.trackmydebt.util.setupSnackbar
 import java.math.BigDecimal
 
@@ -40,7 +40,7 @@ class PersonDetailFragment : Fragment(){
     }
 
     private lateinit var binding: FragmentPersonDetailBinding
-    private lateinit var viewModel: PersonDetailViewModel
+    private val viewModel: PersonDetailViewModel by viewModels { getViewModelFactory() }
     private lateinit var mAdapter: PersonDetailAdapter
 
     private val args: PersonDetailFragmentArgs by navArgs()
@@ -55,7 +55,6 @@ class PersonDetailFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(this).get(PersonDetailViewModel::class.java)
 
         binding = FragmentPersonDetailBinding.inflate(inflater, container, false).apply {
             viewModel = this@PersonDetailFragment.viewModel
