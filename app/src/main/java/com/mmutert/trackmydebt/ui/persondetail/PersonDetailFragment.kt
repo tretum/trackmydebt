@@ -33,7 +33,7 @@ import java.math.BigDecimal
 const val EDIT_RESULT_OK = 1
 const val ADD_EDIT_RESULT_OK = 2
 
-class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedListener {
+class PersonDetailFragment : Fragment(){
 
     companion object {
         private val LOG_TAG = PersonDetailFragment::class.simpleName
@@ -365,9 +365,5 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                 )
             findNavController().navigate(directions)
         })
-    }
-
-    override fun onTransactionClicked(transaction: Transaction) {
-        viewModel.editTransaction(transaction.id)
     }
 }

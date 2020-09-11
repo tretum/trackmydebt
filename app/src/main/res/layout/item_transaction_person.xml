@@ -3,6 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="transaction"
+            type="com.mmutert.trackmydebt.data.Transaction" />
+
+        <variable
+            name="viewModel"
+            type="com.mmutert.trackmydebt.ui.persondetail.PersonDetailViewModel" />
+
+    </data>
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/person_transaction_card"
         android:layout_width="match_parent"
@@ -10,7 +21,8 @@
         app:strokeWidth="1dp"
         android:clipChildren="true"
         app:layout_constraintHeight_default="wrap"
-        style="@style/Card">
+        style="@style/Card"
+        android:onClick="@{() -> viewModel.editTransaction(transaction.id)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

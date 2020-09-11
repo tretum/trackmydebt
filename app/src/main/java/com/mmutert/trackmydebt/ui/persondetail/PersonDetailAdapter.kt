@@ -29,10 +29,6 @@ class PersonDetailAdapter(
     private val DATE: Int = 1
     private val TRANSACTION = 2
 
-    interface TransactionClickedListener {
-        fun onTransactionClicked(transaction: Transaction)
-    }
-
     sealed class ListEntry {
         class TransactionEntry(val transaction: Transaction) : ListEntry()
         class DateEntry(val date: LocalDate) : ListEntry()
@@ -74,7 +70,11 @@ class PersonDetailAdapter(
             is ListEntry.TransactionEntry -> {
                 Log.d(LOG_TAG, "Amount: ${entry.transaction.amount}")
 
-                (holder as PersonDetailViewHolder.TransactionViewHolder).bind(context, viewModel, entry.transaction)
+                (holder as PersonDetailViewHolder.TransactionViewHolder).bind(
+                    context,
+                    viewModel,
+                    entry.transaction
+                )
             }
             is ListEntry.DateEntry -> {
                 val binding = (holder as PersonDetailViewHolder.DateViewHolder).mBinding
@@ -106,32 +106,37 @@ class PersonDetailAdapter(
              */
             fun bind(context: Context, viewModel: PersonDetailViewModel, transaction: Transaction) {
                 val printAsCurrency = FormatHelper.printAsCurrency(transaction.amount)
-
-                binding.amountInclude.tvAmount.text = printAsCurrency
-
-                binding.reasonInclude.apply {
-                    when (transaction.reason.isBlank()) {
-                        true -> tvTransactionReason.visibility = View.GONE
-                        false -> {
-                            tvTransactionReason.visibility = View.VISIBLE
-                            tvTransactionReason.text = transaction.reason
-                        }
-                    }
-                }
-
-                binding.personTransactionCard.strokeColor = ResourcesCompat.getColor(
-                    context.resources,
-                        R . color . grey_100, null
-                )
-                binding.tvTransactionDirection.text = when (transaction.received) {
-                    true -> context.getString(R.string.received_transaction)
-                    false -> context.getString(R.string.sent_transaction)
-                }
-
                 val dateFormatter: DateTimeFormatter =
                     DateTimeFormat.shortTime().withLocale(Locale.getDefault())
-                binding.timeInclude.tvTransactionTime.text = dateFormatter.print(transaction.date)
-                binding.personTransactionCard.visibility = View.VISIBLE
+
+                binding.apply {
+                    this.viewModel = viewModel
+                    this.transaction = transaction
+
+                    amountInclude.tvAmount.text = printAsCurrency
+
+                    tvTransactionDirection.text = when (transaction.received) {
+                        true -> context.getString(R.string.received_transaction)
+                        false -> context.getString(R.string.sent_transaction)
+                    }
+
+                    personTransactionCard.strokeColor = ResourcesCompat.getColor(
+                        context.resources, R.color.grey_100, null
+                    )
+                    
+                    reasonInclude.apply {
+                        when (transaction.reason.isBlank()) {
+                            true -> tvTransactionReason.visibility = View.GONE
+                            false -> {
+                                tvTransactionReason.visibility = View.VISIBLE
+                                tvTransactionReason.text = transaction.reason
+                            }
+                        }
+                    }
+
+                    timeInclude.tvTransactionTime.text = dateFormatter.print(transaction.date)
+                    personTransactionCard.visibility = View.VISIBLE
+                }
             }
         }
 

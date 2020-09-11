@@ -147,7 +147,9 @@ class AddTransactionViewModel(application: Application) : AndroidViewModel(appli
     }
 
     fun selectPerson(selectedPerson: Person) {
-        _selectedPerson.value = selectedPerson
+        if(_selectedPerson.value != null && _selectedPerson.value!! != selectedPerson) {
+            _selectedPerson.value = selectedPerson
+        }
     }
 
     fun selectAction(selectedAction: TransactionAction) {
