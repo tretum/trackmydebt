@@ -65,4 +65,7 @@
     <string name="successfully_saved_transaction_message">Transaction saved</string>
     <string name="successfully_added_transaction_message">Transaction added</string>
     <string name="successfully_deleted_person">Person deleted</string>
+    <string name="money_request_paypal_instruction">Please send me the money using the following link:</string>
+    <string name="money_request_paypal_opening_line">You owe me %s.</string>
+
 </resources>

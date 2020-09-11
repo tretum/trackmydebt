@@ -145,20 +145,14 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                     action = Intent.ACTION_SEND
 
                     // TODO Refactor with string resources
-                    val message =
-                        """
-                                        You owe me $formattedSum. 
-                                        ${
-                            if (username != null && username.isNotBlank()) {
-                                """
-                                        Please send me the money using the following link:
-                                        https://paypal.me/$username/$formattedSum
-                                        """
-                            } else {
-                                ""
-                            }
-                        }
-                                        """.trimIndent()
+                    var message = getString(R.string.money_request_paypal_opening_line, formattedSum)
+
+                    if (username != null && username.isNotBlank()) {
+                        message = message.plus("\n\n")
+                            .plus(context.getString(R.string.money_request_paypal_instruction))
+                            .plus("\n")
+                            .plus("https://paypal.me/$username/$formattedSum")
+                    }
                     putExtra(
                         Intent.EXTRA_TEXT,
                         message
