@@ -151,7 +151,7 @@
                         android:layout_height="wrap_content"
                         android:minLines="2"
                         android:id="@+id/et_reason_long_input"
-                        android:hint="Reason (long, optional)"
+                        android:hint="@string/fragment_add_transaction_hint_reason_long_optional"
                         android:text="@={viewModel.reasonLong}"
                         android:inputType="textMultiLine"
                         android:paddingStart="@dimen/text_input_pad_horizontal"
