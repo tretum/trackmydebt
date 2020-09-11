@@ -71,7 +71,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
         viewModel.loadPerson(args.personId)
 
         // Set the adapter
-        mAdapter = PersonDetailAdapter(requireContext(), this)
+        mAdapter = PersonDetailAdapter(requireContext(), viewModel)
         binding.rvTransactionList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = mAdapter
@@ -81,16 +81,9 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
         }
         createSwipeHelper().attachToRecyclerView(binding.rvTransactionList)
 
-        setupAddTransactionFAB()
         setupPayPalButton()
         setupSnackbar()
         setupNavigation()
-    }
-
-    private fun setupAddTransactionFAB() {
-        binding.fabAddTransaction.setOnClickListener {
-            viewModel.addTransaction()
-        }
     }
 
     /**
@@ -144,7 +137,6 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                 val shareIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
 
-                    // TODO Refactor with string resources
                     var message = getString(R.string.money_request_paypal_opening_line, formattedSum)
 
                     if (username != null && username.isNotBlank()) {
@@ -208,7 +200,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                         (viewHolder as PersonDetailAdapter.PersonDetailViewHolder)
                     when (personDetailViewHolder) {
                         is PersonDetailAdapter.PersonDetailViewHolder.TransactionViewHolder -> {
-                            getDefaultUIUtil().onSelected(personDetailViewHolder.mBinding.personTransactionCard)
+                            getDefaultUIUtil().onSelected(personDetailViewHolder.binding.personTransactionCard)
                         }
                         is PersonDetailAdapter.PersonDetailViewHolder.DateViewHolder -> {
                             getDefaultUIUtil().onSelected(personDetailViewHolder.mBinding.tvTransactionDate)
@@ -228,7 +220,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                 lateinit var foregroundView: View
                 when (personDetailViewHolder) {
                     is PersonDetailAdapter.PersonDetailViewHolder.TransactionViewHolder -> {
-                        foregroundView = personDetailViewHolder.mBinding.personTransactionCard
+                        foregroundView = personDetailViewHolder.binding.personTransactionCard
                     }
                     is PersonDetailAdapter.PersonDetailViewHolder.DateViewHolder -> {
                         foregroundView = personDetailViewHolder.mBinding.tvTransactionDate
@@ -254,7 +246,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                 when (personDetailViewHolder) {
                     is PersonDetailAdapter.PersonDetailViewHolder.TransactionViewHolder -> {
                         val foregroundView =
-                            personDetailViewHolder.mBinding.personTransactionCard
+                            personDetailViewHolder.binding.personTransactionCard
                         getDefaultUIUtil().clearView(foregroundView)
                     }
                     is PersonDetailAdapter.PersonDetailViewHolder.DateViewHolder -> {
@@ -275,7 +267,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                 when (personDetailViewHolder) {
                     is PersonDetailAdapter.PersonDetailViewHolder.TransactionViewHolder -> {
                         val foregroundView: View =
-                            personDetailViewHolder.mBinding.personTransactionCard
+                            personDetailViewHolder.binding.personTransactionCard
                         getDefaultUIUtil().onDraw(
                             c,
                             recyclerView,

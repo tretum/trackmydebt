@@ -95,7 +95,8 @@
             android:text="Transaction"
             app:icon="@android:drawable/ic_input_add"
             android:id="@+id/fab_add_transaction"
-            android:contentDescription="Add transaction button" />
+            android:contentDescription="Add transaction button"
+            android:onClick="@{() -> viewModel.addTransaction()}" />
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
