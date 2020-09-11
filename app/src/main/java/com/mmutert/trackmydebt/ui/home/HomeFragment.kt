@@ -7,27 +7,34 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.onNavDestinationSelected
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.mmutert.trackmydebt.EventObserver
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
-import com.mmutert.trackmydebt.ui.BottomSpaceDecoration
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
+import com.mmutert.trackmydebt.ui.persondetail.ADD_EDIT_RESULT_OK
+import com.mmutert.trackmydebt.ui.persondetail.EDIT_RESULT_OK
+import com.mmutert.trackmydebt.util.setupSnackbar
 
-class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener, HomeListAdapter.ListItemClickListener {
+const val PERSON_DELETED_OK = 1
 
-    private lateinit var mViewModel: HomeViewModel
+class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
+
+    private lateinit var viewModel: HomeViewModel
     private lateinit var mSharedViewModel: SharedViewModel
 
     private lateinit var mBinding: FragmentHomeBinding
 
     private lateinit var mAdapter: HomeListAdapter
+
+    private val args: HomeFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,27 +46,29 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener, Ho
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         mSharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        mBinding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_home,
-            container,
-            false
-        )
-        mBinding.apply {
-            viewmodel = mViewModel
+        mBinding = FragmentHomeBinding.inflate(inflater, container, false).apply {
+            viewmodel = viewModel
             lifecycleOwner = viewLifecycleOwner
-
-            fabAddItem.setOnClickListener {
-                AddPersonDialogFragment(this@HomeFragment).show(parentFragmentManager, "AddPerson")
-            }
         }
 
-        mAdapter = HomeListAdapter(requireContext(), mViewModel, this)
+        return mBinding.root
+    }
 
-        mViewModel.persons.observe(viewLifecycleOwner, {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        setupFAB()
+        setupRecyclerView()
+        setupNavigation()
+        setupSnackbar()
+    }
+
+    private fun setupRecyclerView() {
+        mAdapter = HomeListAdapter(requireContext(), viewModel)
+        viewModel.persons.observe(viewLifecycleOwner, {
             mAdapter.submitList(it)
         })
 
@@ -72,8 +81,28 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener, Ho
         // TODO Reactivate when functionality is implemented
         // val createSwipeHelper = ItemTouchHelper(HomeListSwipeHelperCallBack(mAdapter))
         // createSwipeHelper.attachToRecyclerView(mBinding.rvDebtList)
+    }
 
-        return mBinding.root
+    private fun setupSnackbar() {
+        view?.setupSnackbar(this, viewModel.snackbarTextId, Snackbar.LENGTH_SHORT)
+        arguments?.let {
+            viewModel.showEditResultMessage(args.userMessage)
+        }
+    }
+
+    private fun setupFAB() {
+        mBinding.fabAddItem.setOnClickListener {
+            AddPersonDialogFragment(this@HomeFragment).show(parentFragmentManager, "AddPerson")
+        }
+    }
+
+    private fun setupNavigation() {
+        viewModel.personClicked.observe(viewLifecycleOwner, EventObserver {
+            mSharedViewModel.selectPerson(it)
+            val action =
+                HomeFragmentDirections.fragmentPersonDetail(title = it.name, personId = it.id)
+            findNavController().navigate(action)
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -83,18 +112,12 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener, Ho
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val navController = findNavController()
-        return item.onNavDestinationSelected(navController) || super.onOptionsItemSelected(item)
+        return item.onNavDestinationSelected(findNavController()) || super.onOptionsItemSelected(
+            item
+        )
     }
 
-    override fun personAdded(name: String, paypalUsername: String?) {
-        mViewModel.addPerson(name, paypalUsername)
-    }
-
-    override fun listItemClicked(p: Person) {
-        mSharedViewModel.selectPerson(p)
-        val fragmentPersonDetail =
-            HomeFragmentDirections.fragmentPersonDetail(p.name)
-        Navigation.findNavController(mBinding.root).navigate(fragmentPersonDetail)
+    override fun personAdded(person: Person) {
+        viewModel.addPerson(person)
     }
 }

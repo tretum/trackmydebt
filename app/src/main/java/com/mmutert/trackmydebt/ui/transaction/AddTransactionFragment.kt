@@ -22,8 +22,11 @@ import java.util.Date
 
 class AddTransactionFragment : Fragment() {
 
+    companion object {
+        private val LOG_TAG = AddTransactionFragment::class.simpleName
+    }
+
     private lateinit var transactionStateAdapter: TransactionStateArrayAdapter
-    private val LOG_TAG: String = "AddTransactionFragment"
     private lateinit var viewModel: AddTransactionViewModel
 
     private lateinit var personArrayAdapter: PersonArrayAdapter

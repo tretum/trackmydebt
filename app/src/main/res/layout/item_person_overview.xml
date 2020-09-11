@@ -5,12 +5,20 @@
 
     <data>
 
+        <variable
+            name="person"
+            type="com.mmutert.trackmydebt.data.Person" />
+
+        <variable
+            name="viewModel"
+            type="com.mmutert.trackmydebt.ui.home.HomeViewModel" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:onClick="@{() -> viewModel.openPersonOverview(person)}">
 
         <RelativeLayout
             android:id="@+id/list_item_give_money_background"

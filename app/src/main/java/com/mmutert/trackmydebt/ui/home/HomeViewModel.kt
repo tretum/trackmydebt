@@ -3,13 +3,18 @@ package com.mmutert.trackmydebt.ui.home
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.mmutert.trackmydebt.Event
+import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.PersonAndTransactions
 import com.mmutert.trackmydebt.data.Transaction
+import com.mmutert.trackmydebt.ui.persondetail.ADD_EDIT_RESULT_OK
+import com.mmutert.trackmydebt.ui.persondetail.EDIT_RESULT_OK
 import com.mmutert.trackmydebt.util.FormatHelper
 import com.mmutert.trackmydebt.util.balance
 import kotlinx.coroutines.launch
@@ -54,14 +59,34 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     /**
      * Indicates whether the list of persons is empty.
      */
-    val empty : LiveData<Boolean> = Transformations.map(persons) {
+    val empty: LiveData<Boolean> = Transformations.map(persons) {
         it.isEmpty()
     }
 
+    private val _snackbarTextId = MutableLiveData<Event<Int>>()
+    val snackbarTextId: LiveData<Event<Int>> = _snackbarTextId
 
-    fun addPerson(name: String, paypalUsername: String?) {
+    private fun showSnackbarMessage(messageId: Int) {
+        _snackbarTextId.value = Event(messageId)
+    }
+
+    fun showEditResultMessage(result: Int) {
+        when (result) {
+            // TODO
+            PERSON_DELETED_OK -> showSnackbarMessage(R.string.successfully_deleted_person)
+        }
+    }
+
+    private val _personClicked = MutableLiveData<Event<Person>>()
+    val personClicked: LiveData<Event<Person>> = _personClicked
+
+    fun openPersonOverview(person: Person) {
+        _personClicked.value = Event(person)
+    }
+
+    fun addPerson(person: Person) {
         viewModelScope.launch {
-            repository.addPerson(Person(0, name, paypalUsername))
+            repository.addPerson(person)
         }
     }
 }

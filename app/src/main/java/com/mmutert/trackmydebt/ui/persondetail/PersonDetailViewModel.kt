@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.mmutert.trackmydebt.Event
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.AppDatabase
 import com.mmutert.trackmydebt.data.AppRepository
@@ -30,6 +31,9 @@ class PersonDetailViewModel(application: Application) : AndroidViewModel(applica
         person = p
     }
 
+    private val _deleteTaskEvent = MutableLiveData<Event<Unit>>()
+    val deleteTaskEvent: LiveData<Event<Unit>> = _deleteTaskEvent
+
 
     val transactions: LiveData<List<Transaction>> =
         Transformations.switchMap(_selection) { person -> repository.getTransactions(person) }
@@ -40,6 +44,9 @@ class PersonDetailViewModel(application: Application) : AndroidViewModel(applica
     val formattedSum = Transformations.map(sum) {
         FormatHelper.printAsCurrency(it)
     }
+
+    private val _snackbarTextId = MutableLiveData<Event<Int>>()
+    val snackbarTextId: LiveData<Event<Int>> = _snackbarTextId
 
     val paypalButtonLabelRes : LiveData<Int> = Transformations.map(sum) {
         when {
@@ -53,9 +60,21 @@ class PersonDetailViewModel(application: Application) : AndroidViewModel(applica
         it.isEmpty()
     }
 
+    fun showEditResultMessage(result: Int) {
+        when (result) {
+            EDIT_RESULT_OK -> showSnackbarMessage(R.string.successfully_saved_transaction_message)
+            ADD_EDIT_RESULT_OK -> showSnackbarMessage(R.string.successfully_added_transaction_message)
+        }
+    }
+
+    private fun showSnackbarMessage(message: Int) {
+        _snackbarTextId.value = Event(message)
+    }
+
     fun removeSelectedPerson() {
         viewModelScope.launch {
             repository.removePerson(person)
+            _deleteTaskEvent.value = Event(Unit)
         }
     }
 
