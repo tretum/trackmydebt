@@ -16,6 +16,8 @@ import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.util.FormatHelper
 import com.mmutert.trackmydebt.util.TimeHelper
 import kotlinx.coroutines.launch
+import org.joda.time.LocalDate
+import org.joda.time.LocalTime
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Locale
@@ -27,31 +29,35 @@ class AddTransactionViewModel(application: Application) : AndroidViewModel(appli
     val persons = repository.persons
 
     val dateFormatter: DateTimeFormatter = DateTimeFormat.longDate().withLocale(Locale.getDefault())
-    val timeFormatter = DateTimeFormat.shortTime().withLocale(Locale.getDefault())
+    val timeFormatter: DateTimeFormatter = DateTimeFormat.shortTime().withLocale(Locale.getDefault())
 
     private var id: Long = 0L
-    private var referringPersonId : Long = 0L
 
     val reasonShort = MutableLiveData<String>()
     val reasonLong = MutableLiveData<String>()
 
-    val selectedDate = MutableLiveData(TimeHelper.currentDateLocalized)
-    var printedDate = Transformations.map(selectedDate) {
+    private val _selectedDate = MutableLiveData(TimeHelper.currentDateLocalized)
+    val selectedDate : LiveData<LocalDate> = _selectedDate
+
+    val printedDate = Transformations.map(selectedDate) {
         dateFormatter.print(it)
     }
 
-    var selectedTime = MutableLiveData(TimeHelper.currentTimeLocalized)
-    var printedTime = Transformations.map(selectedTime) {
+    private val _selectedTime = MutableLiveData(TimeHelper.currentTimeLocalized)
+    val selectedTime: LiveData<LocalTime> = _selectedTime
+    val printedTime = Transformations.map(selectedTime) {
         timeFormatter.print(it)
     }
 
-    var transactionAction = MutableLiveData(TransactionAction.MONEY_FROM_USER)
+    private val _transactionAction = MutableLiveData(TransactionAction.MONEY_FROM_USER)
+    val transactionAction: LiveData<TransactionAction> = _transactionAction
+
     val valueString = MutableLiveData("")
 
     private var isNewTransaction: Boolean = false
 
-    var selectedPerson: MutableLiveData<Person> = MutableLiveData()
-
+    private val _selectedPerson: MutableLiveData<Person> = MutableLiveData()
+    val selectedPerson: LiveData<Person> = _selectedPerson
 
     private val _transactionUpdated = MutableLiveData<Event<Int>>()
     val transactionUpdated: LiveData<Event<Int>> = _transactionUpdated
@@ -60,6 +66,7 @@ class AddTransactionViewModel(application: Application) : AndroidViewModel(appli
     fun start(transactionId: Long?, referringPersonId: Long) {
         if (transactionId == null || transactionId <= 0L) {
             this.isNewTransaction = true
+            // TODO Should respect the referring person id if present
             return
         }
 
@@ -71,18 +78,24 @@ class AddTransactionViewModel(application: Application) : AndroidViewModel(appli
             }
         }
 
-        this.referringPersonId = referringPersonId
+        if(referringPersonId > 0L) {
+            viewModelScope.launch {
+                when (val person = repository.getPerson(referringPersonId)) {
+                    is Result.Success -> _selectedPerson.value = person.data
+                    is Result.Error -> TODO()
+                }
+            }
+        }
     }
 
     private fun onTransactionLoaded(transaction: Transaction) {
         reasonShort.value = transaction.reason
         reasonLong.value = transaction.reasonLong
         valueString.value = FormatHelper.printAsFloat(transaction.amount)
-        transactionAction.value = transaction.action
-        selectedDate.value = transaction.date.toLocalDate()
-        selectedTime.value = transaction.date.toLocalTime()
+        _transactionAction.value = transaction.action
+        _selectedDate.value = transaction.date.toLocalDate()
+        _selectedTime.value = transaction.date.toLocalTime()
         id = transaction.id
-        // TODO Selected person
     }
 
     fun save() {
@@ -102,6 +115,7 @@ class AddTransactionViewModel(application: Application) : AndroidViewModel(appli
                 return
             }
             reasonLong.value == null -> {
+                // TODO This value should be optional
                 return
             }
             transactionAction.value == null -> {
@@ -132,14 +146,21 @@ class AddTransactionViewModel(application: Application) : AndroidViewModel(appli
         repository.addTransaction(t)
     }
 
-    fun loadSelectedPerson() {
-        if (referringPersonId > 0L) {
-            viewModelScope.launch {
-                when (val person = repository.getPerson(referringPersonId)) {
-                    is Result.Success -> selectedPerson.value = person.data
-                    is Result.Error -> TODO()
-                }
-            }
+    fun selectPerson(selectedPerson: Person) {
+        _selectedPerson.value = selectedPerson
+    }
+
+    fun selectAction(selectedAction: TransactionAction) {
+        if (_transactionAction.value != selectedAction) {
+            _transactionAction.value = selectedAction
         }
+    }
+
+    fun selectDate(date: LocalDate) {
+        _selectedDate.value = date
+    }
+
+    fun selectTime(time: LocalTime) {
+        _selectedTime.value = time
     }
 }

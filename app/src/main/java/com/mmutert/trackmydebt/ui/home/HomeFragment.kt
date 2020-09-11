@@ -19,8 +19,6 @@ import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.databinding.FragmentHomeBinding
 import com.mmutert.trackmydebt.ui.dialogs.AddPersonDialogFragment
-import com.mmutert.trackmydebt.ui.persondetail.ADD_EDIT_RESULT_OK
-import com.mmutert.trackmydebt.ui.persondetail.EDIT_RESULT_OK
 import com.mmutert.trackmydebt.util.setupSnackbar
 
 const val PERSON_DELETED_OK = 1
@@ -28,11 +26,8 @@ const val PERSON_DELETED_OK = 1
 class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
     private lateinit var viewModel: HomeViewModel
-    private lateinit var mSharedViewModel: SharedViewModel
 
     private lateinit var mBinding: FragmentHomeBinding
-
-    private lateinit var mAdapter: HomeListAdapter
 
     private val args: HomeFragmentArgs by navArgs()
 
@@ -47,7 +42,6 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
         savedInstanceState: Bundle?
     ): View? {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        mSharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
         mBinding = FragmentHomeBinding.inflate(inflater, container, false).apply {
             viewmodel = viewModel
@@ -67,15 +61,15 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
     }
 
     private fun setupRecyclerView() {
-        mAdapter = HomeListAdapter(requireContext(), viewModel)
+        val adapter = HomeListAdapter(requireContext(), viewModel)
         viewModel.persons.observe(viewLifecycleOwner, {
-            mAdapter.submitList(it)
+            adapter.submitList(it)
         })
 
         mBinding.rvDebtList.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapter = mAdapter
+            this.adapter = adapter
         }
 
         // TODO Reactivate when functionality is implemented
@@ -98,7 +92,6 @@ class HomeFragment : Fragment(), AddPersonDialogFragment.PersonAddedListener {
 
     private fun setupNavigation() {
         viewModel.personClicked.observe(viewLifecycleOwner, EventObserver {
-            mSharedViewModel.selectPerson(it)
             val action =
                 HomeFragmentDirections.fragmentPersonDetail(title = it.name, personId = it.id)
             findNavController().navigate(action)

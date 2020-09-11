@@ -12,9 +12,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.mmutert.trackmydebt.R
-import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.databinding.FragmentAddTransactionBinding
 import org.joda.time.LocalDate
 import org.joda.time.LocalTime
@@ -34,6 +34,8 @@ class AddTransactionFragment : Fragment() {
     private lateinit var materialTimePicker: TimePickerDialog
     private lateinit var datePickerBuilder: MaterialDatePicker.Builder<Long>
 
+    private val args: AddTransactionFragmentArgs by navArgs()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,7 +54,6 @@ class AddTransactionFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val args = AddTransactionFragmentArgs.fromBundle(requireArguments())
         val transactionId = args.transactionId
         val referringPersonId = args.referringPersonId
 
@@ -88,7 +89,6 @@ class AddTransactionFragment : Fragment() {
         )
         viewModel.persons.observe(viewLifecycleOwner) {
             personArrayAdapter.persons = it
-            viewModel.loadSelectedPerson()
         }
         binding.spSelectPerson.apply {
             adapter = personArrayAdapter
@@ -102,7 +102,7 @@ class AddTransactionFragment : Fragment() {
                         id: Long
                     ) {
                         val selectedPerson = personArrayAdapter.getSelectedPerson(position)
-                        viewModel.selectedPerson.value = selectedPerson
+                        viewModel.selectPerson(selectedPerson)
                     }
 
                     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -160,14 +160,10 @@ class AddTransactionFragment : Fragment() {
                     id: Long
                 ) {
                     val selectedAction = transactionStateAdapter.getSelectedAction(position)
-                    if (viewModel.transactionAction.value != null && viewModel.transactionAction.value != selectedAction) {
-                        viewModel.transactionAction.value = selectedAction
-                    }
+                    viewModel.selectAction(selectedAction)
                 }
 
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                    viewModel.transactionAction.value = TransactionAction.MONEY_FROM_USER
-                }
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
 
         viewModel.transactionAction.observe(viewLifecycleOwner) {
@@ -175,7 +171,6 @@ class AddTransactionFragment : Fragment() {
             binding.spTransactionActionSelector.setSelection(indexOfAction)
         }
     }
-
 
     private fun setupDatePicker() {
 
@@ -197,11 +192,7 @@ class AddTransactionFragment : Fragment() {
             val picker = datePickerBuilder.build()
             picker.addOnPositiveButtonClickListener { selection: Long ->
                 val date: LocalDate = convertSelectedDate(selection)
-
-                viewModel.selectedDate.value = date
-
-                val selectedFrozenDateFormatted = viewModel.dateFormatter.print(date)
-                binding.btDateSelection.text = selectedFrozenDateFormatted
+                viewModel.selectDate(date)
             }
 
             picker.show(parentFragmentManager, datePickerBuilder.toString())
@@ -214,7 +205,7 @@ class AddTransactionFragment : Fragment() {
             requireContext(),
             { view, hourOfDay, minute ->
                 val localTime = LocalTime(hourOfDay, minute)
-                viewModel.selectedTime.value = localTime
+                viewModel.selectTime(localTime)
             }, 0, 0, is24HourFormat(context)
         )
 

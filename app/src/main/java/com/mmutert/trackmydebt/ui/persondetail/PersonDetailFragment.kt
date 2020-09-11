@@ -11,7 +11,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -21,11 +20,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.mmutert.trackmydebt.EventObserver
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.databinding.FragmentPersonDetailBinding
 import com.mmutert.trackmydebt.ui.home.PERSON_DELETED_OK
-import com.mmutert.trackmydebt.ui.home.SharedViewModel
 import com.mmutert.trackmydebt.util.FormatHelper
 import com.mmutert.trackmydebt.util.IntentHelper
 import com.mmutert.trackmydebt.util.setupSnackbar
@@ -40,7 +39,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
         private val LOG_TAG = PersonDetailFragment::class.simpleName
     }
 
-    private lateinit var mBinding: FragmentPersonDetailBinding
+    private lateinit var binding: FragmentPersonDetailBinding
     private lateinit var viewModel: PersonDetailViewModel
     private lateinit var mAdapter: PersonDetailAdapter
 
@@ -57,32 +56,30 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
         savedInstanceState: Bundle?
     ): View? {
         viewModel = ViewModelProvider(this).get(PersonDetailViewModel::class.java)
-        val sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.selectedPerson.observe(viewLifecycleOwner) { person ->
-            viewModel.selectPerson(person)
-        }
 
-        mBinding = FragmentPersonDetailBinding.inflate(inflater, container, false).apply {
+        binding = FragmentPersonDetailBinding.inflate(inflater, container, false).apply {
             viewModel = viewModel
             lifecycleOwner = viewLifecycleOwner
         }
 
-        return mBinding.root
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        viewModel.loadPerson(args.personId)
+
         // Set the adapter
         mAdapter = PersonDetailAdapter(requireContext(), this)
-        mBinding.rvTransactionList.apply {
+        binding.rvTransactionList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = mAdapter
             viewModel.transactions.observe(
                 viewLifecycleOwner,
                 { mAdapter.setTransactions(it.toMutableList()) })
         }
-        createSwipeHelper().attachToRecyclerView(mBinding.rvTransactionList)
+        createSwipeHelper().attachToRecyclerView(binding.rvTransactionList)
 
         setupAddTransactionFAB()
         setupPayPalButton()
@@ -91,13 +88,8 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
     }
 
     private fun setupAddTransactionFAB() {
-        mBinding.fabAddTransaction.setOnClickListener {
-            val directions =
-                PersonDetailFragmentDirections.actionPersonDetailFragmentToAddTransactionFragment(
-                    title = getString(R.string.fragment_title_new_transaction),
-                    referringPersonId = viewModel.person.id
-                )
-            findNavController().navigate(directions)
+        binding.fabAddTransaction.setOnClickListener {
+            viewModel.addTransaction()
         }
     }
 
@@ -109,11 +101,11 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
             val formattedSum = FormatHelper.printAsCurrency(it)
 
             when {
-                it > BigDecimal.ZERO -> preparePaypalShareButton(formattedSum)
-                it < BigDecimal.ZERO -> preparePaypalPayButton(formattedSum)
+                it > BigDecimal.ZERO -> preparePayPalShareButton(formattedSum)
+                it < BigDecimal.ZERO -> preparePayPalPayButton(formattedSum)
                 else -> {
-                    mBinding.btPaypal.visibility = View.GONE
-                    mBinding.tvOverallDescription.text = ""
+                    binding.btPaypal.visibility = View.GONE
+                    binding.tvOverallDescription.text = ""
                 }
             }
         }
@@ -126,9 +118,9 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
         }
     }
 
-    private fun preparePaypalPayButton(formattedSum: String) {
-        mBinding.tvOverallDescription.text = getString(R.string.fragment_person_detail_debt_label)
-        mBinding.btPaypal.apply {
+    private fun preparePayPalPayButton(formattedSum: String) {
+        binding.tvOverallDescription.text = getString(R.string.fragment_person_detail_debt_label)
+        binding.btPaypal.apply {
             visibility = View.VISIBLE
             setOnClickListener {
                 // Paying = Opening the browser to the paypal.me site
@@ -139,9 +131,9 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
         }
     }
 
-    private fun preparePaypalShareButton(formattedSum: String) {
-        mBinding.tvOverallDescription.text = getString(R.string.fragment_person_detail_credit_label)
-        mBinding.btPaypal.apply {
+    private fun preparePayPalShareButton(formattedSum: String) {
+        binding.tvOverallDescription.text = getString(R.string.fragment_person_detail_credit_label)
+        binding.btPaypal.apply {
             visibility = View.VISIBLE
             setOnClickListener {
                 // Share your paypal.me link or just a message which includes the amount
@@ -318,7 +310,7 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
         val transaction =
             (elementAtPosition as PersonDetailAdapter.ListEntry.TransactionEntry).transaction
         val mDeleteSnackbar = Snackbar.make(
-            mBinding.rvTransactionList,
+            binding.rvTransactionList,
             "Removed transaction ${transaction.id}",
             Snackbar.LENGTH_LONG
         )
@@ -372,15 +364,24 @@ class PersonDetailFragment : Fragment(), PersonDetailAdapter.TransactionClickedL
                 .actionPersonDetailFragmentToNavigationHome(PERSON_DELETED_OK)
             findNavController().navigate(action)
         }
+        viewModel.addTransactionEvent.observe(viewLifecycleOwner, EventObserver {
+            val directions =
+                PersonDetailFragmentDirections.actionPersonDetailFragmentToAddTransactionFragment(
+                    title = getString(R.string.fragment_title_new_transaction),
+                    referringPersonId = it
+                )
+            findNavController().navigate(directions)
+        })
+        viewModel.editTransactionEvent.observe(viewLifecycleOwner, EventObserver {
+            val directions =
+                PersonDetailFragmentDirections.actionPersonDetailFragmentToAddTransactionFragment(
+                    it.first, getString(R.string.fragment_title_edit_transaction), it.second
+                )
+            findNavController().navigate(directions)
+        })
     }
 
     override fun onTransactionClicked(transaction: Transaction) {
-        val directions =
-            PersonDetailFragmentDirections.actionPersonDetailFragmentToAddTransactionFragment(
-                transaction.id,
-                title = getString(R.string.fragment_title_edit_transaction),
-                referringPersonId = viewModel.person.id
-            )
-        findNavController().navigate(directions)
+        viewModel.editTransaction(transaction.id)
     }
 }
