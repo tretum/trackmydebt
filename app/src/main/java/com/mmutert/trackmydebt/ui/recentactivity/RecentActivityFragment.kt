@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -19,7 +20,7 @@ import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.TransactionAndPerson
 import com.mmutert.trackmydebt.databinding.FragmentRecentActivityBinding
 import com.mmutert.trackmydebt.databinding.ItemDateBinding
-import com.mmutert.trackmydebt.databinding.ItemRecentActivityBinding
+import com.mmutert.trackmydebt.databinding.ItemTransactionRecentActivityBinding
 import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
@@ -201,8 +202,7 @@ class RecentActivityFragment : Fragment() {
             (elementAtPosition as RecentActivityListAdapter.ListEntry.TransactionEntry).transaction
         val mDeleteSnackbar = Snackbar.make(
             mBinding.rvRecentActivityList,
-            // TODO Update message
-            "Removed transaction ${transactionAndPerson.transaction.id}",
+            "Removed transaction",
             Snackbar.LENGTH_LONG
         )
         mDeleteSnackbar.animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
@@ -285,7 +285,8 @@ class RecentActivityFragment : Fragment() {
                     return RecentActivityListViewHolder.DateViewHolder(inflate)
                 }
                 TRANSACTION -> {
-                    val binding = ItemRecentActivityBinding.inflate(inflater, parent, false)
+                    val binding =
+                        ItemTransactionRecentActivityBinding.inflate(inflater, parent, false)
                     return RecentActivityListViewHolder.TransactionViewHolder(binding)
                 }
                 else -> return RecentActivityListViewHolder.DateViewHolder(
@@ -324,14 +325,18 @@ class RecentActivityFragment : Fragment() {
                     when (received) {
                         true -> {
                             holder.mBinding.recentActivityCard.strokeColor =
-                                context.resources.getColor(
-                                    R.color.positive_100
+                                ResourcesCompat.getColor(
+                                    context.resources,
+                                    R.color.positive_100,
+                                    null
                                 )
                         }
                         else -> {
                             holder.mBinding.recentActivityCard.strokeColor =
-                                context.resources.getColor(
-                                    R.color.negative_100
+                                ResourcesCompat.getColor(
+                                    context.resources,
+                                    R.color.negative_100,
+                                    null
                                 )
                         }
                     }
@@ -372,7 +377,7 @@ class RecentActivityFragment : Fragment() {
         }
 
         sealed class RecentActivityListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            class TransactionViewHolder(val mBinding: ItemRecentActivityBinding) :
+            class TransactionViewHolder(val mBinding: ItemTransactionRecentActivityBinding) :
                 RecentActivityListViewHolder(mBinding.root)
 
             class DateViewHolder(val mBinding: ItemDateBinding) :

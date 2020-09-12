@@ -7,12 +7,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.databinding.DialogAddPersonBinding
 
 class AddPersonDialogFragment(private val listener: PersonAddedListener) : DialogFragment() {
 
     interface PersonAddedListener {
-        fun personAdded(name: String, paypalUsername: String?)
+        fun personAdded(person: Person)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -23,8 +24,9 @@ class AddPersonDialogFragment(private val listener: PersonAddedListener) : Dialo
             .setView(binding.root)
             .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                 listener.personAdded(
+                    Person(0,
                     binding.etNameInput.text.toString(),
-                    binding.etPaypalUsernameInput.text.toString()
+                    binding.etPaypalUsernameInput.text.toString())
                 )
             }
             .setNegativeButton(android.R.string.cancel) { _: DialogInterface?, _: Int -> }

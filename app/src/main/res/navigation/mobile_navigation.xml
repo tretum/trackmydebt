@@ -38,6 +38,10 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="userMessage"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 
     <fragment
@@ -69,6 +73,10 @@
         <argument
             android:name="title"
             app:argType="string"/>
+        <argument
+            android:name="userMessage"
+            app:argType="integer"
+            android:defaultValue="0" />
         <action
             android:id="@+id/action_personDetailFragment_to_addTransactionFragment"
             app:destination="@id/addTransactionFragment"
@@ -76,6 +84,18 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_personDetailFragment_to_navigation_home"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@id/navigation_home"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <argument
+            android:name="personId"
+            app:argType="long"
+            android:defaultValue="0L" />
     </fragment>
 
     <fragment
@@ -105,5 +125,8 @@
             android:name="referringPersonId"
             app:argType="long"
             android:defaultValue="0L" />
+        <action
+            android:id="@+id/action_addTransactionFragment_to_personDetailFragment"
+            app:destination="@id/personDetailFragment" />
     </fragment>
 </navigation>

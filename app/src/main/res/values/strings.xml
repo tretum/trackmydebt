@@ -59,4 +59,24 @@
     <string name="fragment_title_edit_transaction">Edit Transaction</string>
     <string name="fragment_title_new_transaction">New transaction</string>
     <string name="fragment_add_transaction_date_picker_title">Pick date of transaction</string>
+    <string name="empty_string" />
+    <string name="fragment_home_money_lent">Money lent</string>
+    <string name="fragment_home_money_owed">Money owed</string>
+    <string name="successfully_saved_transaction_message">Transaction saved</string>
+    <string name="successfully_added_transaction_message">Transaction added</string>
+    <string name="successfully_deleted_person">Person deleted</string>
+    <string name="money_request_paypal_instruction">Please send me the money using the following link:</string>
+    <string name="money_request_paypal_opening_line">You owe me %s.</string>
+    <string name="fragment_add_transaction_hint_reason_long_optional">Reason (long, optional)</string>
+    <string name="filter_all">All</string>
+    <string name="filter_debt">Debt only</string>
+    <string name="filter_credit">Credit only</string>
+    <string name="menu_item_filter_title">Filter</string>
+    <string name="label_all_persons">All persons</string>
+    <string name="no_persons_all">There are no persons to display</string>
+    <string name="label_debt_persons">Debt only</string>
+    <string name="no_persons_debt">There are no persons with whom you are in debt</string>
+    <string name="no_persons_credit">There are no persons which owe you</string>
+    <string name="label_credit_persons">Credit only</string>
+
 </resources>

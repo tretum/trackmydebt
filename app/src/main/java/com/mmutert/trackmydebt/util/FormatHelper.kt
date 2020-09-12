@@ -12,7 +12,7 @@ object FormatHelper {
     fun printAsCurrency(amount: BigDecimal, locale: Locale = Locale.getDefault()) : String {
         return NumberFormat.getCurrencyInstance(locale).apply {
             maximumFractionDigits = 2
-            currency = Currency.getInstance(Locale.getDefault())
+            currency = Currency.getInstance(locale)
         }.format(amount)
     }
 

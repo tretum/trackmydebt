@@ -2,6 +2,8 @@ package com.mmutert.trackmydebt.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.mmutert.trackmydebt.TransactionAction
+import com.mmutert.trackmydebt.util.balance
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,18 +14,14 @@ class AppRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
 
-    val personAndTransactions: LiveData<List<PersonAndTransactions>> = dao.personAndTransactions
-    val transactionAndPerson: LiveData<List<TransactionAndPerson>> = dao.transactionAndPerson
     val persons: LiveData<List<Person>> = dao.persons
+    val personAndTransactions: LiveData<List<PersonAndTransactions>> = dao.personAndTransactions
+
     val transactions: LiveData<List<Transaction>> = dao.transactions
-    private val _balance: LiveData<Long> = dao.balance
-    val balance = Transformations.map(_balance) {
-        if (it != null) {
-            BigDecimal(it / 100.0)
-        } else {
-            // Fixes crash on initialization
-            BigDecimal.ZERO
-        }
+    val transactionAndPerson: LiveData<List<TransactionAndPerson>> = dao.transactionAndPerson
+
+    val balance: LiveData<BigDecimal> = Transformations.map(dao.transactions) {
+        it.balance()
     }
 
     fun getTransactions(p: Person): LiveData<List<Transaction>> {

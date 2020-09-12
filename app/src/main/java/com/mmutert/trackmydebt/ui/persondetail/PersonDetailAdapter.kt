@@ -5,31 +5,29 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
+import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.mmutert.trackmydebt.R
 import com.mmutert.trackmydebt.data.Transaction
 import com.mmutert.trackmydebt.databinding.ItemDateBinding
-import com.mmutert.trackmydebt.databinding.ItemPersonDetailBinding
+import com.mmutert.trackmydebt.databinding.ItemTransactionPersonBinding
 import com.mmutert.trackmydebt.util.FormatHelper
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import org.joda.time.format.DateTimeFormatter
 import java.util.Locale
 
-class PersonDetailAdapter(val context: Context, val transactionClickedListener: TransactionClickedListener) :
+class PersonDetailAdapter(
+    val context: Context,
+    val viewModel: PersonDetailViewModel,
+) :
     RecyclerView.Adapter<PersonDetailAdapter.PersonDetailViewHolder>() {
 
-    private val LOG_TAG: String = "PersonDetailAdapter"
     private lateinit var transactionToDelete: ListEntry.TransactionEntry
     var entries: MutableList<ListEntry> = ArrayList()
 
     private val DATE: Int = 1
     private val TRANSACTION = 2
-
-    interface TransactionClickedListener {
-        fun onTransactionClicked(transaction: Transaction)
-    }
 
     sealed class ListEntry {
         class TransactionEntry(val transaction: Transaction) : ListEntry()
@@ -56,17 +54,11 @@ class PersonDetailAdapter(val context: Context, val transactionClickedListener: 
 
         return when (viewType) {
             DATE -> {
-                val binding: ItemDateBinding =
-                    DataBindingUtil.inflate(inflater, R.layout.item_date, parent, false)
+                val binding = ItemDateBinding.inflate(inflater, parent, false)
                 PersonDetailViewHolder.DateViewHolder(binding)
             }
             else -> {
-                val binding: ItemPersonDetailBinding = DataBindingUtil.inflate(
-                    inflater,
-                    R.layout.item_person_detail,
-                    parent,
-                    false
-                )
+                val binding = ItemTransactionPersonBinding.inflate(inflater, parent, false)
                 PersonDetailViewHolder.TransactionViewHolder(binding)
             }
         }
@@ -77,41 +69,12 @@ class PersonDetailAdapter(val context: Context, val transactionClickedListener: 
         when (val entry = entries[position]) {
             is ListEntry.TransactionEntry -> {
                 Log.d(LOG_TAG, "Amount: ${entry.transaction.amount}")
-                val binding = (holder as PersonDetailViewHolder.TransactionViewHolder).mBinding
-                val printAsCurrency = FormatHelper.printAsCurrency(entry.transaction.amount)
-                binding.amountInclude.tvAmount.text = printAsCurrency
 
-                when (entry.transaction.reason.isBlank()) {
-                    true -> binding.reasonInclude.tvTransactionReason.visibility = View.GONE
-                    false -> {
-                        binding.reasonInclude.tvTransactionReason.visibility = View.VISIBLE
-                        binding.reasonInclude.tvTransactionReason.text = entry.transaction.reason
-                    }
-                }
-
-                binding.personTransactionCard.strokeColor = context.resources.getColor(
-                    R.color.grey_100
+                (holder as PersonDetailViewHolder.TransactionViewHolder).bind(
+                    context,
+                    viewModel,
+                    entry.transaction
                 )
-                when (entry.transaction.received) {
-                    true -> {
-                        binding.tvTransactionDirection.text =
-                            context.getString(R.string.received_transaction)
-                    }
-                    false -> {
-                        binding.tvTransactionDirection.text =
-                            context.getString(R.string.sent_transaction)
-                    }
-                }
-
-                binding.root.setOnClickListener {
-                    Log.d(LOG_TAG, "Clicked on item at position $position")
-                    transactionClickedListener.onTransactionClicked(entry.transaction)
-                }
-
-                val dateFormatter: DateTimeFormatter =
-                    DateTimeFormat.shortTime().withLocale(Locale.getDefault())
-                binding.timeInclude.tvTransactionTime.text = dateFormatter.print(entry.transaction.date)
-                binding.personTransactionCard.visibility = View.VISIBLE
             }
             is ListEntry.DateEntry -> {
                 val binding = (holder as PersonDetailViewHolder.DateViewHolder).mBinding
@@ -134,13 +97,52 @@ class PersonDetailAdapter(val context: Context, val transactionClickedListener: 
     }
 
     sealed class PersonDetailViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        class TransactionViewHolder(val mBinding: ItemPersonDetailBinding) :
-            PersonDetailViewHolder(mBinding.root)
+
+        class TransactionViewHolder(val binding: ItemTransactionPersonBinding) :
+            PersonDetailViewHolder(binding.root) {
+
+            /**
+             * Bind the given transaction to the view holder
+             */
+            fun bind(context: Context, viewModel: PersonDetailViewModel, transaction: Transaction) {
+                val printAsCurrency = FormatHelper.printAsCurrency(transaction.amount)
+                val dateFormatter: DateTimeFormatter =
+                    DateTimeFormat.shortTime().withLocale(Locale.getDefault())
+
+                binding.apply {
+                    this.viewModel = viewModel
+                    this.transaction = transaction
+
+                    amountInclude.tvAmount.text = printAsCurrency
+
+                    tvTransactionDirection.text = when (transaction.received) {
+                        true -> context.getString(R.string.received_transaction)
+                        false -> context.getString(R.string.sent_transaction)
+                    }
+
+                    personTransactionCard.strokeColor = ResourcesCompat.getColor(
+                        context.resources, R.color.grey_100, null
+                    )
+
+                    reasonInclude.apply {
+                        when (transaction.reason.isBlank()) {
+                            true -> tvTransactionReason.visibility = View.GONE
+                            false -> {
+                                tvTransactionReason.visibility = View.VISIBLE
+                                tvTransactionReason.text = transaction.reason
+                            }
+                        }
+                    }
+
+                    timeInclude.tvTransactionTime.text = dateFormatter.print(transaction.date)
+                    personTransactionCard.visibility = View.VISIBLE
+                }
+            }
+        }
 
         class DateViewHolder(val mBinding: ItemDateBinding) :
             PersonDetailViewHolder(mBinding.root)
     }
-
 
     fun markTransactionToDelete(position: Int) {
         Log.d(LOG_TAG, "Deleting transaction")
@@ -155,8 +157,11 @@ class PersonDetailAdapter(val context: Context, val transactionClickedListener: 
         notifyItemInserted(position)
     }
 
-
     fun getElementAtPosition(position: Int): ListEntry {
         return entries[position]
+    }
+
+    companion object {
+        private val LOG_TAG = PersonDetailAdapter::class.simpleName
     }
 }

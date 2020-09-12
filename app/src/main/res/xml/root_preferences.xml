@@ -14,6 +14,6 @@
         android:key="@string/pref_paypal_username_key"
         android:title="Set your Paypal.me username"
         app:useSimpleSummaryProvider="true"
-        android:icon="@drawable/ic_brand_paypal_24_black"
-        android:dialogIcon="@drawable/ic_brand_paypal_24_black" />
+        android:icon="@drawable/ic_brand_paypal_24"
+        android:dialogIcon="@drawable/ic_brand_paypal_24" />
 </PreferenceScreen>
