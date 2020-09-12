@@ -6,6 +6,7 @@
 
     <data>
         <import type="android.view.View"/>
+        <import type="androidx.core.content.ContextCompat"/>
 
         <variable
             name="viewmodel"
@@ -107,21 +108,48 @@
                 android:background="?android:attr/listDivider" />
 
 
-            <TextView
-                android:text="No persons to display yet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
-                android:id="@+id/tv_empty_person_list"
-                android:visibility="@{viewmodel.empty ? View.VISIBLE : View.GONE}"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_debt_list"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:listitem="@layout/item_person_overview"
-                tools:itemCount="20"
-                android:visibility="@{viewmodel.empty ? View.GONE : View.VISIBLE}" />
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/no_tasks_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:visibility="@{viewmodel.empty ? View.VISIBLE : View.GONE}">
+
+<!--                    <ImageView-->
+<!--                        android:id="@+id/no_persons_icon"-->
+<!--                        android:layout_width="96dp"-->
+<!--                        android:layout_height="96dp"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:src="@{ContextCompat.getDrawable(context, viewmodel.noPersonsIcon)}"/>-->
+
+                    <TextView
+                        android:id="@+id/no_persons_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/list_item_padding"
+                        android:text="@{context.getString(viewmodel.noPersonsLabel)}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{viewmodel.empty ? View.GONE : View.VISIBLE}">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_debt_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        tools:listitem="@layout/item_person_overview"
+                        tools:itemCount="20" />
+                </LinearLayout>
+            </RelativeLayout>
+
         </LinearLayout>
 
 

@@ -90,6 +90,16 @@ class AddTransactionFragment : Fragment() {
         )
         viewModel.persons.observe(viewLifecycleOwner) {
             personArrayAdapter.persons = it
+
+            viewModel.selectedPerson.observe(viewLifecycleOwner) {
+                // TODO Investigate wrong person preselected
+                val indexOfPerson = personArrayAdapter.getIndexOfPerson(it)
+                binding.spSelectPerson.setSelection(indexOfPerson)
+                Log.d(
+                    LOG_TAG,
+                    "Set person spinner to index $indexOfPerson, displaying person ${it.name}"
+                )
+            }
         }
         binding.spSelectPerson.apply {
             adapter = personArrayAdapter
@@ -109,15 +119,6 @@ class AddTransactionFragment : Fragment() {
                     override fun onNothingSelected(parent: AdapterView<*>?) {
                     }
                 }
-        }
-
-        viewModel.selectedPerson.observe(viewLifecycleOwner) {
-            val indexOfPerson = personArrayAdapter.getIndexOfPerson(it)
-            binding.spSelectPerson.setSelection(indexOfPerson)
-            Log.d(
-                LOG_TAG,
-                "Set person spinner to index $indexOfPerson, displaying person ${it.name}"
-            )
         }
     }
 

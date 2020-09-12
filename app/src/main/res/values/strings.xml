@@ -72,5 +72,11 @@
     <string name="filter_debt">Debt only</string>
     <string name="filter_credit">Credit only</string>
     <string name="menu_item_filter_title">Filter</string>
+    <string name="label_all_persons">All persons</string>
+    <string name="no_persons_all">There are no persons to display</string>
+    <string name="label_debt_persons">Debt only</string>
+    <string name="no_persons_debt">There are no persons with whom you are in debt</string>
+    <string name="no_persons_credit">There are no persons which owe you</string>
+    <string name="label_credit_persons">Credit only</string>
 
 </resources>

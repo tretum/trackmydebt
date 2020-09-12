@@ -59,18 +59,16 @@ class AddTransactionViewModel(private val repository: AppRepository) : ViewModel
     val transactionUpdated: LiveData<Event<Int>> = _transactionUpdated
 
 
-    fun start(transactionId: Long?, referringPersonId: Long) {
-        if (transactionId == null || transactionId <= 0L) {
+    fun start(transactionId: Long = 0L, referringPersonId: Long = 0L) {
+        if (transactionId > 0L) {
             this.isNewTransaction = true
-            // TODO Should respect the referring person id if present
-            return
-        }
 
-        // Load the transaction
-        viewModelScope.launch {
-            when (val result = repository.getTransaction(transactionId)) {
-                is Result.Success -> onTransactionLoaded(result.data)
-                is Result.Error -> TODO()
+            // Load the transaction
+            viewModelScope.launch {
+                when (val result = repository.getTransaction(transactionId)) {
+                    is Result.Success -> onTransactionLoaded(result.data)
+                    is Result.Error -> TODO()
+                }
             }
         }
 
@@ -143,9 +141,10 @@ class AddTransactionViewModel(private val repository: AppRepository) : ViewModel
     }
 
     fun selectPerson(selectedPerson: Person) {
-        if(_selectedPerson.value != null && _selectedPerson.value!! != selectedPerson) {
-            _selectedPerson.value = selectedPerson
+        if(_selectedPerson.value != null && _selectedPerson.value!! == selectedPerson) {
+            return
         }
+        _selectedPerson.value = selectedPerson
     }
 
     fun selectAction(selectedAction: TransactionAction) {

@@ -1,6 +1,5 @@
 package com.mmutert.trackmydebt.ui.home
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,6 +11,7 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.mmutert.trackmydebt.Event
 import com.mmutert.trackmydebt.R
+import com.mmutert.trackmydebt.TransactionAction
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.data.Person
 import com.mmutert.trackmydebt.data.PersonAndTransactions
@@ -27,6 +27,11 @@ class HomeViewModel(
     private val savedStateHandle: SavedStateHandle, private val repository: AppRepository
 ) : ViewModel() {
 
+    private val _noPersonsLabel = MutableLiveData<Int>()
+    val noPersonsLabel: LiveData<Int> = _noPersonsLabel
+    private val _noPersonsIcon = MutableLiveData<Int>()
+    val noPersonsIcon: LiveData<Int> = _noPersonsIcon
+
     private val _forceUpdate = MutableLiveData(false)
 
     private val _persons: LiveData<List<PersonAndTransactions>> = _forceUpdate.switchMap {
@@ -40,12 +45,10 @@ class HomeViewModel(
         FormatHelper.printAsCurrency(it)
     }
 
-    private val _sumDebt: LiveData<BigDecimal> = Transformations.map(persons) {
+    private val _sumDebt: LiveData<BigDecimal> = Transformations.map(repository.transactions) {
         it.filter { p ->
-            p.transactions.balance() < BigDecimal.ZERO
-        }.sumOf { pat ->
-            pat.transactions.balance()
-        }
+            p.action == TransactionAction.LENT_TO_USER || p.action == TransactionAction.MONEY_TO_USER
+        }.balance()
         // TODO Optimize by saving balance and using 0 when filter condition not fulfilled
     }
     val sumDebtFormatted: LiveData<String> = Transformations.map(_sumDebt) {
@@ -89,25 +92,44 @@ class HomeViewModel(
         savedStateHandle.set(PERSONS_FILTER_SAVED_STATE_KEY, mode)
 
         // TODO Apply changes to ui by setting the relevant resource ids
-        // when (mode) {
-        //     FILTER_DEBT_ONLY -> {
-        //         setFilter()
-        //     }
-        //     FILTER_ALL -> TODO()
-        //     FILTER_CREDIT_ONLY -> TODO()
-        // }
+        when (mode) {
+            FILTER_DEBT_ONLY -> {
+                setFilter(
+                    R.string.label_debt_persons,
+                    R.string.no_persons_debt,
+                    // R.drawable.logo_no_fill,
+                    // true
+                )
+            }
+            FILTER_ALL -> {
+                setFilter(
+                    R.string.label_all_persons,
+                    R.string.no_persons_all,
+                    // R.drawable.logo_no_fill,
+                    // true
+                )
+            }
+            FILTER_CREDIT_ONLY -> {
+                setFilter(
+                    R.string.label_credit_persons,
+                    R.string.no_persons_credit,
+                    // R.drawable.logo_no_fill,
+                    // true
+                )
+            }
+        }
         _forceUpdate.value = false
     }
 
     private fun setFilter(
         @StringRes filteringLabelString: Int,
         @StringRes noTasksLabelString: Int,
-        @DrawableRes noTaskIconDrawable: Int,
-        tasksAddVisible: Boolean
+        // @DrawableRes noTaskIconDrawable: Int,
+        // tasksAddVisible: Boolean
     ) {
         // _currentFilteringLabel.value = filteringLabelString
-        // _noTasksLabel.value = noTasksLabelString
-        // _noTaskIconRes.value = noTaskIconDrawable
+        _noPersonsLabel.value = noTasksLabelString
+        // _noPersonsIcon.value = noTaskIconDrawable
         // _tasksAddViewVisible.value = tasksAddVisible
     }
 
