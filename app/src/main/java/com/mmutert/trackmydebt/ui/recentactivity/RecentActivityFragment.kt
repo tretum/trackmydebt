@@ -1,69 +1,58 @@
 package com.mmutert.trackmydebt.ui.recentactivity
 
-import android.content.Context
 import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.mmutert.trackmydebt.R
-import com.mmutert.trackmydebt.data.TransactionAndPerson
 import com.mmutert.trackmydebt.databinding.FragmentRecentActivityBinding
-import com.mmutert.trackmydebt.databinding.ItemDateBinding
-import com.mmutert.trackmydebt.databinding.ItemTransactionRecentActivityBinding
-import com.mmutert.trackmydebt.util.FormatHelper
-import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
-import java.util.Locale
+import com.mmutert.trackmydebt.util.getViewModelFactory
 
 class RecentActivityFragment : Fragment() {
 
-    private lateinit var mViewModel: RecentActivityViewModel
-    private lateinit var mBinding: FragmentRecentActivityBinding
+    private val viewModel: RecentActivityViewModel by viewModels { getViewModelFactory() }
+    private lateinit var binding: FragmentRecentActivityBinding
 
-    private lateinit var mAdapter: RecentActivityListAdapter
+    private lateinit var adapter: RecentActivityListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mViewModel =
-            ViewModelProvider(this).get(RecentActivityViewModel::class.java)
 
-        mBinding = DataBindingUtil.inflate(
+        binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_recent_activity,
             container,
             false
         )
 
-        mAdapter = RecentActivityListAdapter(requireContext())
-        mBinding.rvRecentActivityList.adapter = mAdapter
-        mBinding.rvRecentActivityList.layoutManager = LinearLayoutManager(
+        adapter = RecentActivityListAdapter(requireContext(), viewModel)
+        binding.rvRecentActivityList.adapter = adapter
+        binding.rvRecentActivityList.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.VERTICAL,
             false
         )
 
-        createSwipeHelper().attachToRecyclerView(mBinding.rvRecentActivityList)
+        createSwipeHelper().attachToRecyclerView(binding.rvRecentActivityList)
 
-        mViewModel.transactionAndPerson.observe(
+        viewModel.transactionAndPerson.observe(
             viewLifecycleOwner,
-            { mAdapter.setTransactions(it) })
+            { adapter.setTransactions(it) })
 
-        return mBinding.root
+        return binding.root
     }
 
     /**
@@ -91,7 +80,7 @@ class RecentActivityFragment : Fragment() {
                 if (direction == ItemTouchHelper.START) {
                     deleteTransaction(pos)
                 } else {
-                    mAdapter.notifyItemChanged(pos)
+                    adapter.notifyItemChanged(pos)
                 }
             }
 
@@ -103,7 +92,7 @@ class RecentActivityFragment : Fragment() {
                         (viewHolder as RecentActivityListAdapter.RecentActivityListViewHolder)
                     when (personDetailViewHolder) {
                         is RecentActivityListAdapter.RecentActivityListViewHolder.TransactionViewHolder -> {
-                            getDefaultUIUtil().onSelected(personDetailViewHolder.mBinding.recentActivityCard)
+                            getDefaultUIUtil().onSelected(personDetailViewHolder.binding.recentActivityCard)
                         }
                         is RecentActivityListAdapter.RecentActivityListViewHolder.DateViewHolder -> {
                             getDefaultUIUtil().onSelected(personDetailViewHolder.mBinding.tvTransactionDate)
@@ -120,13 +109,12 @@ class RecentActivityFragment : Fragment() {
 
                 val personDetailViewHolder =
                     (viewHolder as RecentActivityListAdapter.RecentActivityListViewHolder)
-                lateinit var foregroundView: View
-                when (personDetailViewHolder) {
+                val foregroundView = when (personDetailViewHolder) {
                     is RecentActivityListAdapter.RecentActivityListViewHolder.TransactionViewHolder -> {
-                        foregroundView = personDetailViewHolder.mBinding.recentActivityCard
+                        personDetailViewHolder.binding.recentActivityCard
                     }
                     is RecentActivityListAdapter.RecentActivityListViewHolder.DateViewHolder -> {
-                        foregroundView = personDetailViewHolder.mBinding.tvTransactionDate
+                        personDetailViewHolder.mBinding.tvTransactionDate
                     }
                 }
                 getDefaultUIUtil().onDrawOver(
@@ -149,7 +137,7 @@ class RecentActivityFragment : Fragment() {
                 when (personDetailViewHolder) {
                     is RecentActivityListAdapter.RecentActivityListViewHolder.TransactionViewHolder -> {
                         val foregroundView =
-                            personDetailViewHolder.mBinding.recentActivityCard
+                            personDetailViewHolder.binding.recentActivityCard
                         getDefaultUIUtil().clearView(foregroundView)
                     }
                     is RecentActivityListAdapter.RecentActivityListViewHolder.DateViewHolder -> {
@@ -170,7 +158,7 @@ class RecentActivityFragment : Fragment() {
                 when (personDetailViewHolder) {
                     is RecentActivityListAdapter.RecentActivityListViewHolder.TransactionViewHolder -> {
                         val foregroundView: View =
-                            personDetailViewHolder.mBinding.recentActivityCard
+                            personDetailViewHolder.binding.recentActivityCard
                         getDefaultUIUtil().onDraw(
                             c,
                             recyclerView,
@@ -196,12 +184,12 @@ class RecentActivityFragment : Fragment() {
      */
     private fun deleteTransaction(position: Int) {
 
-        val elementAtPosition = mAdapter.getElementAtPosition(position)
+        val elementAtPosition = adapter.getElementAtPosition(position)
 
         val transactionAndPerson =
             (elementAtPosition as RecentActivityListAdapter.ListEntry.TransactionEntry).transaction
         val mDeleteSnackbar = Snackbar.make(
-            mBinding.rvRecentActivityList,
+            binding.rvRecentActivityList,
             "Removed transaction",
             Snackbar.LENGTH_LONG
         )
@@ -211,12 +199,12 @@ class RecentActivityFragment : Fragment() {
         // This causes the list to be updated and the RV to be updated.
         // We do not cancel the scheduled notifications here and only do that only if the action was not undone.
 
-        mAdapter.markTransactionToDelete(position)
+        adapter.markTransactionToDelete(position)
 
         // Undoing the action restores the item from the archive and the RV will be updated automatically
         // Scheduling the notifications is not required since they were not cancelled until undo is no longer possible
         mDeleteSnackbar.setAction(requireContext().getString(R.string.undo_button_label)) {
-            mAdapter.restoreTransaction(position)
+            adapter.restoreTransaction(position)
             Log.d("PersonDetailFragment", "Restoring transaction")
         }
 
@@ -224,164 +212,11 @@ class RecentActivityFragment : Fragment() {
         mDeleteSnackbar.addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar?>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 if (event == DISMISS_EVENT_TIMEOUT || event == DISMISS_EVENT_CONSECUTIVE || event == DISMISS_EVENT_SWIPE || event == DISMISS_EVENT_MANUAL) {
-                    mViewModel.deleteTransaction(transactionAndPerson.transaction)
+                    viewModel.deleteTransaction(transactionAndPerson.transaction)
                 }
                 super.onDismissed(transientBottomBar, event)
             }
         })
         mDeleteSnackbar.show()
-    }
-
-    class RecentActivityListAdapter(val context: Context) :
-        RecyclerView.Adapter<RecentActivityListAdapter.RecentActivityListViewHolder>() {
-
-        private lateinit var transactionToDelete: ListEntry.TransactionEntry
-        private val LOG_TAG: String = "RecentActListAdapter"
-        private val DATE: Int = 1
-        private val TRANSACTION = 2
-
-        sealed class ListEntry {
-            class TransactionEntry(val transaction: TransactionAndPerson) : ListEntry()
-            class DateEntry(val date: LocalDate) : ListEntry()
-        }
-
-        var entries: MutableList<ListEntry> = ArrayList()
-            private set
-
-        fun setTransactions(transactions: List<TransactionAndPerson>) {
-            val dates: List<LocalDate> =
-                transactions.map { it.transaction.date.toLocalDate() }.distinctBy {
-                    it.toString()
-                }
-            val result: ArrayList<ListEntry> = ArrayList()
-            dates.forEach { date ->
-                result.add(ListEntry.DateEntry(date))
-                transactions.filter { it.transaction.date.toLocalDate().isEqual(date) }
-                    .forEach { t ->
-                        result.add(ListEntry.TransactionEntry(t))
-                    }
-            }
-            this.entries = result
-            notifyDataSetChanged()
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return when (entries[position]) {
-                is ListEntry.TransactionEntry -> TRANSACTION
-                is ListEntry.DateEntry -> DATE
-            }
-        }
-
-        override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int
-        ): RecentActivityListViewHolder {
-            val inflater = LayoutInflater.from(parent.context)
-
-            when (viewType) {
-                DATE -> {
-                    val inflate: ItemDateBinding =
-                        DataBindingUtil.inflate(inflater, R.layout.item_date, parent, false)
-                    return RecentActivityListViewHolder.DateViewHolder(inflate)
-                }
-                TRANSACTION -> {
-                    val binding =
-                        ItemTransactionRecentActivityBinding.inflate(inflater, parent, false)
-                    return RecentActivityListViewHolder.TransactionViewHolder(binding)
-                }
-                else -> return RecentActivityListViewHolder.DateViewHolder(
-                    DataBindingUtil.inflate(
-                        inflater,
-                        R.layout.item_date,
-                        parent,
-                        false
-                    )
-                )
-            }
-        }
-
-        override fun onBindViewHolder(holder: RecentActivityListViewHolder, position: Int) {
-            when (holder) {
-                is RecentActivityListViewHolder.TransactionViewHolder -> {
-                    val listEntry = (entries[position] as ListEntry.TransactionEntry).transaction
-                    val (id, partnerId, received, amount, date, action, reason, reasonLong) = listEntry.transaction
-
-                    val dateFormatter: DateTimeFormatter =
-                        DateTimeFormat.shortTime().withLocale(Locale.getDefault())
-                    holder.mBinding.timeInclude.tvTransactionTime.text = dateFormatter.print(date)
-                    holder.mBinding.amountInclude.tvAmount.text =
-                        FormatHelper.printAsCurrency(amount)
-                    when {
-                        reason.isBlank() -> {
-                            holder.mBinding.reasonInclude.tvTransactionReason.visibility = View.GONE
-                        }
-                        else -> {
-                            holder.mBinding.reasonInclude.tvTransactionReason.visibility =
-                                View.VISIBLE
-                            holder.mBinding.reasonInclude.tvTransactionReason.text = reason
-                        }
-                    }
-
-                    when (received) {
-                        true -> {
-                            holder.mBinding.recentActivityCard.strokeColor =
-                                ResourcesCompat.getColor(
-                                    context.resources,
-                                    R.color.positive_100,
-                                    null
-                                )
-                        }
-                        else -> {
-                            holder.mBinding.recentActivityCard.strokeColor =
-                                ResourcesCompat.getColor(
-                                    context.resources,
-                                    R.color.negative_100,
-                                    null
-                                )
-                        }
-                    }
-
-                    val (_, name) = listEntry.person
-                    holder.mBinding.tvName.text = name
-                }
-
-                is RecentActivityListViewHolder.DateViewHolder -> {
-                    val dateFormatter: DateTimeFormatter =
-                        DateTimeFormat.longDate().withLocale(Locale.getDefault())
-
-                    holder.mBinding.tvTransactionDate.text =
-                        dateFormatter.print((entries[position] as ListEntry.DateEntry).date)
-                }
-            }
-        }
-
-        override fun getItemCount(): Int {
-            return entries.size
-        }
-
-        fun markTransactionToDelete(position: Int) {
-            Log.d(LOG_TAG, "Deleting transaction")
-            this.transactionToDelete = entries[position] as ListEntry.TransactionEntry
-            this.entries.removeAt(position)
-            notifyItemRemoved(position)
-        }
-
-        fun restoreTransaction(position: Int) {
-            Log.d(LOG_TAG, "Restoring transaction")
-            this.entries.add(position, this.transactionToDelete)
-            notifyItemInserted(position)
-        }
-
-        fun getElementAtPosition(position: Int): ListEntry {
-            return entries[position]
-        }
-
-        sealed class RecentActivityListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            class TransactionViewHolder(val mBinding: ItemTransactionRecentActivityBinding) :
-                RecentActivityListViewHolder(mBinding.root)
-
-            class DateViewHolder(val mBinding: ItemDateBinding) :
-                RecentActivityListViewHolder(mBinding.root)
-        }
     }
 }

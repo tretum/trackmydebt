@@ -8,6 +8,7 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.mmutert.trackmydebt.data.AppRepository
 import com.mmutert.trackmydebt.ui.home.HomeViewModel
 import com.mmutert.trackmydebt.ui.persondetail.PersonDetailViewModel
+import com.mmutert.trackmydebt.ui.recentactivity.RecentActivityViewModel
 import com.mmutert.trackmydebt.ui.transaction.AddTransactionViewModel
 
 /**
@@ -32,6 +33,8 @@ class ViewModelFactory constructor(
                 PersonDetailViewModel(tasksRepository)
             isAssignableFrom(AddTransactionViewModel::class.java) ->
                 AddTransactionViewModel(tasksRepository)
+            isAssignableFrom(RecentActivityViewModel::class.java) ->
+                RecentActivityViewModel(tasksRepository)
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
