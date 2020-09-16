@@ -9,4 +9,26 @@
         <item name="cardCornerRadius">4dp</item>
         <item name="android:layout_margin">4dp</item>
     </style>
+
+    <style name="fragment_about_list_entry">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:textSize">@dimen/about_entry_text_size</item>
+    </style>
+
+    <style name="HomeHeaderSmallText">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="HomeHeaderLargeText">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAppearance">?attr/textAppearanceHeadline4</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 </resources>

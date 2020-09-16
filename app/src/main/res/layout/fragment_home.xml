@@ -25,43 +25,39 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="16dp"
-                android:background="@color/fragment_home_balance_background"
+                android:background="?attr/colorSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+<!--                android:background="@color/fragment_home_balance_background"-->
 
                 <TextView
                     android:text="@string/fragment_home_overall_balance_label"
+                    android:id="@+id/tv_overall_balance_label"
+                    style="@style/HomeHeaderLargeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceHeadline4"
+                    android:layout_marginBottom="5dp"
                     app:layout_constraintTop_toTopOf="@+id/tv_overall_balance_value"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:textSize="20sp"
-                    android:id="@+id/tv_overall_balance_label"
-                    android:textStyle="bold"
-                    android:labelFor="@id/tv_overall_balance_value"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_overall_balance_value"
-                    android:layout_marginBottom="5dp" />
+                    android:labelFor="@id/tv_overall_balance_value"/>
 
                 <TextView
                     tools:text="10.00€"
                     android:text="@{viewmodel.balanceFormatted}"
+                    style="@style/HomeHeaderLargeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp"
-                    android:textAppearance="?attr/textAppearanceHeadline4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:id="@+id/tv_overall_balance_value"
-                    android:textStyle="bold" />
+                    android:id="@+id/tv_overall_balance_value"/>
 
                 <TextView
                     android:id="@+id/tv_sum_of_money_lent_label"
                     android:text="@string/fragment_home_money_lent"
+                    style="@style/HomeHeaderSmallText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textSize="18sp"
                     android:labelFor="@id/tv_sum_of_money_lent_value"
                     app:layout_constraintStart_toStartOf="@+id/tv_overall_balance_label"
                     app:layout_constraintTop_toTopOf="@+id/tv_sum_of_money_lent_value"
@@ -71,19 +67,19 @@
                     android:id="@+id/tv_sum_of_money_lent_value"
                     tools:text="20,00 €"
                     android:text="@{viewmodel.sumCreditFormatted}"
+                    style="@style/HomeHeaderSmallText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_overall_balance_value" />
 
                 <TextView
                     android:id="@+id/tv_sum_of_money_owed_label"
                     android:text="@string/fragment_home_money_owed"
-                    android:layout_width="0dp"
+                    style="@style/HomeHeaderSmallText"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
                     android:labelFor="@id/tv_sum_of_money_owed_value"
                     app:layout_constraintStart_toStartOf="@+id/tv_sum_of_money_lent_label"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_sum_of_money_owed_value"
@@ -93,11 +89,11 @@
                     android:id="@+id/tv_sum_of_money_owed_value"
                     tools:text="10.00 €"
                     android:text="@{viewmodel.sumDebtFormatted}"
+                    style="@style/HomeHeaderSmallText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_sum_of_money_lent_value" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

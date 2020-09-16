@@ -24,7 +24,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/header_layout"
-                android:background="@color/design_default_color_primary"
+                android:background="@color/primaryDarkColor"
                 android:padding="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,6 +34,7 @@
                 <Button
                     android:id="@+id/bt_paypal"
                     android:text='@{viewModel.paypalButtonLabelRes > 0 ? context.getString(viewModel.paypalButtonLabelRes) : ""}'
+                    tools:text="Pay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_brand_paypal_24"
@@ -45,25 +46,25 @@
 
                 <TextView
                     android:id="@+id/tv_overall_description"
+                    tools:text="Overall Debt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20sp"
-                    android:textColor="@android:color/primary_text_dark"
+                    android:textColor="@color/primaryTextColor"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:text="Overall Debt"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent" />
 
                 <TextView
                     android:id="@+id/tv_sum"
                     android:text='@{viewModel.formattedSum}'
+                    tools:text="5.00€"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    app:layout_constraintStart_toEndOf="@id/tv_overall_description"
                     android:textSize="20sp"
-                    android:textColor="@android:color/primary_text_dark"
-                    tools:text="5.00€"
+                    android:textColor="@color/primaryTextColor"
+                    app:layout_constraintStart_toEndOf="@id/tv_overall_description"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_overall_description"
                     app:layout_constraintTop_toTopOf="@+id/tv_overall_description" />
 
