@@ -46,7 +46,7 @@ dependencies {
     def appcompat_version = '1.2.0'
     def material_version = '1.2.1'
     def constraint_layout_version = '2.0.1'
-    def navigation_version = '2.3.0'
+    def navigation_version = '2.3.1'
     def espresso_version = '3.3.0'
     def joda_time_version = '2.10.6'
 
