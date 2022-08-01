@@ -73,7 +73,8 @@ class PersonDetailViewModel(private val repository: AppRepository) : ViewModel()
         viewModelScope.launch {
             when (val person = repository.getPerson(personId)) {
                 is Result.Success -> {
-                    _selection.value = person.data
+                    // TODO Check nullability
+                    _selection.value = person.data!!
                     this@PersonDetailViewModel.person = person.data
                 }
                 is Result.Error -> TODO()

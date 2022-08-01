@@ -25,7 +25,8 @@ class AddTransactionViewModel(private val repository: AppRepository) : ViewModel
     val persons = repository.persons
 
     val dateFormatter: DateTimeFormatter = DateTimeFormat.longDate().withLocale(Locale.getDefault())
-    val timeFormatter: DateTimeFormatter = DateTimeFormat.shortTime().withLocale(Locale.getDefault())
+    val timeFormatter: DateTimeFormatter =
+        DateTimeFormat.shortTime().withLocale(Locale.getDefault())
 
     private var id: Long = 0L
 
@@ -33,7 +34,7 @@ class AddTransactionViewModel(private val repository: AppRepository) : ViewModel
     val reasonLong = MutableLiveData<String>()
 
     private val _selectedDate = MutableLiveData(TimeHelper.currentDateLocalized)
-    val selectedDate : LiveData<LocalDate> = _selectedDate
+    val selectedDate: LiveData<LocalDate> = _selectedDate
 
     val printedDate = Transformations.map(selectedDate) {
         dateFormatter.print(it)
@@ -58,7 +59,6 @@ class AddTransactionViewModel(private val repository: AppRepository) : ViewModel
     private val _transactionUpdated = MutableLiveData<Event<Int>>()
     val transactionUpdated: LiveData<Event<Int>> = _transactionUpdated
 
-
     fun start(transactionId: Long = 0L, referringPersonId: Long = 0L) {
         if (transactionId > 0L) {
             this.isNewTransaction = true
@@ -72,10 +72,11 @@ class AddTransactionViewModel(private val repository: AppRepository) : ViewModel
             }
         }
 
-        if(referringPersonId > 0L) {
+        if (referringPersonId > 0L) {
             viewModelScope.launch {
                 when (val person = repository.getPerson(referringPersonId)) {
-                    is Result.Success -> _selectedPerson.value = person.data
+                    // TODO Check nullable
+                    is Result.Success -> _selectedPerson.value = person.data!!
                     is Result.Error -> TODO()
                 }
             }
@@ -141,7 +142,7 @@ class AddTransactionViewModel(private val repository: AppRepository) : ViewModel
     }
 
     fun selectPerson(selectedPerson: Person) {
-        if(_selectedPerson.value != null && _selectedPerson.value!! == selectedPerson) {
+        if (_selectedPerson.value != null && _selectedPerson.value!! == selectedPerson) {
             return
         }
         _selectedPerson.value = selectedPerson
