@@ -42,7 +42,7 @@ dependencies {
     def work_version = '2.7.1'
     def junit_version = "4.13.2"
     def preference_version = '1.2.0'
-    def appcompat_version = '1.4.2'
+    def appcompat_version = '1.6.0'
     def material_version = '1.6.1'
     def constraint_layout_version = '2.1.4'
     def navigation_version = '2.3.0'
